@@ -23,7 +23,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 
 
-def plot(scaling_type, timer_hash, timer_file, save_path):
+def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='strong'):
 
     if scaling_type == 'nodes':
         args = {
@@ -42,19 +42,26 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
         spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig,
                                  width_ratios=widths,
                                  height_ratios=heights)
+        if scaling_strength == 'weak':
+            xlabel = 'Number of compute nodes; Scale of model'
+        else:
+            xlabel = 'Number of compute nodes'
 
-        ax1 = fig.add_subplot(spec[:, 0])
+        ax1 = fig.add_subplot(spec[0, 0])
+        ax1a = fig.add_subplot(spec[1, 0])
         ax2 = fig.add_subplot(spec[0, 1])
         ax3 = fig.add_subplot(spec[1, 1])
 
-        trans = mtransforms.ScaledTranslation(-20 /
-                                              72, 7 / 72, fig.dpi_scale_trans)
-        ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
-                 fontsize='medium', va='bottom', fontweight='bold')
-        ax2.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
-                 fontsize='medium', va='bottom', fontweight='bold')
-        ax3.text(0.0, 1.0, 'C', transform=ax3.transAxes + trans,
-                 fontsize='medium', va='bottom', fontweight='bold')
+#        trans = mtransforms.ScaledTranslation(-20 /
+#                                              72, 7 / 72, fig.dpi_scale_trans)
+#        ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
+#                 fontsize='medium', va='bottom', fontweight='bold')
+#        ax1a.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
+#                 fontsize='medium', va='bottom', fontweight='bold')
+#        ax2.text(0.0, 1.0, 'C', transform=ax2.transAxes + trans,
+#                 fontsize='medium', va='bottom', fontweight='bold')
+#        ax3.text(0.0, 1.0, 'D', transform=ax3.transAxes + trans,
+#                 fontsize='medium', va='bottom', fontweight='bold')
 
         B.plot_fractions(axis=ax1,
                          fill_variables=[
@@ -63,8 +70,10 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          interpolate=True,
                          step=None,
                          error=True)
-        B.plot_main(quantities=['sim_factor'], axis=ax2,
-                    error=True)
+        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=True)
+        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=False)
+        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True)
+        B.plot_main(quantities=['sim_factor'], axis=ax2, error=False)
         B.plot_fractions(axis=ax2,
                          fill_variables=[
                              'phase_update_factor',
@@ -80,25 +89,29 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                              'frac_phase_deliver'
                          ])
 
-        ax1.set_xlabel('Number of Nodes')
         ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
                        + f'{np.unique(B.df.model_time_sim.values)[0]} s')
+        ax1a.set_xlabel(xlabel)
+        ax1a.set_ylabel('Total spikes/s')
         ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                        r'$T_{\mathrm{model}}$')
-        ax3.set_xlabel('Number of Nodes')
+        ax3.set_xlabel(xlabel)
         ax3.set_ylabel(r'relative $T_{\mathrm{wall}}$ [%]')
 
+        ax1.legend()
+        ax2.legend()
         handles1, labels1 = ax1.get_legend_handles_labels()
         handles2, labels2 = ax2.get_legend_handles_labels()
 
         ax1.legend(handles1[::-1], labels1[::-1])
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
+        ax1a.set_ylim(bottom=0)
         ax3.set_ylim(0, 100)
 
         for ax in [ax1, ax2, ax3]:
             ax.margins(x=0)
-        for ax in [ax1, ax2]:
+        for ax in [ax1, ax2, ax1a]:
             B.simple_axis(ax)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
@@ -135,8 +148,8 @@ def plot(scaling_type, timer_hash, timer_file, save_path):
                          ],
                          )
 
-        ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
-                       + f'{np.unique(B.df.model_time_sim.values)[0]} s')
+        ax1.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
+                       r'$T_{\mathrm{model}}$')
         ax1.set_xlabel('number of vps')
         ax2.set_ylabel(r'$T_{\mathrm{wall}}$ [%]')
         B.merge_legends(ax1, ax2)

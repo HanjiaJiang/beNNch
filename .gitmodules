@@ -1,6 +1,6 @@
 [submodule "results"]
 	path = results
-	url = https://gin.g-node.org/nest/beNNch-results.git
+	url = https://gin.g-node.org/accurate_toucan/astrocyte-benchmark.git
 	branch = main
 [submodule "models"]
 	path = models

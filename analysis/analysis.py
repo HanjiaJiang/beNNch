@@ -28,6 +28,7 @@ with open('../config/analysis_config.yaml') as analysis_config_file:
     config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
 jube_id = str(sys.argv[1])
+strength = str(sys.argv[2])
 base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
 shell(
@@ -52,5 +53,6 @@ plot(
     timer_hash=uuidgen_hash,
     timer_file=os.path.join(
         config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv"),
-    save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6))
+    save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6)),
+    scaling_strength=strength,
 )
