@@ -68,7 +68,8 @@ metrics = ['time_collocate_spike_data',
            'py_time_create',
            'py_time_connect_area',
            'py_time_connect_cc',
-           'py_time_connect']
+           'py_time_connect',
+           'network_size']
 
 metrics_sum = ['base_memory',
                'node_memory',

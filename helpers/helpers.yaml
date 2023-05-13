@@ -154,6 +154,7 @@ patternset:
        - {name: py_time_connect_area, mode: pattern, dotall: True, type: float, "_": py_time_connect_area $jube_pat_fp}
        - {name: py_time_connect_cc, mode: pattern, dotall: True, type: float, "_": py_time_connect_cc $jube_pat_fp}
        - {name: py_time_connect, mode: pattern, dotall: True, type: float, "_": py_time_connect $jube_pat_fp}
+       - {name: network_size, mode: pattern, dotall: True, type: float, "_": network_size $jube_pat_fp}
        - {name: base_memory, mode: pattern, dotall: True, type: float, "_": base_memory $jube_pat_fp}
        - {name: network_memory, mode: pattern, dotall: True, type: float, "_": network_memory $jube_pat_fp}
        - {name: init_memory, mode: pattern, dotall: True, type: float, "_": init_memory $jube_pat_fp}

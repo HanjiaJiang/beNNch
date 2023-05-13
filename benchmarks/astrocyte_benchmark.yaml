@@ -120,6 +120,7 @@ result:
         - py_time_connect_area
         - py_time_connect_cc
         - py_time_connect
+        - network_size
         - base_memory
         - network_memory
         - init_memory

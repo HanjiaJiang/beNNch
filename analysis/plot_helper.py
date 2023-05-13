@@ -42,15 +42,18 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
         spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig,
                                  width_ratios=widths,
                                  height_ratios=heights)
-        if scaling_strength == 'weak':
-            xlabel = 'Number of compute nodes; Scale of model'
-        else:
-            xlabel = 'Number of compute nodes'
 
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1a = fig.add_subplot(spec[1, 0])
+        ax1a = fig.add_subplot(spec[1, 0]) # total spike/s
         ax2 = fig.add_subplot(spec[0, 1])
         ax3 = fig.add_subplot(spec[1, 1])
+
+        if scaling_strength == 'weak':
+            xlabel = 'Number of compute nodes; Scale of model'
+            ax1_twin = ax1.twiny() # top axis for network_size
+            ax2_twin = ax2.twiny() # top axis for network_size
+        else:
+            xlabel = 'Number of compute nodes'
 
 #        trans = mtransforms.ScaledTranslation(-20 /
 #                                              72, 7 / 72, fig.dpi_scale_trans)
@@ -71,9 +74,9 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
                          step=None,
                          error=True)
         B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=True)
-        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=False)
+#        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=False)
         B.plot_main(quantities=['sim_factor'], axis=ax2, error=True)
-        B.plot_main(quantities=['sim_factor'], axis=ax2, error=False)
+#        B.plot_main(quantities=['sim_factor'], axis=ax2, error=False)
         B.plot_fractions(axis=ax2,
                          fill_variables=[
                              'phase_update_factor',
@@ -109,10 +112,25 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
         ax1a.set_ylim(bottom=0)
         ax3.set_ylim(0, 100)
 
-        for ax in [ax1, ax2, ax3]:
-            ax.margins(x=0)
-        for ax in [ax1, ax2, ax1a]:
-            B.simple_axis(ax)
+        N_size_labels = B.df['network_size'].values.astype(int) - 1 # minus 1 poisson generator
+        if scaling_strength == 'weak':
+            ax1_twin.set_xticks(ax1.get_xticks())
+            ax1_twin.set_xticklabels(N_size_labels)
+            ax1_twin.set_xlabel('Network size (number of cells)')
+            ax2_twin.set_xticks(ax2.get_xticks())
+            ax2_twin.set_xticklabels(N_size_labels)
+            ax2_twin.set_xlabel('Network size (number of cells)')
+            ax1a.set_xticks(ax1.get_xticks())
+            ax1_twin.set_xlim(ax1.get_xlim())
+            ax2_twin.set_xlim(ax2.get_xlim())
+
+        ax1.set_xticklabels([])
+        ax2.set_xticklabels([])
+
+#        for ax in [ax1, ax2, ax3]:
+#            ax.margins(x=0)
+#        for ax in [ax1, ax2, ax1a]:
+#            B.simple_axis(ax)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
 

@@ -43,16 +43,21 @@ bench_path.sort()
 cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
 job_info = load(os.path.join(bench_path[0], 'job.json'))
 
+"""
 git_annex(cpu_info=cpu_info,
           job_info=job_info,
           uuidgen_hash=uuidgen_hash,
           base_path=base_path)
+"""
+
+timer_file=os.path.join(
+        config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv")
+#os.system(f'head -3 {timer_file}')
 
 plot(
     scaling_type=config['scaling_type'],
     timer_hash=uuidgen_hash,
-    timer_file=os.path.join(
-        config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv"),
+    timer_file=timer_file,
     save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6)),
     scaling_strength=strength,
 )
