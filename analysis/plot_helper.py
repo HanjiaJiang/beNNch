@@ -23,13 +23,14 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 
 
-def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='strong'):
+def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, timer_file_ctrl):
 
     if scaling_type == 'nodes':
         args = {
             'data_file': timer_file,
             'x_axis': ['num_nodes'],
-            'time_scaling': 1e3
+            'time_scaling': 1e3,
+            'ctrl_file': timer_file_ctrl,
         }
 
         # Instantiate class
@@ -44,7 +45,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
                                  height_ratios=heights)
 
         ax1 = fig.add_subplot(spec[0, 0])
-        ax1a = fig.add_subplot(spec[1, 0]) # total spike/s
+        ax_spk = fig.add_subplot(spec[1, 0]) # total spike/s
         ax2 = fig.add_subplot(spec[0, 1])
         ax3 = fig.add_subplot(spec[1, 1])
 
@@ -59,31 +60,47 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
 #                                              72, 7 / 72, fig.dpi_scale_trans)
 #        ax1.text(0.0, 1.0, 'A', transform=ax1.transAxes + trans,
 #                 fontsize='medium', va='bottom', fontweight='bold')
-#        ax1a.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
+#        ax_spk.text(0.0, 1.0, 'B', transform=ax2.transAxes + trans,
 #                 fontsize='medium', va='bottom', fontweight='bold')
 #        ax2.text(0.0, 1.0, 'C', transform=ax2.transAxes + trans,
 #                 fontsize='medium', va='bottom', fontweight='bold')
 #        ax3.text(0.0, 1.0, 'D', transform=ax3.transAxes + trans,
 #                 fontsize='medium', va='bottom', fontweight='bold')
 
+        # Network construction + State propagation
         B.plot_fractions(axis=ax1,
                          fill_variables=[
                              'wall_time_create+wall_time_connect',
                              'wall_time_sim', ],
                          interpolate=True,
                          step=None,
-                         error=True)
-        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=True)
-#        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax1a, error=False)
-        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True)
-#        B.plot_main(quantities=['sim_factor'], axis=ax2, error=False)
+                         error=True,
+                         control=True)
+        B.plot_fractions(axis=ax1,
+                         fill_variables=[
+                             'wall_time_create+wall_time_connect',
+                             'wall_time_sim', ],
+                         interpolate=True,
+                         step=None,
+                         error=True,
+                         line=True,
+                         label_tail=' (astrocyte)')
+
+        # Total spike count
+        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax_spk, error=True, control=True, line_color='gray')
+        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax_spk, error=True, line_color='k')
+
+        # State propagation
+        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True, control=True, label='State propagation (control)', line_color='gray')
+        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True, label='State propagation (astrocyte)', line_color='k')
         B.plot_fractions(axis=ax2,
                          fill_variables=[
                              'phase_update_factor',
                              'phase_collocate_factor',
                              'phase_communicate_factor',
                              'phase_deliver_factor'
-                         ])
+                         ],
+                         label_tail=' (astrocyte)')
         B.plot_fractions(axis=ax3,
                          fill_variables=[
                              'frac_phase_update',
@@ -93,9 +110,9 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
                          ])
 
         ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
-                       + f'{np.unique(B.df.model_time_sim.values)[0]} s')
-        ax1a.set_xlabel(xlabel)
-        ax1a.set_ylabel('Total spikes/s')
+                       + f'{np.unique(B.df_data.model_time_sim.values)[0]} s')
+        ax_spk.set_xlabel(xlabel)
+        ax_spk.set_ylabel('Total spikes/s')
         ax2.set_ylabel(r'real-time factor $T_{\mathrm{wall}}/$'
                        r'$T_{\mathrm{model}}$')
         ax3.set_xlabel(xlabel)
@@ -109,27 +126,27 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength='stro
         ax1.legend(handles1[::-1], labels1[::-1])
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
-        ax1a.set_ylim(bottom=0)
+        ax_spk.set_ylim(bottom=0)
         ax3.set_ylim(0, 100)
 
-        N_size_labels = B.df['network_size'].values.astype(int) - 1 # minus 1 poisson generator
+        N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
         if scaling_strength == 'weak':
             ax1_twin.set_xticks(ax1.get_xticks())
             ax1_twin.set_xticklabels(N_size_labels)
             ax1_twin.set_xlabel('Network size (number of cells)')
+            ax1_twin.set_xlim(ax1.get_xlim())
             ax2_twin.set_xticks(ax2.get_xticks())
             ax2_twin.set_xticklabels(N_size_labels)
             ax2_twin.set_xlabel('Network size (number of cells)')
-            ax1a.set_xticks(ax1.get_xticks())
-            ax1_twin.set_xlim(ax1.get_xlim())
             ax2_twin.set_xlim(ax2.get_xlim())
 
         ax1.set_xticklabels([])
         ax2.set_xticklabels([])
+        ax_spk.set_xticks(ax1.get_xticks())
 
 #        for ax in [ax1, ax2, ax3]:
 #            ax.margins(x=0)
-#        for ax in [ax1, ax2, ax1a]:
+#        for ax in [ax1, ax2, ax_spk]:
 #            B.simple_axis(ax)
 
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)

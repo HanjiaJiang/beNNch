@@ -27,14 +27,26 @@ from plot_helper import plot
 with open('../config/analysis_config.yaml') as analysis_config_file:
     config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
+# Astrocyte
 jube_id = str(sys.argv[1])
-strength = str(sys.argv[2])
 base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id};"
     + f" jube result {config['jube_outpath']} --id {jube_id} > "
     + os.path.join(base_path, uuidgen_hash + ".csv"))
+
+# Control
+jube_id_ctrl = str(sys.argv[2])
+ctrl_path = os.path.join(config['jube_outpath'], jube_id_ctrl.zfill(6))
+uuidgen_hash_ctrl = shell_return('uuidgen')
+shell(
+    f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_ctrl};"
+    + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "
+    + os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv"))
+
+# Strong or weak scaling
+strength = str(sys.argv[3])
 
 # take the job and cpu info from first bench job, assuming all nodes are equal
 bench_path = glob.glob(os.path.join(base_path, '*_bench/work'))
@@ -52,7 +64,9 @@ git_annex(cpu_info=cpu_info,
 
 timer_file=os.path.join(
         config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv")
-#os.system(f'head -3 {timer_file}')
+
+timer_file_ctrl=os.path.join(
+        config['jube_outpath'], jube_id_ctrl.zfill(6), uuidgen_hash_ctrl + ".csv")
 
 plot(
     scaling_type=config['scaling_type'],
@@ -60,4 +74,5 @@ plot(
     timer_file=timer_file,
     save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6)),
     scaling_strength=strength,
+    timer_file_ctrl=timer_file_ctrl,
 )
