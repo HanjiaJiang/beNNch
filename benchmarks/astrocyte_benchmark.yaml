@@ -19,8 +19,8 @@ include-path:
   - ../config/
 
 # model-specific name and output path
-name: astro-t3
-outpath: ../../benchmark_results/astro-t3
+name: astro-weak
+outpath: ../../benchmark_results/weak-a1
 parameterset:
       name: model_commands
       parameter:

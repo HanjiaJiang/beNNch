@@ -23,12 +23,15 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 
 
-def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, timer_file_ctrl):
+def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, timer_file_ctrl, x_axis='num_nodes'):
 
     if scaling_type == 'nodes':
+        if x_axis != 'num_nodes' and x_axis != 'num_nvp':
+            x_axis = 'num_nodes'
+        print(f'x axis: {x_axis}')
         args = {
             'data_file': timer_file,
-            'x_axis': ['num_nodes'],
+            'x_axis': [x_axis],
             'time_scaling': 1e3,
             'ctrl_file': timer_file_ctrl,
         }
@@ -50,9 +53,11 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
         ax3 = fig.add_subplot(spec[1, 1])
 
         if scaling_strength == 'weak':
-            xlabel = 'Number of compute nodes; Scale of model'
             ax1_twin = ax1.twiny() # top axis for network_size
             ax2_twin = ax2.twiny() # top axis for network_size
+
+        if x_axis == 'num_nvp':
+            xlabel = 'Number of virtual processes'
         else:
             xlabel = 'Number of compute nodes'
 

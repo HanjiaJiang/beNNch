@@ -48,6 +48,9 @@ shell(
 # Strong or weak scaling
 strength = str(sys.argv[3])
 
+# X axis
+x_axis = str(sys.argv[4])
+
 # take the job and cpu info from first bench job, assuming all nodes are equal
 bench_path = glob.glob(os.path.join(base_path, '*_bench/work'))
 bench_path.sort()
@@ -75,4 +78,5 @@ plot(
     save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6)),
     scaling_strength=strength,
     timer_file_ctrl=timer_file_ctrl,
+    x_axis=x_axis,
 )
