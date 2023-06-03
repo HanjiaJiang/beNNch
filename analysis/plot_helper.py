@@ -72,6 +72,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
 #        ax3.text(0.0, 1.0, 'D', transform=ax3.transAxes + trans,
 #                 fontsize='medium', va='bottom', fontweight='bold')
 
+        print('plot_fractions')
         # Network construction + State propagation
         B.plot_fractions(axis=ax1,
                          fill_variables=[
@@ -92,12 +93,29 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                          label_tail=' (astrocyte)')
 
         # Total spike count
-        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax_spk, error=True, control=True, line_color='gray')
-        B.plot_main(quantities=['total_spike_count_per_s'], axis=ax_spk, error=True, line_color='k')
+        print('plot_main')
+        B.plot_main(quantities=['total_spike_count_per_s'],
+                    axis=ax_spk,
+                    error=True,
+                    control=True,
+                    line_color='gray')
+        B.plot_main(quantities=['total_spike_count_per_s'],
+                    axis=ax_spk,
+                    error=True,
+                    line_color='k')
 
         # State propagation
-        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True, control=True, label='State propagation (control)', line_color='gray')
-        B.plot_main(quantities=['sim_factor'], axis=ax2, error=True, label='State propagation (astrocyte)', line_color='k')
+        B.plot_main(quantities=['sim_factor'],
+                    axis=ax2,
+                    error=True,
+                    control=True,
+                    label='State propagation (surrogate)',
+                    line_color='gray')
+        B.plot_main(quantities=['sim_factor'],
+                    axis=ax2,
+                    error=True,
+                    label='State propagation (astrocyte)',
+                    line_color='k')
         B.plot_fractions(axis=ax2,
                          fill_variables=[
                              'phase_update_factor',
@@ -131,7 +149,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
         ax1.legend(handles1[::-1], labels1[::-1])
         ax2.legend(handles2[::-1], labels2[::-1], loc='upper right')
 
-        ax_spk.set_ylim(bottom=0)
+#        ax_spk.set_ylim(bottom=0)
         ax3.set_ylim(0, 100)
 
         N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator

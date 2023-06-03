@@ -19,8 +19,8 @@ include-path:
   - ../config/
 
 # model-specific name and output path
-name: astro-weak
-outpath: ../../benchmark_results/weak-a1
+name: ignore_and_sic
+outpath: ../../benchmark_results/nvp-a1
 parameterset:
       name: model_commands
       parameter:

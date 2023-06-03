@@ -19,8 +19,8 @@ include-path:
   - ../config/
 
 # model-specific name and output path
-name: astro-weak
-outpath: ../../benchmark_results/weak-a1
+name: astrocyte
+outpath: ../../benchmark_results/weak-a2
 parameterset:
       name: model_commands
       parameter:

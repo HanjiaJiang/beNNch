@@ -45,11 +45,11 @@ shell(
     + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "
     + os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv"))
 
-# Strong or weak scaling
-strength = str(sys.argv[3])
-
-# X axis
-x_axis = str(sys.argv[4])
+# X axis: "num_nodes" or "num_nvp"
+try:
+    x_axis = str(sys.argv[3])
+except:
+    x_axis = "num_nodes"
 
 # take the job and cpu info from first bench job, assuming all nodes are equal
 bench_path = glob.glob(os.path.join(base_path, '*_bench/work'))
@@ -57,6 +57,12 @@ bench_path.sort()
 
 cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
 job_info = load(os.path.join(bench_path[0], 'job.json'))
+
+# Strong or weak scaling
+try:
+    strength = str(sys.argv[4])
+except:
+    strength = job_info['scaling_type']
 
 """
 git_annex(cpu_info=cpu_info,
