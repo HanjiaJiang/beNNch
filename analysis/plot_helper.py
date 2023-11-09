@@ -21,7 +21,8 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-
+plt.rcParams.update({'font.size': 15})
+plt.rcParams.update({'legend.fontsize': 12}) 
 
 def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, timer_file_ctrl, x_axis='num_nodes'):
 
@@ -81,7 +82,8 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                          interpolate=True,
                          step=None,
                          error=True,
-                         control=True)
+                         control=True,
+                         subject='surrogate')
         B.plot_fractions(axis=ax1,
                          fill_variables=[
                              'wall_time_create+wall_time_connect',
@@ -90,7 +92,7 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                          step=None,
                          error=True,
                          line=True,
-                         label_tail=' (astrocyte)')
+                         subject='astrocyte')
 
         # Total spike count
         print('plot_main')
@@ -98,10 +100,12 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                     axis=ax_spk,
                     error=True,
                     control=True,
+                    subject='surrogate',
                     line_color='gray')
         B.plot_main(quantities=['total_spike_count_per_s'],
                     axis=ax_spk,
                     error=True,
+                    subject='astrocyte',
                     line_color='k')
 
         # State propagation
@@ -109,12 +113,12 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                     axis=ax2,
                     error=True,
                     control=True,
-                    label='State propagation (surrogate)',
+                    subject='State propagation (surrogate)',
                     line_color='gray')
         B.plot_main(quantities=['sim_factor'],
                     axis=ax2,
                     error=True,
-                    label='State propagation (astrocyte)',
+                    subject='State propagation (astrocyte)',
                     line_color='k')
         B.plot_fractions(axis=ax2,
                          fill_variables=[
@@ -123,14 +127,16 @@ def plot(scaling_type, timer_hash, timer_file, save_path, scaling_strength, time
                              'phase_communicate_factor',
                              'phase_deliver_factor'
                          ],
-                         label_tail=' (astrocyte)')
+                         subject='astrocyte')
         B.plot_fractions(axis=ax3,
                          fill_variables=[
                              'frac_phase_update',
                              'frac_phase_collocate',
                              'frac_phase_communicate',
                              'frac_phase_deliver'
-                         ])
+                         ],
+                         subject='astrocyte'
+                         )
 
         ax1.set_ylabel(r'$T_{\mathrm{wall}}$ [s] for $T_{\mathrm{model}} =$'
                        + f'{np.unique(B.df_data.model_time_sim.values)[0]} s')
