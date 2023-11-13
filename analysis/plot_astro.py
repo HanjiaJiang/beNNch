@@ -52,7 +52,7 @@ def plot(timer_hash,
         # Plotting
         widths = [1, 1]
         heights = [2, 2, 1]
-        fig = plt.figure(figsize=(12, 6), constrained_layout=True)
+        fig = plt.figure(figsize=(12, 6))
         spec = gridspec.GridSpec(ncols=2, nrows=3, figure=fig,
                                  width_ratios=widths,
                                  height_ratios=heights)
@@ -68,9 +68,9 @@ def plot(timer_hash,
             ax_rt_twin = ax_rt.twiny() # top axis for network_size
 
         if x_axis == 'num_nvp':
-            xlabel = 'Number of virtual processes'
+            xlabel = 'n of processes per MPI task'
         else:
-            xlabel = 'Number of compute nodes'
+            xlabel = 'n of compute nodes'
 
         trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
 
@@ -78,36 +78,36 @@ def plot(timer_hash,
 
         # Network construction
         B.plot_main(quantities=['wall_time_create+wall_time_connect'],
+                    axis=ax_cons,
+                    subject='astrocyte_lr_1994',
+                    line_color='k')
+        B.plot_main(quantities=['wall_time_create+wall_time_connect'],
                    axis=ax_cons,
                    control=True,
                    subject='astrocyte_surrogate',
                    line_color='gray')
-        B.plot_main(quantities=['wall_time_create+wall_time_connect'],
-                    axis=ax_cons,
-                    subject='astrocyte_lr_1994',
-                    line_color='k')
 
         # State propagation
-        B.plot_main(quantities=['wall_time_sim'], 
-                   axis=ax_prop,
-                   control=True,
-                   subject='astrocyte_surrogate',
-                   line_color='gray')
         B.plot_main(quantities=['wall_time_sim'],
                     axis=ax_prop,
                     subject='astrocyte_lr_1994',
                     line_color='k')
+        B.plot_main(quantities=['wall_time_sim'],
+                   axis=ax_prop,
+                   control=True,
+                   subject='astrocyte_surrogate',
+                   line_color='gray')
 
         # Total spike count
+        B.plot_main(quantities=['total_spike_count_per_s'],
+                    axis=ax_spk,
+                    subject='astrocyte_lr_1994',
+                    line_color='k')
         B.plot_main(quantities=['total_spike_count_per_s'],
                     axis=ax_spk,
                     control=True,
                     subject='astrocyte_surrogate',
                     line_color='gray')
-        B.plot_main(quantities=['total_spike_count_per_s'],
-                    axis=ax_spk,
-                    subject='astrocyte_lr_1994',
-                    line_color='k')
 
 
         print("plotting RTF ...")
@@ -143,23 +143,43 @@ def plot(timer_hash,
                        r'$T_{\mathrm{model}} =$'
                        + f'{np.unique(B.df_data.model_time_sim.values)[0]} s')
         ax_spk.set_xlabel(xlabel)
-        ax_spk.set_ylabel('Total\nspikes/s')
+        ax_spk.set_ylabel('Network total\nspikes/s')
         ax_rt.set_ylabel('Real-time factor')
         ax_rt_rel.set_xlabel(xlabel)
         ax_rt_rel.set_ylabel('relative\nreal-time\nfactor (%)')
 
-        ax_cons.legend()
+        ax_cons.legend(fontsize='x-small', frameon=False)
         ax_rt.legend()
+        # to reverse the order
         handles1, labels1 = ax_cons.get_legend_handles_labels()
         handles2, labels2 = ax_rt.get_legend_handles_labels()
-        ax_cons.legend(handles1[::-1], labels1[::-1], fontsize='x-small')
-        ax_rt.legend(handles2[::-1], labels2[::-1], fontsize='x-small')
+#        ax_cons.legend(handles1[::-1], labels1[::-1], fontsize='x-small', frameon=False)
+        ax_rt.legend(handles2[::-1], labels2[::-1], fontsize='x-small', frameon=False)
 
         ax_cons.set_ylim(cons_ylims)
         ax_prop.set_ylim(prop_ylims)
         ax_spk.set_ylim(spk_ylims)
         ax_rt.set_ylim(rt_ylims)
         ax_rt_rel.set_ylim(-5.0, 105.0)
+
+        if x_axis == 'num_nvp':
+            xticks = ax_cons.get_xticks().flatten()
+            xticklabels = (xticks/8).astype(int)
+
+            ax_cons.set_xticks(xticks)
+            ax_cons.set_xticklabels(xticklabels)
+
+            ax_prop.set_xticks(xticks)
+            ax_prop.set_xticklabels(xticklabels)
+
+            ax_spk.set_xticks(xticks)
+            ax_spk.set_xticklabels(xticklabels)
+
+            ax_rt.set_xticks(xticks)
+            ax_rt.set_xticklabels(xticklabels)
+
+            ax_rt_rel.set_xticks(xticks)
+            ax_rt_rel.set_xticklabels(xticklabels)
 
         N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
         if scaling_strength == 'weak':
@@ -174,5 +194,6 @@ def plot(timer_hash,
 
         fig.text(0.0, 1.0, plabel, ha='left', va='top', fontsize='x-large', fontweight='bold')
 
+        plt.tight_layout()
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
 

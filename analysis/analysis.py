@@ -81,19 +81,19 @@ git_annex(cpu_info=cpu_info,
 plabel = 'A' if int(jube_id) < 2 else 'B'
 
 if x_axis_label == "num_nvp":
-    cons_ylims = (-0.5, 10.5)
+    cons_ylims = (1.9, 4.1)
     prop_ylims = (-1.0, 101.0)
     spk_ylims = (-1000.0, 101000.0)
     rt_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    cons_ylims = (-0.5, 10.5)
+    cons_ylims = (1.9, 4.1)
     prop_ylims = (-1.0, 36.0)
     spk_ylims = (-1000.0, 101000.0)
     rt_ylims = (-0.2, 3.7)
 else:
     cons_ylims = (-1.0, 101.0)
     prop_ylims = (-1.0, 101.0)
-    spk_ylims = (-10000.0, 2010000.0)
+    spk_ylims = (-100000.0, 2100000.0)
     rt_ylims = (-0.5, 12.5)
 
 plot(
