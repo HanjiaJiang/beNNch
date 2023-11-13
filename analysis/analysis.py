@@ -79,7 +79,6 @@ git_annex(cpu_info=cpu_info,
 """
 
 plot(
-    plot_style=config['scaling_type'],
     timer_hash=uuidgen_hash,
     timer_file=timer_file,
     save_path=base_path,

@@ -23,8 +23,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 plt.rcParams.update({'font.size': 14})
 
-def plot(plot_style,
-         timer_hash,
+def plot(timer_hash,
          timer_file,
          save_path,
          scaling_strength,
@@ -36,7 +35,7 @@ def plot(plot_style,
          spk_ylims=(-10000.0, 2010000.0),
          rt_ylims=(-0.5, 12.5)):
 
-    if plot_style == 'nodes':
+    if True:
         if x_axis != 'num_nodes' and x_axis != 'num_nvp':
             x_axis = 'num_nodes'
         print(f'x axis: {x_axis}')
@@ -164,18 +163,14 @@ def plot(plot_style,
 
         N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
         if scaling_strength == 'weak':
-            ax_cons_twin.set_xticks(list(range(1, len(N_size_labels)+1)))
-            ax_cons_twin.set_xticklabels(N_size_labels)
+            ax_cons_twin.set_xticks(ax_cons.get_xticks().flatten())
+            ax_cons_twin.set_xticklabels(N_size_labels.tolist())
             ax_cons_twin.set_xlabel('Network size (number of cells)')
             ax_cons_twin.set_xlim(ax_cons.get_xlim())
             ax_rt_twin.set_xticks(ax_rt.get_xticks())
             ax_rt_twin.set_xticklabels(N_size_labels)
             ax_rt_twin.set_xlabel('Network size (number of cells)')
             ax_rt_twin.set_xlim(ax_rt.get_xlim())
-
-        ax_cons.set_xticklabels([])
-        ax_prop.set_xticklabels([])
-        ax_rt.set_xticklabels([])
 
         fig.text(0.0, 1.0, plabel, ha='left', va='top', fontsize='x-large', fontweight='bold')
 
