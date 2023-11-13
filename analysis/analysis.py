@@ -78,6 +78,24 @@ git_annex(cpu_info=cpu_info,
           base_path=base_path)
 """
 
+plabel = 'A' if int(jube_id) < 2 else 'B'
+
+if x_axis_label == "num_nvp":
+    cons_ylims = (-0.5, 10.5)
+    prop_ylims = (-1.0, 101.0)
+    spk_ylims = (-1000.0, 101000.0)
+    rt_ylims = (-0.5, 10.5)
+elif strength == "strong":
+    cons_ylims = (-0.5, 10.5)
+    prop_ylims = (-1.0, 36.0)
+    spk_ylims = (-1000.0, 101000.0)
+    rt_ylims = (-0.2, 3.7)
+else:
+    cons_ylims = (-1.0, 101.0)
+    prop_ylims = (-1.0, 101.0)
+    spk_ylims = (-10000.0, 2010000.0)
+    rt_ylims = (-0.5, 12.5)
+
 plot(
     timer_hash=uuidgen_hash,
     timer_file=timer_file,
@@ -85,5 +103,9 @@ plot(
     scaling_strength=strength,
     timer_file_ctrl=timer_file_ctrl,
     x_axis=x_axis_label,
-    plabel='A',
+    plabel=plabel,
+    cons_ylims = cons_ylims,
+    prop_ylims = prop_ylims,
+    spk_ylims = spk_ylims,
+    rt_ylims = rt_ylims
 )
