@@ -24,13 +24,13 @@ outpath: ../../benchmark_results/paper_weak_1
 parameterset:
       name: model_commands
       parameter:
-          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_benchmark.py"}
+          - {name: run_file, type: string, _: "$jube_wp_abspath/surrogate_benchmark_burst.py"}
           - {name: log_path, type: string, _: "${jube_wp_abspath}"}
 fileset:
 # load and copy model-specific files
     name: model_files
     copy:
-      - $model_path/astrocyte_benchmark.py
+      - $model_path/surrogate_benchmark_burst.py
 
 # This subsituteset maps the parameters that were defined in this yaml
 # file to the target patterns that JUBE will search for in the
@@ -38,7 +38,7 @@ fileset:
 # source pattern will be replaced by the values.
 substituteset:
       name: model_substitutions
-      iofile: {in: astrocyte_benchmark.py, out: astrocyte_benchmark.py}
+      iofile: {in: surrogate_benchmark_burst.py, out: surrogate_benchmark_burst.py}
       sub:
       - {source: "{num_vps}", dest: $num_vps}
       - {source: "{record_spikes}", dest: $record_spikes}

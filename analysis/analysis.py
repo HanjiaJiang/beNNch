@@ -22,48 +22,55 @@ import glob
 import yaml
 
 from analysis_helper import shell, shell_return, load, git_annex
-from plot_helper import plot
+from plot_astro import plot
 
+# Load analysis configurations
 with open('../config/analysis_config.yaml') as analysis_config_file:
     config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
-# Astrocyte
+# Astrocyte data
 jube_id = str(sys.argv[1])
 base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
+timer_file=os.path.join(base_path, uuidgen_hash + ".csv")
+# analyse and save plot raw data to .csv
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id};"
     + f" jube result {config['jube_outpath']} --id {jube_id} > "
-    + os.path.join(base_path, uuidgen_hash + ".csv"))
+    + timer_file)
 
-# Control
+# Control data
 jube_id_ctrl = str(sys.argv[2])
 ctrl_path = os.path.join(config['jube_outpath'], jube_id_ctrl.zfill(6))
 uuidgen_hash_ctrl = shell_return('uuidgen')
+timer_file_ctrl=os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv")
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_ctrl};"
     + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "
-    + os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv"))
+    + timer_file_ctrl)
 
 # X axis: "num_nodes" or "num_nvp"
+# This is for the x-axis labeling: "Number of nodes" or "Number of virtual processes"
+# Use "num_nvp" for "Number of virtual processes" (nvp strong scaling case)
 try:
-    x_axis = str(sys.argv[3])
+    x_axis_label = str(sys.argv[3])
 except:
-    x_axis = "num_nodes"
+    x_axis_label = "num_nodes"
 
 # take the job and cpu info from first bench job, assuming all nodes are equal
 bench_path = glob.glob(os.path.join(base_path, '*_bench/work'))
 bench_path.sort()
-
 cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
 job_info = load(os.path.join(bench_path[0], 'job.json'))
 
-# Strong or weak scaling
+# Strong or weak scaling (if not given, get it from job_info)
+# This is for the "Network size" labeling for weak scaling cases
 try:
     strength = str(sys.argv[4])
 except:
     strength = job_info['scaling_type']
 
+# Commit results with git annex; not using now
 """
 git_annex(cpu_info=cpu_info,
           job_info=job_info,
@@ -71,18 +78,13 @@ git_annex(cpu_info=cpu_info,
           base_path=base_path)
 """
 
-timer_file=os.path.join(
-        config['jube_outpath'], jube_id.zfill(6), uuidgen_hash + ".csv")
-
-timer_file_ctrl=os.path.join(
-        config['jube_outpath'], jube_id_ctrl.zfill(6), uuidgen_hash_ctrl + ".csv")
-
 plot(
-    scaling_type=config['scaling_type'],
+    plot_style=config['scaling_type'],
     timer_hash=uuidgen_hash,
     timer_file=timer_file,
-    save_path=os.path.join(config['jube_outpath'], jube_id.zfill(6)),
+    save_path=base_path,
     scaling_strength=strength,
     timer_file_ctrl=timer_file_ctrl,
-    x_axis=x_axis,
+    x_axis=x_axis_label,
+    plabel='A',
 )
