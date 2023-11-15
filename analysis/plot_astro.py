@@ -197,3 +197,9 @@ def plot(timer_hash,
         plt.tight_layout()
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
 
+        df_data_mean = B.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
+        df_ctrl_mean = B.df_ctrl.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
+
+        df_rel_diff = (df_data_mean - df_ctrl_mean)/df_ctrl_mean
+#        df_out = df_rel_diff[['num_nodes', 'threads_per_task', 'wall_time_sim']]
+        df_rel_diff.to_csv(f"{save_path}/df_rel_diff.csv", index=False, float_format="%.3f")
