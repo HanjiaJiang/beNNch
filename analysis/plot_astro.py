@@ -68,15 +68,19 @@ def plot(timer_hash,
             ax_rt_twin = ax_rt.twiny() # top axis for network_size
 
         if x_axis == 'num_nvp':
-            xlabel = 'n of processes per MPI task'
+            xlabel = 'Number of threads per MPI task'
         else:
-            xlabel = 'n of compute nodes'
+            xlabel = 'Number of compute nodes'
 
         trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
 
         print('plotting timer data ...')
 
         # Network construction
+#        print(B.df_data['wall_time_create+wall_time_connect'].values)
+#        print(B.df_data['wall_time_create+wall_time_connect_std'].values)
+#        print(B.df_data['wall_time_create_std'].values)
+#        print(B.df_data['wall_time_connect_std'].values)
         B.plot_main(quantities=['wall_time_create+wall_time_connect'],
                     axis=ax_cons,
                     subject='astrocyte_lr_1994',
@@ -125,14 +129,14 @@ def plot(timer_hash,
         B.plot_fractions(axis=ax_rt,
                          fill_variables=[
                              'phase_update_factor',
-                             'phase_signal_transmission_factor',
+                             'phase_ccd_factor',
                              'phase_others_factor',
                          ],
                          subject='astrocyte_lr_1994')
         B.plot_fractions(axis=ax_rt_rel,
                          fill_variables=[
                              'frac_phase_update',
-                             'frac_phase_signal_transmission',
+                             'frac_phase_ccd',
                              'frac_phase_others',
                          ],
                          subject='astrocyte_lr_1994'
