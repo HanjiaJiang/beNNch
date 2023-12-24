@@ -24,48 +24,52 @@ import matplotlib.transforms as mtransforms
 plt.rcParams.update({'font.size': 14})
 
 def plot(timer_hash,
-         timer_file,
+         timer_file_astrocyte,
          save_path,
          scaling_strength,
-         timer_file_ctrl,
+         timer_file_surrogate,
          x_axis='num_nodes',
          plabel='',
          cons_ylims=(-1.0, 101.0),
          prop_ylims=(-1.0, 101.0),
          spk_ylims=(-10000.0, 2010000.0),
-         rt_ylims=(-0.5, 12.5)):
+         rtf_ylims=(-0.5, 12.5)):
 
     if True:
         if x_axis != 'num_nodes' and x_axis != 'num_nvp':
             x_axis = 'num_nodes'
         print(f'x axis: {x_axis}')
         args = {
-            'data_file': timer_file,
+            'data_file': timer_file_astrocyte,
             'x_axis': [x_axis],
             'time_scaling': 1e3,
-            'ctrl_file': timer_file_ctrl,
+            'ctrl_file': timer_file_surrogate,
         }
 
         # Instantiate class
         B = bp.Plot(**args)
 
         # Plotting
-        widths = [1, 1]
+        widths = [1, 1, 1]
         heights = [2, 2, 1]
-        fig = plt.figure(figsize=(12, 6))
-        spec = gridspec.GridSpec(ncols=2, nrows=3, figure=fig,
+        fig = plt.figure(figsize=(18, 6)) # (12, 6)
+        spec = gridspec.GridSpec(ncols=3, nrows=3, figure=fig,
                                  width_ratios=widths,
                                  height_ratios=heights)
 
         ax_cons = fig.add_subplot(spec[0, 0])
         ax_prop = fig.add_subplot(spec[1, 0])
         ax_spk = fig.add_subplot(spec[2, 0]) # total spike/s
-        ax_rt = fig.add_subplot(spec[0:2, 1])
-        ax_rt_rel = fig.add_subplot(spec[2, 1])
+
+        ax_rtf_astrocyte = fig.add_subplot(spec[0:2, 1])
+        ax_frac_astrocyte = fig.add_subplot(spec[2, 1])
+
+        ax_rtf_surrogate = fig.add_subplot(spec[0:2, 2])
+        ax_frac_surrogate = fig.add_subplot(spec[2, 2])
 
         if scaling_strength == 'weak':
             ax_cons_twin = ax_cons.twiny() # top axis for network_size
-            ax_rt_twin = ax_rt.twiny() # top axis for network_size
+            ax_rtf_astrocyte_twin = ax_rtf_astrocyte.twiny() # top axis for network_size
 
         if x_axis == 'num_nvp':
             xlabel = 'Number of threads per MPI task'
@@ -77,19 +81,16 @@ def plot(timer_hash,
         print('plotting timer data ...')
 
         # Network construction
-#        print(B.df_data['wall_time_create+wall_time_connect'].values)
-#        print(B.df_data['wall_time_create+wall_time_connect_std'].values)
-#        print(B.df_data['wall_time_create_std'].values)
-#        print(B.df_data['wall_time_connect_std'].values)
         B.plot_main(quantities=['wall_time_create+wall_time_connect'],
                     axis=ax_cons,
                     subject='astrocyte_lr_1994',
                     line_color='k')
         B.plot_main(quantities=['wall_time_create+wall_time_connect'],
-                   axis=ax_cons,
-                   control=True,
-                   subject='astrocyte_surrogate',
-                   line_color='gray')
+                    axis=ax_cons,
+                    control=True,
+                    subject='astrocyte_surrogate',
+                    line_color='gray'
+                    )
 
         # State propagation
         B.plot_main(quantities=['wall_time_sim'],
@@ -97,10 +98,11 @@ def plot(timer_hash,
                     subject='astrocyte_lr_1994',
                     line_color='k')
         B.plot_main(quantities=['wall_time_sim'],
-                   axis=ax_prop,
-                   control=True,
-                   subject='astrocyte_surrogate',
-                   line_color='gray')
+                    axis=ax_prop,
+                    control=True,
+                    subject='astrocyte_surrogate',
+                    line_color='gray'
+                    )
 
         # Total spike count
         B.plot_main(quantities=['total_spike_count_per_s'],
@@ -111,60 +113,86 @@ def plot(timer_hash,
                     axis=ax_spk,
                     control=True,
                     subject='astrocyte_surrogate',
-                    line_color='gray')
-
+                    line_color='gray'
+                    )
 
         print("plotting RTF ...")
 
         # RTF for state propagation
-        B.plot_main(quantities=['sim_factor'],
-                    axis=ax_rt,
-                    control=True,
-                    subject='State propagation (astrocyte_surrogate)',
-                    line_color='gray')
-        B.plot_main(quantities=['sim_factor'],
-                    axis=ax_rt,
-                    subject='State propagation (astrocyte_lr_1994)',
-                    line_color='k')
-        B.plot_fractions(axis=ax_rt,
+        # astrocyte
+        B.plot_fractions(axis=ax_rtf_astrocyte,
                          fill_variables=[
                              'phase_update_factor',
                              'phase_ccd_factor',
                              'phase_others_factor',
                          ],
-                         subject='astrocyte_lr_1994')
-        B.plot_fractions(axis=ax_rt_rel,
+                         )
+        B.plot_fractions(axis=ax_frac_astrocyte,
                          fill_variables=[
                              'frac_phase_update',
                              'frac_phase_ccd',
                              'frac_phase_others',
                          ],
-                         subject='astrocyte_lr_1994'
                          )
+        B.plot_main(quantities=['sim_factor'],
+                    axis=ax_rtf_astrocyte,
+                    subject='State propagation',
+                    line_color='k')
+
+        # surrogate
+        B.plot_fractions(axis=ax_rtf_surrogate,
+                         fill_variables=[
+                             'phase_update_factor',
+                             'phase_ccd_factor',
+                             'phase_others_factor',
+                         ],
+                         control=True,
+                         )
+        B.plot_fractions(axis=ax_frac_surrogate,
+                         fill_variables=[
+                             'frac_phase_update',
+                             'frac_phase_ccd',
+                             'frac_phase_others',
+                         ],
+                         control=True,
+                         )
+        B.plot_main(quantities=['sim_factor'],
+                    axis=ax_rtf_surrogate,
+                    control=True,
+                    subject='State propagation',
+                    line_color='gray'
+                    )
 
         ax_cons.set_ylabel('Network\nconstruction\ntime (s)')
         ax_prop.set_ylabel('State propagation\ntime (s) for\n'
                        r'$T_{\mathrm{model}} =$'
-                       + f'{np.unique(B.df_data.model_time_sim.values)[0]} s')
+                       + f'{np.unique(B.df_data.model_time_sim.values)[0]:.0f} s')
         ax_spk.set_xlabel(xlabel)
         ax_spk.set_ylabel('Network total\nspikes/s')
-        ax_rt.set_ylabel('Real-time factor')
-        ax_rt_rel.set_xlabel(xlabel)
-        ax_rt_rel.set_ylabel('relative\nreal-time\nfactor (%)')
+        ax_rtf_astrocyte.set_ylabel('Real-time factor')
+        ax_frac_astrocyte.set_xlabel(xlabel)
+        ax_frac_astrocyte.set_ylabel('relative\nreal-time\nfactor (%)')
+        ax_rtf_surrogate.set_ylabel('Real-time factor')
+        ax_frac_surrogate.set_xlabel(xlabel)
+        ax_frac_surrogate.set_ylabel('relative\nreal-time\nfactor (%)')
 
         ax_cons.legend(fontsize='x-small', frameon=False)
-        ax_rt.legend()
+        ax_rtf_astrocyte.legend()
+        ax_rtf_surrogate.legend()
         # to reverse the order
         handles1, labels1 = ax_cons.get_legend_handles_labels()
-        handles2, labels2 = ax_rt.get_legend_handles_labels()
-#        ax_cons.legend(handles1[::-1], labels1[::-1], fontsize='x-small', frameon=False)
-        ax_rt.legend(handles2[::-1], labels2[::-1], fontsize='x-small', frameon=False)
+        handles2, labels2 = ax_rtf_astrocyte.get_legend_handles_labels()
+        handles3, labels3 = ax_rtf_surrogate.get_legend_handles_labels()
+        ax_rtf_astrocyte.legend(handles2[::-1], labels2[::-1], fontsize='x-small', frameon=False, title='astrocyte_lr_1994', title_fontsize='small')
+        ax_rtf_surrogate.legend(handles3[::-1], labels3[::-1], fontsize='x-small', frameon=False, title='astrocyte_surrogate', title_fontsize='small')
 
         ax_cons.set_ylim(cons_ylims)
         ax_prop.set_ylim(prop_ylims)
         ax_spk.set_ylim(spk_ylims)
-        ax_rt.set_ylim(rt_ylims)
-        ax_rt_rel.set_ylim(-5.0, 105.0)
+        ax_rtf_astrocyte.set_ylim(rtf_ylims)
+        ax_frac_astrocyte.set_ylim(-5.0, 105.0)
+        ax_rtf_surrogate.set_ylim(rtf_ylims)
+        ax_frac_surrogate.set_ylim(-5.0, 105.0)
 
         if x_axis == 'num_nvp':
             xticks = ax_cons.get_xticks().flatten()
@@ -179,11 +207,11 @@ def plot(timer_hash,
             ax_spk.set_xticks(xticks)
             ax_spk.set_xticklabels(xticklabels)
 
-            ax_rt.set_xticks(xticks)
-            ax_rt.set_xticklabels(xticklabels)
+            ax_rtf_astrocyte.set_xticks(xticks)
+            ax_rtf_astrocyte.set_xticklabels(xticklabels)
 
-            ax_rt_rel.set_xticks(xticks)
-            ax_rt_rel.set_xticklabels(xticklabels)
+            ax_frac_astrocyte.set_xticks(xticks)
+            ax_frac_astrocyte.set_xticklabels(xticklabels)
 
         N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
         if scaling_strength == 'weak':
@@ -191,10 +219,10 @@ def plot(timer_hash,
             ax_cons_twin.set_xticklabels(N_size_labels.tolist())
             ax_cons_twin.set_xlabel('Network size (number of cells)')
             ax_cons_twin.set_xlim(ax_cons.get_xlim())
-            ax_rt_twin.set_xticks(ax_rt.get_xticks())
-            ax_rt_twin.set_xticklabels(N_size_labels)
-            ax_rt_twin.set_xlabel('Network size (number of cells)')
-            ax_rt_twin.set_xlim(ax_rt.get_xlim())
+            ax_rtf_astrocyte_twin.set_xticks(ax_rtf_astrocyte.get_xticks().flatten())
+            ax_rtf_astrocyte_twin.set_xticklabels(N_size_labels.tolist())
+            ax_rtf_astrocyte_twin.set_xlabel('Network size (number of cells)')
+            ax_rtf_astrocyte_twin.set_xlim(ax_rtf_astrocyte.get_xlim())
 
         fig.text(0.0, 1.0, plabel, ha='left', va='top', fontsize='x-large', fontweight='bold')
 
@@ -205,5 +233,4 @@ def plot(timer_hash,
         df_ctrl_mean = B.df_ctrl.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
 
         df_rel_diff = (df_data_mean - df_ctrl_mean)/df_ctrl_mean
-#        df_out = df_rel_diff[['num_nodes', 'threads_per_task', 'wall_time_sim']]
         df_rel_diff.to_csv(f"{save_path}/df_rel_diff.csv", index=False, float_format="%.3f")

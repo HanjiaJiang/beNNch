@@ -32,22 +32,22 @@ with open('../config/analysis_config.yaml') as analysis_config_file:
 jube_id = str(sys.argv[1])
 base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
-timer_file=os.path.join(base_path, uuidgen_hash + ".csv")
+timer_file_astrocyte=os.path.join(base_path, uuidgen_hash + ".csv")
 # analyse and save plot raw data to .csv
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id};"
     + f" jube result {config['jube_outpath']} --id {jube_id} > "
-    + timer_file)
+    + timer_file_astrocyte)
 
 # Control data
 jube_id_ctrl = str(sys.argv[2])
 ctrl_path = os.path.join(config['jube_outpath'], jube_id_ctrl.zfill(6))
 uuidgen_hash_ctrl = shell_return('uuidgen')
-timer_file_ctrl=os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv")
+timer_file_surrogate=os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv")
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_ctrl};"
     + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "
-    + timer_file_ctrl)
+    + timer_file_surrogate)
 
 # X axis: "nodes" or "nvp"
 # This is for the x-axis labeling: "Number of nodes" or "Number of virtual processes"
@@ -82,31 +82,31 @@ git_annex(cpu_info=cpu_info,
 plabel = 'A' if int(jube_id) < 2 else 'B'
 
 if x_axis_label == "num_nvp":
-    cons_ylims = (1.9, 4.1)
+    cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 101.0)
     spk_ylims = (-1000.0, 101000.0)
-    rt_ylims = (-0.5, 10.5)
+    rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    cons_ylims = (1.9, 4.1)
+    cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 36.0)
     spk_ylims = (-1000.0, 101000.0)
-    rt_ylims = (-0.2, 3.7)
+    rtf_ylims = (-0.2, 3.7)
 else:
     cons_ylims = (-1.0, 101.0)
     prop_ylims = (-1.0, 101.0)
     spk_ylims = (-10000.0, 510000.0)
-    rt_ylims = (-0.5, 12.5)
+    rtf_ylims = (-0.5, 12.5)
 
 plot(
     timer_hash=uuidgen_hash,
-    timer_file=timer_file,
+    timer_file_astrocyte=timer_file_astrocyte,
     save_path=base_path,
     scaling_strength=strength,
-    timer_file_ctrl=timer_file_ctrl,
+    timer_file_surrogate=timer_file_surrogate,
     x_axis=x_axis_label,
     plabel=plabel,
     cons_ylims = cons_ylims,
     prop_ylims = prop_ylims,
     spk_ylims = spk_ylims,
-    rt_ylims = rt_ylims
+    rtf_ylims = rtf_ylims
 )
