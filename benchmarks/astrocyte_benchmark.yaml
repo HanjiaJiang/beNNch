@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../../benchmark_results/paper_weak_1
+outpath: ../../benchmark_results/test_nvp_optimized
 parameterset:
       name: model_commands
       parameter:
@@ -110,21 +110,8 @@ result:
         - wall_time_gather_spike_data
         - wall_time_gather_target_data
         - wall_time_communicate_prepare
-        - py_time_kernel_prepare
-        - py_time_network_local
-        - py_time_network_global
-        - py_time_simulate
-        - py_time_presimulate
-        - py_time_network_prepare
         - py_time_create
-        - py_time_connect_area
-        - py_time_connect_cc
         - py_time_connect
         - network_size
-        - base_memory
-        - network_memory
-        - init_memory
-        - total_memory
         - num_connections
         - local_spike_counter
-        - e_counter

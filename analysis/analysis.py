@@ -49,11 +49,12 @@ shell(
     + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "
     + timer_file_ctrl)
 
-# X axis: "num_nodes" or "num_nvp"
+# X axis: "nodes" or "nvp"
 # This is for the x-axis labeling: "Number of nodes" or "Number of virtual processes"
-# Use "num_nvp" for "Number of virtual processes" (nvp strong scaling case)
+# Use "nvp" for "Number of virtual processes" (nvp strong scaling case)
 try:
-    x_axis_label = str(sys.argv[3])
+    tmp = str(sys.argv[3])
+    x_axis_label = "num_nvp" if tmp == "nvp" else "num_nodes"
 except:
     x_axis_label = "num_nodes"
 
@@ -93,7 +94,7 @@ elif strength == "strong":
 else:
     cons_ylims = (-1.0, 101.0)
     prop_ylims = (-1.0, 101.0)
-    spk_ylims = (-100000.0, 2100000.0)
+    spk_ylims = (-10000.0, 510000.0)
     rt_ylims = (-0.5, 12.5)
 
 plot(
