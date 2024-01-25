@@ -72,7 +72,7 @@ def plot(timer_hash,
             ax_rtf_astrocyte_twin = ax_rtf_astrocyte.twiny() # top axis for network_size
 
         if x_axis == 'num_nvp':
-            xlabel = 'Number of threads per MPI task'
+            xlabel = 'Number of threads per MPI process'
         else:
             xlabel = 'Number of compute nodes'
 
@@ -228,6 +228,7 @@ def plot(timer_hash,
 
         plt.tight_layout()
         plt.savefig(f'{save_path}/{timer_hash}.png', dpi=400)
+        plt.savefig(f'{save_path}/{timer_hash}.eps', format='eps', dpi=400)
 
         df_data_mean = B.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
         df_ctrl_mean = B.df_ctrl.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()

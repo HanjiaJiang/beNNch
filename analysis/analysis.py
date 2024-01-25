@@ -95,7 +95,7 @@ else:
     cons_ylims = (-1.0, 101.0)
     prop_ylims = (-1.0, 101.0)
     spk_ylims = (-10000.0, 510000.0)
-    rtf_ylims = (-0.5, 12.5)
+    rtf_ylims = (-0.2, 5.2)
 
 plot(
     timer_hash=uuidgen_hash,
