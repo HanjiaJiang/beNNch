@@ -70,6 +70,7 @@ def plot(timer_hash,
         if scaling_strength == 'weak':
             ax_cons_twin = ax_cons.twiny() # top axis for network_size
             ax_rtf_astrocyte_twin = ax_rtf_astrocyte.twiny() # top axis for network_size
+            ax_rtf_surrogate_twin = ax_rtf_surrogate.twiny()
 
         if x_axis == 'num_nvp':
             xlabel = 'Number of threads per MPI process'
@@ -104,17 +105,29 @@ def plot(timer_hash,
                     line_color='gray'
                     )
 
-        # Total spike count
-        B.plot_main(quantities=['total_spike_count_per_s'],
+        # Average firing rate
+        B.plot_main(quantities=['average_firing_rate'],
                     axis=ax_spk,
                     subject='astrocyte_lr_1994',
                     line_color='k')
-        B.plot_main(quantities=['total_spike_count_per_s'],
+        B.plot_main(quantities=['average_firing_rate'],
                     axis=ax_spk,
                     control=True,
                     subject='astrocyte_surrogate',
                     line_color='gray'
                     )
+
+#        # Total spike count
+#        B.plot_main(quantities=['total_spike_count_per_s'],
+#                    axis=ax_spk,
+#                    subject='astrocyte_lr_1994',
+#                    line_color='k')
+#        B.plot_main(quantities=['total_spike_count_per_s'],
+#                    axis=ax_spk,
+#                    control=True,
+#                    subject='astrocyte_surrogate',
+#                    line_color='gray'
+#                    )
 
         print("plotting RTF ...")
 
@@ -168,7 +181,8 @@ def plot(timer_hash,
                        r'$T_{\mathrm{model}} =$'
                        + f'{np.unique(B.df_data.model_time_sim.values)[0]:.0f} s')
         ax_spk.set_xlabel(xlabel)
-        ax_spk.set_ylabel('Network total\nspikes/s')
+        ax_spk.set_ylabel('Average firing\nrate (spikes/s)')
+#        ax_spk.set_ylabel('Network total\nspikes/s')
         ax_rtf_astrocyte.set_ylabel('Real-time factor')
         ax_frac_astrocyte.set_xlabel(xlabel)
         ax_frac_astrocyte.set_ylabel('relative\nreal-time\nfactor (%)')
@@ -215,14 +229,21 @@ def plot(timer_hash,
 
         N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
         if scaling_strength == 'weak':
+            # astrocyte+surrogate construction time
             ax_cons_twin.set_xticks(ax_cons.get_xticks().flatten())
             ax_cons_twin.set_xticklabels(N_size_labels.tolist())
             ax_cons_twin.set_xlabel('Network size (number of cells)')
             ax_cons_twin.set_xlim(ax_cons.get_xlim())
+            # astrocyte RTF
             ax_rtf_astrocyte_twin.set_xticks(ax_rtf_astrocyte.get_xticks().flatten())
             ax_rtf_astrocyte_twin.set_xticklabels(N_size_labels.tolist())
             ax_rtf_astrocyte_twin.set_xlabel('Network size (number of cells)')
             ax_rtf_astrocyte_twin.set_xlim(ax_rtf_astrocyte.get_xlim())
+            # surrogate RTF
+            ax_rtf_surrogate_twin.set_xticks(ax_rtf_surrogate.get_xticks().flatten())
+            ax_rtf_surrogate_twin.set_xticklabels(N_size_labels.tolist())
+            ax_rtf_surrogate_twin.set_xlabel('Network size (number of cells)')
+            ax_rtf_surrogate_twin.set_xlim(ax_rtf_surrogate.get_xlim())
 
         fig.text(0.0, 1.0, plabel, ha='left', va='top', fontsize='x-large', fontweight='bold')
 

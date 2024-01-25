@@ -67,9 +67,9 @@ job_info = load(os.path.join(bench_path[0], 'job.json'))
 # Strong or weak scaling (if not given, get it from job_info)
 # This is for the "Network size" labeling for weak scaling cases
 try:
-    strength = str(sys.argv[4])
-except:
     strength = job_info['scaling_type']
+except:
+    strength = 'strong'
 
 # Commit results with git annex; not using now
 """
@@ -79,22 +79,26 @@ git_annex(cpu_info=cpu_info,
           base_path=base_path)
 """
 
-plabel = 'A' if int(jube_id) < 2 else 'B'
+# Figure label
+try:
+    plabel = str(sys.argv[4])
+except:
+    plabel = 'A' if int(jube_id) < 2 else 'B'
 
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 101.0)
-    spk_ylims = (-1000.0, 101000.0)
+    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
     cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 36.0)
-    spk_ylims = (-1000.0, 101000.0)
+    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 3.7)
 else:
     cons_ylims = (-1.0, 101.0)
     prop_ylims = (-1.0, 101.0)
-    spk_ylims = (-10000.0, 510000.0)
+    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 5.2)
 
 plot(
