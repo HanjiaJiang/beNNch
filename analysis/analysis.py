@@ -1,28 +1,11 @@
-"""
-beNNch - Unified execution, collection, analysis and
-comparison of neural network simulation benchmarks.
-Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <https://www.gnu.org/licenses/>.
-
-SPDX-License-Identifier: GPL-3.0-or-later
-"""
-
 import os
 import sys
 import glob
 import yaml
 
 from analysis_helper import shell, shell_return, load, git_annex
-from plot_astro import plot
+from plot_all import plot_all
+from plot_phases import plot_phases
 
 # Load analysis configurations
 with open('../config/analysis_config.yaml') as analysis_config_file:
@@ -50,8 +33,8 @@ shell(
     + timer_file_surrogate)
 
 # X axis: "nodes" or "nvp"
-# This is for the x-axis labeling: "Number of nodes" or "Number of virtual processes"
-# Use "nvp" for "Number of virtual processes" (nvp strong scaling case)
+# This is for the x-axis labeling: "Number of nodes" or "Number of threads"
+# Use "nvp" for "Number of threads" (nvp strong scaling case)
 try:
     tmp = str(sys.argv[3])
     x_axis_label = "num_nvp" if tmp == "nvp" else "num_nodes"
@@ -71,19 +54,11 @@ try:
 except:
     strength = 'strong'
 
-# Commit results with git annex; not using now
-"""
-git_annex(cpu_info=cpu_info,
-          job_info=job_info,
-          uuidgen_hash=uuidgen_hash,
-          base_path=base_path)
-"""
-
 # Figure label
-try:
-    plabel = str(sys.argv[4])
-except:
-    plabel = 'A' if int(jube_id) < 2 else 'B'
+#try:
+#    plabel = str(sys.argv[4])
+#except:
+#    plabel = 'A' if int(jube_id) < 2 else 'B'
 
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.25, 5.25)
@@ -101,16 +76,24 @@ else:
     spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 5.2)
 
-plot(
+plot_all(
     timer_hash=uuidgen_hash,
     timer_file_astrocyte=timer_file_astrocyte,
+    timer_file_surrogate=timer_file_surrogate,
     save_path=base_path,
     scaling_strength=strength,
-    timer_file_surrogate=timer_file_surrogate,
     x_axis=x_axis_label,
-    plabel=plabel,
     cons_ylims = cons_ylims,
     prop_ylims = prop_ylims,
     spk_ylims = spk_ylims,
-    rtf_ylims = rtf_ylims
+)
+
+plot_phases(
+    timer_hash=uuidgen_hash,
+    timer_file_astrocyte=timer_file_astrocyte,
+    timer_file_surrogate=timer_file_surrogate,
+    save_path=base_path,
+    scaling_strength=strength,
+    x_axis=x_axis_label,
+    rtf_ylims=rtf_ylims
 )

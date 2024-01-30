@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../../benchmark_results/test_nvp_optimized
+outpath: ../outpath/weak
 parameterset:
       name: model_commands
       parameter:
