@@ -20,17 +20,17 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../../benchmark_results/test_nvp_optimized
+outpath: ../../benchmark_results/weak
 parameterset:
       name: model_commands
       parameter:
-          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_benchmark_burst.py"}
+          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_benchmark_sparse.py"}
           - {name: log_path, type: string, _: "${jube_wp_abspath}"}
 fileset:
 # load and copy model-specific files
     name: model_files
     copy:
-      - $model_path/astrocyte_benchmark_burst.py
+      - $model_path/astrocyte_benchmark_sparse.py
 
 # This subsituteset maps the parameters that were defined in this yaml
 # file to the target patterns that JUBE will search for in the
@@ -38,7 +38,7 @@ fileset:
 # source pattern will be replaced by the values.
 substituteset:
       name: model_substitutions
-      iofile: {in: astrocyte_benchmark_burst.py, out: astrocyte_benchmark_burst.py}
+      iofile: {in: astrocyte_benchmark_sparse.py, out: astrocyte_benchmark_sparse.py}
       sub:
       - {source: "{num_vps}", dest: $num_vps}
       - {source: "{record_spikes}", dest: $record_spikes}
