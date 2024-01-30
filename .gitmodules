@@ -4,9 +4,9 @@
 	branch = main
 [submodule "models"]
 	path = models
-	url = https://github.com/INM-6/beNNch-models.git
-	branch = main
+	url = https://github.com/HanjiaJiang/beNNch-models.git
+	branch = astrocyte
 [submodule "plot"]
 	path = plot
-	url = https://github.com/INM-6/beNNch-plot.git
-	branch = main
+	url = https://github.com/HanjiaJiang/beNNch-plot.git
+	branch = astrocyte
