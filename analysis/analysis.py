@@ -15,7 +15,8 @@ with open('../config/analysis_config.yaml') as analysis_config_file:
 jube_id = str(sys.argv[1])
 base_path = os.path.join(config['jube_outpath'], jube_id.zfill(6))
 uuidgen_hash = shell_return('uuidgen')
-timer_file_astrocyte=os.path.join(base_path, uuidgen_hash + ".csv")
+timer_file_astrocyte=os.path.join(base_path, "timer_file.csv")
+#timer_file_astrocyte=os.path.join(base_path, uuidgen_hash + ".csv")
 # analyse and save plot raw data to .csv
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id};"
@@ -26,7 +27,8 @@ shell(
 jube_id_ctrl = str(sys.argv[2])
 ctrl_path = os.path.join(config['jube_outpath'], jube_id_ctrl.zfill(6))
 uuidgen_hash_ctrl = shell_return('uuidgen')
-timer_file_surrogate=os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv")
+timer_file_surrogate=os.path.join(ctrl_path, "timer_file.csv")
+#timer_file_surrogate=os.path.join(ctrl_path, uuidgen_hash_ctrl + ".csv")
 shell(
     f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_ctrl};"
     + f" jube result {config['jube_outpath']} --id {jube_id_ctrl} > "

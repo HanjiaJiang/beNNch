@@ -3,7 +3,7 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 20})
 
 def plot_phases(timer_hash,
          timer_file_astrocyte,
@@ -28,18 +28,18 @@ def plot_phases(timer_hash,
     # Plotting
     widths = [1, 1]
     heights = [4, 1]
-    fig = plt.figure(figsize=(6, 8))
+    fig = plt.figure(figsize=(8, 8))
     spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
 
     ax_rtf_astrocyte = fig.add_subplot(spec[0, 0])
-    ax_frac_astrocyte = fig.add_subplot(spec[1, 0], sharex=ax_rtf_astrocyte)
-    ax_rtf_surrogate = fig.add_subplot(spec[0, 1], sharey=ax_rtf_astrocyte)
-    ax_frac_surrogate = fig.add_subplot(spec[1, 1], sharex=ax_rtf_surrogate, sharey=ax_frac_astrocyte)
+    ax_frac_astrocyte = fig.add_subplot(spec[1, 0])
+    ax_rtf_surrogate = fig.add_subplot(spec[0, 1])
+    ax_frac_surrogate = fig.add_subplot(spec[1, 1])
 
-    ax_rtf_astrocyte.set_title("astrocyte_lr_1994", pad=20)
-    ax_rtf_surrogate.set_title("astrocyte_surrogate", pad=20)
+    ax_rtf_astrocyte.set_title("astrocyte_lr_1994", pad=20, fontsize='medium', fontweight='bold')
+    ax_rtf_surrogate.set_title("astrocyte_surrogate", pad=20, fontsize='medium', fontweight='bold')
 
     if scaling_strength == 'weak':
         ax_rtf_astrocyte_twin = ax_rtf_astrocyte.twiny() # top axis for network_size
@@ -101,10 +101,8 @@ def plot_phases(timer_hash,
 
     ax_rtf_astrocyte.set_ylabel('Real-time factor')
     ax_frac_astrocyte.set_xlabel(xlabel)
-    ax_frac_astrocyte.set_ylabel('relative\nreal-time\nfactor (%)')
-#    ax_rtf_surrogate.set_ylabel('Real-time factor')
+    ax_frac_astrocyte.set_ylabel('Relative\nreal-time\nfactor (%)', fontsize='small')
     ax_frac_surrogate.set_xlabel(xlabel)
-#    ax_frac_surrogate.set_ylabel('relative\nreal-time\nfactor (%)')
 
     ax_rtf_astrocyte.legend()
     ax_rtf_surrogate.legend()
@@ -120,7 +118,7 @@ def plot_phases(timer_hash,
     ax_frac_surrogate.set_ylim(-5.0, 105.0)
 
     if x_axis == 'num_nvp':
-        xticks = ax_cons.get_xticks().flatten()
+        xticks = ax_rtf_astrocyte.get_xticks().flatten()
         xticklabels = (xticks).astype(int)
         ax_rtf_astrocyte.set_xticks(xticks)
         ax_rtf_astrocyte.set_xticklabels(xticklabels)
@@ -131,18 +129,20 @@ def plot_phases(timer_hash,
     if scaling_strength == 'weak':
         # astrocyte RTF
         ax_rtf_astrocyte_twin.set_xticks(ax_rtf_astrocyte.get_xticks().flatten())
-        ax_rtf_astrocyte_twin.set_xticklabels(N_size_labels.tolist(), rotation=30)
+        ax_rtf_astrocyte_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
         ax_rtf_astrocyte_twin.set_xlabel('Network size\n(number of cells)')
         ax_rtf_astrocyte_twin.set_xlim(ax_rtf_astrocyte.get_xlim())
         # surrogate RTF
         ax_rtf_surrogate_twin.set_xticks(ax_rtf_surrogate.get_xticks().flatten())
-        ax_rtf_surrogate_twin.set_xticklabels(N_size_labels.tolist(), rotation=30)
+        ax_rtf_surrogate_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
         ax_rtf_surrogate_twin.set_xlabel('Network size\n(number of cells)')
         ax_rtf_surrogate_twin.set_xlim(ax_rtf_surrogate.get_xlim())
 
     plt.tight_layout()
-    plt.savefig(f'{save_path}/{timer_hash}_phases.png', dpi=400)
-    plt.savefig(f'{save_path}/{timer_hash}_phases.eps', format='eps', dpi=400)
+    plt.savefig(f'{save_path}/plot_phases.png', dpi=400)
+    plt.savefig(f'{save_path}/plot_phases.eps', format='eps', dpi=400)
+#    plt.savefig(f'{save_path}/{timer_hash}_phases.png', dpi=400)
+#    plt.savefig(f'{save_path}/{timer_hash}_phases.eps', format='eps', dpi=400)
 
     # Calculate relative difference between astrocyte vs. surrogate
     df_data_mean = B.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()

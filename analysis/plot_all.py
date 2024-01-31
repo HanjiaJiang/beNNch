@@ -3,7 +3,7 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 20})
 
 def plot_all(timer_hash,
          timer_file_astrocyte,
@@ -30,7 +30,7 @@ def plot_all(timer_hash,
     # Plotting
     widths = [1]
     heights = [2, 2, 1]
-    fig = plt.figure(figsize=(4.5, 8))
+    fig = plt.figure(figsize=(6, 8))
     spec = gridspec.GridSpec(ncols=1, nrows=3, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
@@ -95,7 +95,7 @@ def plot_all(timer_hash,
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(B.df_data.model_time_sim.values)[0]:.0f} s')
     ax_spk.set_xlabel(xlabel)
-    ax_spk.set_ylabel('Average firing\nrate (spikes/s)')
+    ax_spk.set_ylabel('Average\nfiring rate\n(spikes/s)')
 
     ax_cons.legend(fontsize='small', frameon=False)
     # to reverse the order
@@ -119,13 +119,15 @@ def plot_all(timer_hash,
     if scaling_strength == 'weak':
         # astrocyte+surrogate construction time
         ax_cons_twin.set_xticks(ax_cons.get_xticks().flatten())
-        ax_cons_twin.set_xticklabels(N_size_labels.tolist(), rotation=30)
-        ax_cons_twin.set_xlabel('Network size\n(number of cells)')
+        ax_cons_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        ax_cons_twin.set_xlabel('Network size (number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())
 
     plt.tight_layout()
-    plt.savefig(f'{save_path}/{timer_hash}_all.png', dpi=400)
-    plt.savefig(f'{save_path}/{timer_hash}_all.eps', format='eps', dpi=400)
+    plt.savefig(f'{save_path}/plot_all.png', dpi=400)
+    plt.savefig(f'{save_path}/plot_all.eps', format='eps', dpi=400)
+#    plt.savefig(f'{save_path}/{timer_hash}_all.png', dpi=400)
+#    plt.savefig(f'{save_path}/{timer_hash}_all.eps', format='eps', dpi=400)
 
     # Calculate relative difference between astrocyte vs. surrogate
     df_data_mean = B.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
