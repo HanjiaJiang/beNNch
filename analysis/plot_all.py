@@ -13,7 +13,9 @@ def plot_all(timer_hash,
          x_axis='num_nodes',
          cons_ylims=(-1.0, 101.0),
          prop_ylims=(-1.0, 101.0),
-         spk_ylims=(-10000.0, 2010000.0)):
+         spk_ylims=(-10000.0, 2010000.0),
+         data_label='astrocyte_lr_1994',
+         ctrl_label='astrocyte_surrogate'):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
     print(f'x axis: {x_axis}')
@@ -54,39 +56,39 @@ def plot_all(timer_hash,
     # Network construction
     B.plot_main(quantities=['wall_time_create+wall_time_connect'],
                 axis=ax_cons,
-                subject='astrocyte_lr_1994',
+                subject=data_label,
                 line_color='k',
                 linewidth=2)
     B.plot_main(quantities=['wall_time_create+wall_time_connect'],
                 axis=ax_cons,
                 control=True,
-                subject='astrocyte_surrogate',
+                subject=ctrl_label,
                 line_color='gray',
                 linewidth=2)
 
     # State propagation
     B.plot_main(quantities=['wall_time_sim'],
                 axis=ax_prop,
-                subject='astrocyte_lr_1994',
+                subject=data_label,
                 line_color='k',
                 linewidth=2)
     B.plot_main(quantities=['wall_time_sim'],
                 axis=ax_prop,
                 control=True,
-                subject='astrocyte_surrogate',
+                subject=ctrl_label,
                 line_color='gray',
                 linewidth=2)
 
     # Average firing rate
     B.plot_main(quantities=['average_firing_rate'],
                 axis=ax_spk,
-                subject='astrocyte_lr_1994',
+                subject=data_label,
                 line_color='k',
                 linewidth=2)
     B.plot_main(quantities=['average_firing_rate'],
                 axis=ax_spk,
                 control=True,
-                subject='astrocyte_surrogate',
+                subject=ctrl_label,
                 line_color='gray',
                 linewidth=2)
 

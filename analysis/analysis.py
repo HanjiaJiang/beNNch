@@ -56,11 +56,13 @@ try:
 except:
     strength = 'strong'
 
-# Figure label
-#try:
-#    plabel = str(sys.argv[4])
-#except:
-#    plabel = 'A' if int(jube_id) < 2 else 'B'
+# Data and control label
+try:
+    data_label = str(sys.argv[4])
+    ctrl_label = str(sys.argv[5])
+except:
+    data_label = 'astrocyte_lr_1994'
+    ctrl_label = 'astrocyte_surrogate'
 
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.25, 5.25)
@@ -88,6 +90,8 @@ plot_all(
     cons_ylims = cons_ylims,
     prop_ylims = prop_ylims,
     spk_ylims = spk_ylims,
+    data_label=data_label,
+    ctrl_label=ctrl_label
 )
 
 plot_phases(
@@ -97,5 +101,7 @@ plot_phases(
     save_path=base_path,
     scaling_strength=strength,
     x_axis=x_axis_label,
-    rtf_ylims=rtf_ylims
+    rtf_ylims=rtf_ylims,
+    data_label=data_label,
+    ctrl_label=ctrl_label
 )

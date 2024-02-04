@@ -11,7 +11,9 @@ def plot_phases(timer_hash,
          save_path,
          scaling_strength,
          x_axis='num_nodes',
-         rtf_ylims=(-0.5, 12.5)):
+         rtf_ylims=(-0.5, 12.5),
+         data_label='',
+         ctrl_label=''):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
     print(f'x axis: {x_axis}')
@@ -38,8 +40,8 @@ def plot_phases(timer_hash,
     ax_rtf_surrogate = fig.add_subplot(spec[0, 1])
     ax_frac_surrogate = fig.add_subplot(spec[1, 1])
 
-    ax_rtf_astrocyte.set_title("astrocyte_lr_1994", pad=20, fontsize='medium', fontweight='bold')
-    ax_rtf_surrogate.set_title("astrocyte_surrogate", pad=20, fontsize='medium', fontweight='bold')
+    ax_rtf_astrocyte.set_title(data_label, pad=20, fontsize='medium', fontweight='bold')
+    ax_rtf_surrogate.set_title(ctrl_label, pad=20, fontsize='medium', fontweight='bold')
 
     if scaling_strength == 'weak':
         ax_rtf_astrocyte_twin = ax_rtf_astrocyte.twiny() # top axis for network_size
@@ -58,16 +60,16 @@ def plot_phases(timer_hash,
     # astrocyte
     B.plot_fractions(axis=ax_rtf_astrocyte,
                      fill_variables=[
-                         'phase_update_factor',
-                         'phase_ccd_factor',
                          'phase_others_factor',
+                         'phase_ccd_factor',
+                         'phase_update_factor',
                      ],
                      )
     B.plot_fractions(axis=ax_frac_astrocyte,
                      fill_variables=[
-                         'frac_phase_update',
-                         'frac_phase_ccd',
                          'frac_phase_others',
+                         'frac_phase_ccd',
+                         'frac_phase_update',
                      ],
                      )
     # B.plot_main(quantities=['sim_factor'],
@@ -78,17 +80,17 @@ def plot_phases(timer_hash,
     # surrogate
     B.plot_fractions(axis=ax_rtf_surrogate,
                      fill_variables=[
-                         'phase_update_factor',
-                         'phase_ccd_factor',
                          'phase_others_factor',
+                         'phase_ccd_factor',
+                         'phase_update_factor',
                      ],
                      control=True,
                      )
     B.plot_fractions(axis=ax_frac_surrogate,
                      fill_variables=[
-                         'frac_phase_update',
-                         'frac_phase_ccd',
                          'frac_phase_others',
+                         'frac_phase_ccd',
+                         'frac_phase_update',
                      ],
                      control=True,
                      )
