@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/weak
+outpath: ../outpath/test_secondary
 parameterset:
       name: model_commands
       parameter:
@@ -106,6 +106,7 @@ result:
         - wall_time_phase_communicate
         - wall_time_phase_deliver
         - wall_time_phase_update
+        - wall_time_phase_secondary
         - wall_time_communicate_target_data
         - wall_time_gather_spike_data
         - wall_time_gather_target_data

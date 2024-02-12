@@ -144,6 +144,7 @@ patternset:
        - {name: wall_time_gather_spike_data, mode: pattern, type: float, "_": time_gather_spike_data $jube_pat_fp}
        - {name: wall_time_gather_target_data, mode: pattern, type: float, "_": time_gather_target_data $jube_pat_fp}
        - {name: wall_time_communicate_prepare, mode: pattern, type: float, "_": time_communicate_prepare $jube_pat_fp}
+       - {name: wall_time_phase_secondary, mode: pattern, type: float, "_": time_deliver_secondary_data $jube_pat_fp}
        - {name: py_time_kernel_prepare, mode: pattern, dotall: True, type: float, "_": py_time_kernel_prepare $jube_pat_fp}
        - {name: py_time_network_local, mode: pattern, dotall: True, type: float, "_": py_time_network_local $jube_pat_fp}
        - {name: py_time_network_global, mode: pattern, dotall: True, type: float, "_": py_time_network_global $jube_pat_fp}

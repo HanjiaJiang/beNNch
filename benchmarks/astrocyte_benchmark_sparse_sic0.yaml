@@ -24,13 +24,13 @@ outpath: ../outpath/test_secondary
 parameterset:
       name: model_commands
       parameter:
-          - {name: run_file, type: string, _: "$jube_wp_abspath/surrogate_benchmark_sparse.py"}
+          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_benchmark_sparse_sic0.py"}
           - {name: log_path, type: string, _: "${jube_wp_abspath}"}
 fileset:
 # load and copy model-specific files
     name: model_files
     copy:
-      - $model_path/surrogate_benchmark_sparse.py
+      - $model_path/astrocyte_benchmark_sparse_sic0.py
 
 # This subsituteset maps the parameters that were defined in this yaml
 # file to the target patterns that JUBE will search for in the
@@ -38,7 +38,7 @@ fileset:
 # source pattern will be replaced by the values.
 substituteset:
       name: model_substitutions
-      iofile: {in: surrogate_benchmark_sparse.py, out: surrogate_benchmark_sparse.py}
+      iofile: {in: astrocyte_benchmark_sparse_sic0.py, out: astrocyte_benchmark_sparse_sic0.py}
       sub:
       - {source: "{num_vps}", dest: $num_vps}
       - {source: "{record_spikes}", dest: $record_spikes}
@@ -111,6 +111,7 @@ result:
         - wall_time_gather_spike_data
         - wall_time_gather_target_data
         - wall_time_communicate_prepare
+        - wall_time_phase_secondary
         - py_time_create
         - py_time_connect
         - network_size
