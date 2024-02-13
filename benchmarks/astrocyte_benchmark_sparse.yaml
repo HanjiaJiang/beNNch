@@ -110,7 +110,8 @@ result:
         - wall_time_gather_spike_data
         - wall_time_gather_target_data
         - wall_time_communicate_prepare
-        - wall_time_phase_secondary
+        - wall_time_phase_deliver_secondary
+        - wall_time_phase_gather_secondary
         - py_time_create
         - py_time_connect
         - network_size
