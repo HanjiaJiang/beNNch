@@ -13,7 +13,8 @@ def plot_phases(timer_hash,
          x_axis='num_nodes',
          rtf_ylims=(-0.5, 12.5),
          data_label='',
-         ctrl_label=''):
+         ctrl_label='',
+         reverse_phases=False):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
     print(f'x axis: {x_axis}')
@@ -57,53 +58,41 @@ def plot_phases(timer_hash,
     print("plotting RTF ...")
 
     # RTF for state propagation
+    # variables
+    if reverse_phases:
+        phases = [
+            'phase_others_factor',
+            'phase_secondary_factor',
+            'phase_ccd_factor',
+            'phase_update_factor',
+        ]
+        fractions=[
+            'frac_phase_others',
+            'frac_phase_secondary',
+            'frac_phase_ccd',
+            'frac_phase_update',
+        ]
+    else:
+        phases = [
+            'phase_update_factor',
+            'phase_ccd_factor',
+            'phase_secondary_factor',
+            'phase_others_factor',
+        ]
+        fractions=[
+            'frac_phase_update',
+            'frac_phase_ccd',
+            'frac_phase_secondary',
+            'frac_phase_others',
+        ]
+
     # astrocyte
-    B.plot_fractions(axis=ax_rtf_astrocyte,
-                     fill_variables=[
-                         'phase_others_factor',
-                         'phase_secondary_factor',
-                         'phase_ccd_factor',
-                         'phase_update_factor',
-                     ],
-                     )
-    B.plot_fractions(axis=ax_frac_astrocyte,
-                     fill_variables=[
-                         'frac_phase_others',
-                         'frac_phase_secondary',
-                         'frac_phase_ccd',
-                         'frac_phase_update',
-                     ],
-                     )
-    # B.plot_main(quantities=['sim_factor'],
-    #             axis=ax_rtf_astrocyte,
-    #             subject='State propagation',
-    #             line_color='k')
+    B.plot_fractions(axis=ax_rtf_astrocyte, fill_variables=phases)
+    B.plot_fractions(axis=ax_frac_astrocyte, fill_variables=fractions)
 
     # surrogate
-    B.plot_fractions(axis=ax_rtf_surrogate,
-                     fill_variables=[
-                         'phase_others_factor',
-                         'phase_secondary_factor',
-                         'phase_ccd_factor',
-                         'phase_update_factor',
-                     ],
-                     control=True,
-                     )
-    B.plot_fractions(axis=ax_frac_surrogate,
-                     fill_variables=[
-                         'frac_phase_others',
-                         'frac_phase_secondary',
-                         'frac_phase_ccd',
-                         'frac_phase_update',
-                     ],
-                     control=True,
-                     )
-    # B.plot_main(quantities=['sim_factor'],
-    #             axis=ax_rtf_surrogate,
-    #             control=True,
-    #             subject='State propagation',
-    #             line_color='gray'
-    #             )
+    B.plot_fractions(axis=ax_rtf_surrogate, fill_variables=phases, control=True)
+    B.plot_fractions(axis=ax_frac_surrogate, fill_variables=fractions, control=True)
 
     ax_rtf_astrocyte.set_ylabel('Real-time factor')
     ax_frac_astrocyte.set_xlabel(xlabel)
