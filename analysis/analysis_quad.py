@@ -85,19 +85,17 @@ except:
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.25, 5.25)
     prop_ylims = (-5.0, 105.0)
-    spk_ylims = (-0.5, 10.5)
+    spk_ylims = (-0.5, 15.5)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
     cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 36.0)
     spk_ylims = (-0.5, 15.5)
-#    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 3.7)
 else:
     cons_ylims = (-5.0, 105.0)
     prop_ylims = (-5.0, 105.0)
-    spk_ylims = (-0.5, 10.5)
-#    spk_ylims = (-0.5, 10.5)
+    spk_ylims = (-0.5, 15.5)
     rtf_ylims = (-0.2, 5.2)
 
 plot_all_quad(
