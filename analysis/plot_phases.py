@@ -59,32 +59,31 @@ def plot_phases(timer_hash,
 
     # RTF for state propagation
     # variables
+    phases = [
+        'phase_update_factor',
+#        'phase_ccd_factor',
+        'phase_collocate_factor',
+        'phase_communicate_factor',
+        'phase_deliver_factor',
+#        'phase_secondary_factor',
+        'phase_gather_secondary_factor',
+        'phase_deliver_secondary_factor',
+        'phase_others_factor',
+    ]
+    fractions=[
+        'frac_phase_update',
+#        'frac_phase_ccd',
+        'frac_phase_collocate',
+        'frac_phase_communicate',
+        'frac_phase_deliver',
+#        'frac_phase_secondary',
+        'frac_phase_gather_secondary',
+        'frac_phase_deliver_secondary',
+        'frac_phase_others',
+    ]
     if reverse_phases:
-        phases = [
-            'phase_others_factor',
-            'phase_secondary_factor',
-            'phase_ccd_factor',
-            'phase_update_factor',
-        ]
-        fractions=[
-            'frac_phase_others',
-            'frac_phase_secondary',
-            'frac_phase_ccd',
-            'frac_phase_update',
-        ]
-    else:
-        phases = [
-            'phase_update_factor',
-            'phase_ccd_factor',
-            'phase_secondary_factor',
-            'phase_others_factor',
-        ]
-        fractions=[
-            'frac_phase_update',
-            'frac_phase_ccd',
-            'frac_phase_secondary',
-            'frac_phase_others',
-        ]
+        phases.reverse()
+        fractions.reverse()
 
     # astrocyte
     B.plot_fractions(axis=ax_rtf_astrocyte, fill_variables=phases)
@@ -104,8 +103,8 @@ def plot_phases(timer_hash,
     # to reverse the order
     handles2, labels2 = ax_rtf_astrocyte.get_legend_handles_labels()
     handles3, labels3 = ax_rtf_surrogate.get_legend_handles_labels()
-    ax_rtf_astrocyte.legend(handles2[::-1], labels2[::-1], fontsize='small', frameon=False)
-    ax_rtf_surrogate.legend(handles3[::-1], labels3[::-1], fontsize='small', frameon=False)
+    ax_rtf_astrocyte.legend(handles2[::-1], labels2[::-1], fontsize='xx-small', frameon=False)
+    ax_rtf_surrogate.legend(handles3[::-1], labels3[::-1], fontsize='xx-small', frameon=False)
 
     ax_rtf_astrocyte.set_ylim(rtf_ylims)
     ax_frac_astrocyte.set_ylim(-5.0, 105.0)
