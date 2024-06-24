@@ -120,7 +120,7 @@ def plot_all(timer_hash,
     N_size_labels = B.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
     if scaling_strength == 'weak':
         # astrocyte+surrogate construction time
-        ax_cons_twin.set_xticks(ax_cons.get_xticks().flatten())
+        ax_cons_twin.set_xticks(N_size_labels)
         ax_cons_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
         ax_cons_twin.set_xlabel('Network size (number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())

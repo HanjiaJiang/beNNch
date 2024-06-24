@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/test_secondary
+outpath: ../outpath/new_tripartite
 parameterset:
       name: model_commands
       parameter:

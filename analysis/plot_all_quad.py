@@ -51,6 +51,11 @@ def plot_all_quad(
     B3 = bp.Plot(**args3)
     B4 = bp.Plot(**args4)
 
+    label_1 = label_1.replace("#", "\n")
+    label_2 = label_2.replace("#", "\n")
+    label_3 = label_3.replace("#", "\n")
+    label_4 = label_4.replace("#", "\n")
+
     # Plotting
     widths = [1]
     heights = [2, 2, 1]
@@ -160,9 +165,6 @@ def plot_all_quad(
     ax_spk.set_xlabel(xlabel)
     ax_spk.set_ylabel('Average\nfiring rate\n(spikes/s)')
 
-    legend_ncol = 1 if scaling_strength == 'weak' else 2
-    ax_cons.legend(fontsize='x-small', frameon=False, ncol=legend_ncol)
-
     ax_cons.set_ylim(cons_ylims)
     ax_prop.set_ylim(prop_ylims)
     ax_spk.set_ylim(spk_ylims)
@@ -179,7 +181,8 @@ def plot_all_quad(
 
     N_size_labels = B1.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
     if scaling_strength == 'weak':
-        ax_cons_twin.set_xticks(ax_cons.get_xticks().flatten())
+        xticks = sorted(set(B1.df_data['num_nodes'].values.tolist()))
+        ax_cons_twin.set_xticks(xticks)
         ax_cons_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
         ax_cons_twin.set_xlabel('Network size (number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())
@@ -187,6 +190,7 @@ def plot_all_quad(
     plt.tight_layout()
     plt.savefig(f'{save_path}/plot_all_quad.png', dpi=400)
     plt.savefig(f'{save_path}/plot_all_quad.eps', format='eps', dpi=400)
+    plt.close()
 
     # Output raw data
     df_mean_1 = B1.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
@@ -199,3 +203,26 @@ def plot_all_quad(
     df_mean_4.to_csv(f"{save_path}/df_mean_4.csv", index=False, float_format="%.3f")
 #    df_rel_diff = (df_data_mean - df_ctrl_mean)/df_ctrl_mean
 #    df_rel_diff.to_csv(f"{save_path}/df_rel_diff.csv", index=False, float_format="%.3f")
+
+    # Make legend figure
+    fig, ax_legend = plt.subplots(figsize=(3, 8))
+    styles = [('k', '-'), ('k', ':'), ('gray', '-'), ('gray', ':')]
+    for i, label in enumerate([label_1, label_2, label_3, label_4]):
+        ax_legend.plot(
+            [],
+            [],
+            label=label,
+            marker=None,
+            color=styles[i][0],
+            linewidth=3,
+            linestyle=styles[i][1],
+        )
+    ax_legend.legend(
+        frameon=False, fontsize='x-small', bbox_to_anchor=[0.5, 0.5], loc='center',
+        ncol=1, labelspacing=1)
+    for side in ['left', 'right', 'top', 'bottom']:
+        ax_legend.spines[side].set_visible(False)
+    ax_legend.set_axis_off()
+    plt.savefig(f'{save_path}/legend_all.png', dpi=400)
+    plt.savefig(f'{save_path}/legend_all.eps', dpi=400)
+    plt.close()
