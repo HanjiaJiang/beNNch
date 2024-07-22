@@ -164,4 +164,6 @@ patternset:
        - {name: num_connections, mode: pattern, dotall: True, type: float, "_": num_connections $jube_pat_fp}
        - {name: local_spike_counter, mode: pattern, dotall: True, type: float, "_": local_spike_counter $jube_pat_fp}
        - {name: e_counter, mode: pattern, dotall: True, type: float, "_": e_counter $jube_pat_fp}
+       - {name: tsodyks_synapse, mode: pattern, dotall: True, type: float, "_": tsodyks_synapse $jube_pat_fp}
+       - {name: sic_connection, mode: pattern, dotall: True, type: float, "_": sic_connection $jube_pat_fp}
 

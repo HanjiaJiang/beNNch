@@ -20,17 +20,17 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/n_conn
+outpath: ../outpath/new_tripartite
 parameterset:
       name: model_commands
       parameter:
-          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_fixout.py"}
+          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte_zero.py"}
           - {name: log_path, type: string, _: "${jube_wp_abspath}"}
 fileset:
 # load and copy model-specific files
     name: model_files
     copy:
-      - $model_path/astrocyte_fixout.py
+      - $model_path/astrocyte_zero.py
 
 # This subsituteset maps the parameters that were defined in this yaml
 # file to the target patterns that JUBE will search for in the
@@ -38,7 +38,7 @@ fileset:
 # source pattern will be replaced by the values.
 substituteset:
       name: model_substitutions
-      iofile: {in: astrocyte_fixout.py, out: astrocyte_fixout.py}
+      iofile: {in: astrocyte_zero.py, out: astrocyte_zero.py}
       sub:
       - {source: "{num_vps}", dest: $num_vps}
       - {source: "{record_spikes}", dest: $record_spikes}
@@ -106,12 +106,12 @@ result:
         - wall_time_phase_communicate
         - wall_time_phase_deliver
         - wall_time_phase_update
+        - wall_time_phase_deliver_secondary
+        - wall_time_phase_gather_secondary
         - wall_time_communicate_target_data
         - wall_time_gather_spike_data
         - wall_time_gather_target_data
         - wall_time_communicate_prepare
-        - wall_time_phase_deliver_secondary
-        - wall_time_phase_gather_secondary
         - py_time_create
         - py_time_connect
         - network_size

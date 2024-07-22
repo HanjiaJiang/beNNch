@@ -79,7 +79,9 @@ metrics_sum = ['base_memory',
                'init_memory',
                'total_memory',
                'num_connections',
-               'local_spike_counter']
+               'local_spike_counter',
+               'tsodyks_synapse',
+               'sic_connection']
 
 d = {key: list() for key in metrics}
 d_sum = {key: list() for key in metrics_sum}

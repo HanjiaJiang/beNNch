@@ -3,7 +3,7 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-plt.rcParams.update({'font.size': 20})
+plt.rcParams.update({'font.size': 15})
 
 def plot_all_quad(
          timer_file_1,
@@ -15,11 +15,13 @@ def plot_all_quad(
          x_axis='num_nodes',
          cons_ylims=(-1.0, 101.0),
          prop_ylims=(-1.0, 101.0),
+         conn_ylims=(3990000, 4010000),
          spk_ylims=(-10000.0, 2010000.0),
          label_1='a',
          label_2='b',
          label_3='c',
-         label_4='d'
+         label_4='d',
+         conn_plotted="sic_connection",
     ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -58,15 +60,16 @@ def plot_all_quad(
 
     # Plotting
     widths = [1]
-    heights = [2, 2, 1]
+    heights = [2, 1, 2, 1]
     fig = plt.figure(figsize=(6, 8))
-    spec = gridspec.GridSpec(ncols=1, nrows=3, figure=fig,
+    spec = gridspec.GridSpec(ncols=1, nrows=4, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
 
     ax_cons = fig.add_subplot(spec[0, 0])
-    ax_prop = fig.add_subplot(spec[1, 0])
-    ax_spk = fig.add_subplot(spec[2, 0])
+    ax_prop = fig.add_subplot(spec[2, 0])
+    ax_conn = fig.add_subplot(spec[1, 0])
+    ax_spk = fig.add_subplot(spec[3, 0])
 
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
@@ -132,6 +135,32 @@ def plot_all_quad(
                 linewidth=2,
                 linestyle=':')
 
+    # Number of connections
+    B1.plot_main(quantities=[conn_plotted],
+                axis=ax_conn,
+                subject=label_1,
+                line_color='k',
+                linewidth=2,
+                linestyle='-')
+    B2.plot_main(quantities=[conn_plotted],
+                axis=ax_conn,
+                subject=label_2,
+                line_color='k',
+                linewidth=2,
+                linestyle=':')
+    B3.plot_main(quantities=[conn_plotted],
+                axis=ax_conn,
+                subject=label_3,
+                line_color='gray',
+                linewidth=2,
+                linestyle='-')
+    B4.plot_main(quantities=[conn_plotted],
+                axis=ax_conn,
+                subject=label_4,
+                line_color='gray',
+                linewidth=2,
+                linestyle=':')
+
     # Average firing rate
     B1.plot_main(quantities=['average_firing_rate'],
                 axis=ax_spk,
@@ -159,14 +188,22 @@ def plot_all_quad(
                 linestyle=':')
 
     ax_cons.set_ylabel('Network\nconstruction\ntime (s)')
-    ax_prop.set_ylabel('State propagation\ntime (s) for\n'
+    ax_prop.set_ylabel('State\npropagation\ntime (s) for\n'
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(B1.df_data.model_time_sim.values)[0]:.0f} s')
+    if conn_plotted == "sic_connection":
+        text_conn = "SIC\nconnections"
+    elif conn_plotted == "tsodyks_synapse":
+        text_conn = "Tsodyks\nsynapses"
+    else:
+        text_conn = "connections"
+    ax_conn.set_ylabel(f'Number of\n{text_conn}')
     ax_spk.set_xlabel(xlabel)
-    ax_spk.set_ylabel('Average\nfiring rate\n(spikes/s)')
+    ax_spk.set_ylabel('Average\nneuronal\nfiring rate\n(spikes/s)')
 
     ax_cons.set_ylim(cons_ylims)
     ax_prop.set_ylim(prop_ylims)
+    ax_conn.set_ylim(conn_ylims)
     ax_spk.set_ylim(spk_ylims)
 
     if x_axis == 'num_nvp':
@@ -176,6 +213,8 @@ def plot_all_quad(
         ax_cons.set_xticklabels(xticklabels)
         ax_prop.set_xticks(xticks)
         ax_prop.set_xticklabels(xticklabels)
+        ax_conn.set_xticks(xticks)
+        ax_conn.set_xticklabels(xticklabels)
         ax_spk.set_xticks(xticks)
         ax_spk.set_xticklabels(xticklabels)
 

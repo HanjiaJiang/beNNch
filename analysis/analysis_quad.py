@@ -85,25 +85,35 @@ except:
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.25, 5.25)
     prop_ylims = (-5.0, 105.0)
+    conn_ylims=(3990000, 4010000),
     spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    cons_ylims = (-0.2, 3.2)
-#    cons_ylims = (-0.5, 8.5)
+    cons_ylims = (-0.5, 8.5)
+#    cons_ylims = (-0.25, 5.25)
+#    cons_ylims = (-0.2, 3.2)
 #    cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 36.0)
+    conn_ylims=(3990000, 4010000)
     spk_ylims = (2.85, 3.15)
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 3.7)
 else:
-    cons_ylims = (-0.1, 2.1)
+    cons_ylims = (-0.5, 8.5)
+#    cons_ylims = (-0.1, 2.1)
 #    cons_ylims = (-2.0, 57.0)
 #    cons_ylims = (-2.0, 52.0)
     prop_ylims = (-2.0, 62.0)
 #    prop_ylims = (-2.0, 52.0)
+    conn_ylims=(3990000, 4010000)
     spk_ylims = (2.85, 3.15)
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 6.2)
+
+conn_plotted = "sic_connection"
+if True:
+    conn_plotted = "tsodyks_synapse"
+    conn_ylims = (13990000, 14010000)
 
 plot_all_quad(
     timer_file_1=timer_file_1,
@@ -115,11 +125,13 @@ plot_all_quad(
     x_axis=x_axis_label,
     cons_ylims = cons_ylims,
     prop_ylims = prop_ylims,
+    conn_ylims=conn_ylims,
     spk_ylims = spk_ylims,
     label_1=label_1,
     label_2=label_2,
     label_3=label_3,
     label_4=label_4,
+    conn_plotted=conn_plotted,
 )
 
 plot_phases_quad(

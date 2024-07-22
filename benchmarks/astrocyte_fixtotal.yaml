@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/new_tripartite
+outpath: ../outpath/n_conn
 parameterset:
       name: model_commands
       parameter:
@@ -117,3 +117,5 @@ result:
         - network_size
         - num_connections
         - local_spike_counter
+        - tsodyks_synapse
+        - sic_connection
