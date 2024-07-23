@@ -257,7 +257,7 @@ def plot_all_quad(
             linestyle=styles[i][1],
         )
     ax_legend.legend(
-        frameon=False, fontsize='x-small', bbox_to_anchor=[0.5, 0.5], loc='center',
+        frameon=False, fontsize='small', bbox_to_anchor=[0.5, 0.5], loc='center',
         ncol=1, labelspacing=1)
     for side in ['left', 'right', 'top', 'bottom']:
         ax_legend.spines[side].set_visible(False)
