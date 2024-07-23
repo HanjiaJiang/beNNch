@@ -3,7 +3,6 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-plt.rcParams.update({'font.size': 15})
 
 def plot_all_quad(
          timer_file_1,
@@ -222,7 +221,8 @@ def plot_all_quad(
     if scaling_strength == 'weak':
         xticks = sorted(set(B1.df_data['num_nodes'].values.tolist()))
         ax_cons_twin.set_xticks(xticks)
-        ax_cons_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
+        ax_cons_twin.set_xticklabels(xticklabels, fontsize='small')
         ax_cons_twin.set_xlabel('Network size (number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())
 

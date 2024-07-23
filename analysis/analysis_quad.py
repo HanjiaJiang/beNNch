@@ -7,6 +7,9 @@ from analysis_helper import shell, load
 from plot_all_quad import plot_all_quad
 from plot_phases_quad import plot_phases_quad
 
+import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 18})
+
 # Load analysis configurations
 with open('../config/analysis_config.yaml') as analysis_config_file:
     config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
@@ -94,26 +97,33 @@ elif strength == "strong":
 #    cons_ylims = (-0.2, 3.2)
 #    cons_ylims = (-0.25, 5.25)
     prop_ylims = (-1.0, 36.0)
-    conn_ylims=(3990000, 4010000)
     spk_ylims = (2.85, 3.15)
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 3.7)
 else:
-    cons_ylims = (-0.5, 8.5)
+#    cons_ylims = (-0.5, 8.5)
 #    cons_ylims = (-0.1, 2.1)
-#    cons_ylims = (-2.0, 57.0)
+    cons_ylims = (-2.0, 57.0)
 #    cons_ylims = (-2.0, 52.0)
     prop_ylims = (-2.0, 62.0)
 #    prop_ylims = (-2.0, 52.0)
-    conn_ylims=(3990000, 4010000)
     spk_ylims = (2.85, 3.15)
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 6.2)
 
-conn_plotted = "sic_connection"
-if True:
+plot_tsodyks = True
+if plot_tsodyks:
     conn_plotted = "tsodyks_synapse"
-    conn_ylims = (13990000, 14010000)
+    if strength == "weak":
+        conn_ylims = (None, None)
+    else:
+        conn_ylims = (13990000, 14010000)
+else:
+    conn_plotted = "sic_connection"
+    if strength == "weak":
+        conn_ylims = (None, None)
+    else:
+        conn_ylims = (3990000, 4010000)
 
 plot_all_quad(
     timer_file_1=timer_file_1,

@@ -3,7 +3,6 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
-plt.rcParams.update({'font.size': 20})
 
 def plot_phases_quad(
          timer_file_1,
@@ -179,24 +178,25 @@ def plot_phases_quad(
 
     N_size_labels = B1.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
     if scaling_strength == 'weak':
+        xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
         # 1
         ax_rtf_1_twin.set_xticks(ax_rtf_1.get_xticks().flatten())
-        ax_rtf_1_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        ax_rtf_1_twin.set_xticklabels(xticklabels, fontsize='small')
         ax_rtf_1_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
         ax_rtf_1_twin.set_xlim(ax_rtf_1.get_xlim())
         # 2
         ax_rtf_2_twin.set_xticks(ax_rtf_2.get_xticks().flatten())
-        ax_rtf_2_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        ax_rtf_2_twin.set_xticklabels(xticklabels, fontsize='small')
         ax_rtf_2_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
         ax_rtf_2_twin.set_xlim(ax_rtf_2.get_xlim())
         # 3            
         ax_rtf_3_twin.set_xticks(ax_rtf_3.get_xticks().flatten())
-        ax_rtf_3_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        ax_rtf_3_twin.set_xticklabels(xticklabels, fontsize='small')
         ax_rtf_3_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
         ax_rtf_3_twin.set_xlim(ax_rtf_3.get_xlim())
         # 4
         ax_rtf_4_twin.set_xticks(ax_rtf_4.get_xticks().flatten())
-        ax_rtf_4_twin.set_xticklabels(N_size_labels.tolist(), rotation=30, fontsize='small')
+        ax_rtf_4_twin.set_xticklabels(xticklabels, fontsize='small')
         ax_rtf_4_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
         ax_rtf_4_twin.set_xlim(ax_rtf_4.get_xlim())
 
