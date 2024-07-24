@@ -62,7 +62,7 @@ except:
     label_1 = "Sparse"
     label_2 = "Synchronous"
     label_3 = "Surrogate"
-    label_4 = "No-SIC"
+    label_4 = "No tripartite"
 
 # X axis: "nodes" or "nvp"
 # This is for the x-axis labeling: "Number of nodes" or "Number of threads"
@@ -111,7 +111,7 @@ else:
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 6.2)
 
-plot_tsodyks = True
+plot_tsodyks = False
 if plot_tsodyks:
     conn_plotted = "tsodyks_synapse"
     if strength == "weak":
@@ -124,6 +124,13 @@ else:
         conn_ylims = (None, None)
     else:
         conn_ylims = (3990000, 4010000)
+
+all_auto = True
+if all_auto:
+    cons_ylims = (0, None)
+    conn_ylims = (None, None)
+    prop_ylims = (0, None)
+    spk_ylims = (0, None)
 
 plot_all_quad(
     timer_file_1=timer_file_1,
