@@ -71,10 +71,10 @@ def plot_phases_quad(
     label_2 = label_2.replace('#', '\n')
     label_3 = label_3.replace('#', '\n')
     label_4 = label_4.replace('#', '\n')
-    ax_rtf_1.set_title(label_1, pad=20, fontsize='small', fontweight='bold')
-    ax_rtf_2.set_title(label_2, pad=20, fontsize='small', fontweight='bold')
-    ax_rtf_3.set_title(label_3, pad=20, fontsize='small', fontweight='bold')
-    ax_rtf_4.set_title(label_4, pad=20, fontsize='small', fontweight='bold')
+    ax_rtf_1.set_title(label_1, pad=20, fontsize='large', fontweight='bold')
+    ax_rtf_2.set_title(label_2, pad=20, fontsize='large', fontweight='bold')
+    ax_rtf_3.set_title(label_3, pad=20, fontsize='large', fontweight='bold')
+    ax_rtf_4.set_title(label_4, pad=20, fontsize='large', fontweight='bold')
 
     if scaling_strength == 'weak':
         ax_rtf_1_twin = ax_rtf_1.twiny() # top axis for network_size
@@ -119,11 +119,13 @@ def plot_phases_quad(
             'phase_update_factor',
             'phase_ccd_factor',
             'phase_secondary_factor',
+            'phase_others_factor',
         ]
         fractions = [
             'frac_phase_update',
             'frac_phase_ccd',
             'frac_phase_secondary',
+            'frac_phase_others',
         ]
     if reverse_phases:
         phases.reverse()
@@ -141,11 +143,11 @@ def plot_phases_quad(
     B4.plot_fractions(axis=ax_frac_4, fill_variables=fractions)
 
     ax_rtf_1.set_ylabel('Real-time factor for\nstate propagation')
-    ax_frac_1.set_ylabel('Relative\nreal-time\nfactor (%)', fontsize='small')
-    ax_frac_1.set_xlabel(xlabel, fontsize='small')
-    ax_frac_2.set_xlabel(xlabel, fontsize='small')
-    ax_frac_3.set_xlabel(xlabel, fontsize='small')
-    ax_frac_4.set_xlabel(xlabel, fontsize='small')
+    ax_frac_1.set_ylabel('Relative\nreal-time\nfactor (%)')
+    ax_frac_1.set_xlabel(xlabel)
+    ax_frac_2.set_xlabel(xlabel)
+    ax_frac_3.set_xlabel(xlabel)
+    ax_frac_4.set_xlabel(xlabel)
 
     ax_rtf_1.set_ylim(rtf_ylims)
     ax_frac_1.set_ylim(-10.0, 110.0)
@@ -218,7 +220,7 @@ def plot_phases_quad(
             linewidth=0.5,
             edgecolor='#444444')
     ax_legend.legend(
-        frameon=False, fontsize='small', bbox_to_anchor=[0.5, 0.5], loc='center',
+        frameon=False, fontsize='medium', bbox_to_anchor=[0.4, 0.5], loc='center',
         ncol=1)
     for side in ['left', 'right', 'top', 'bottom']:
         ax_legend.spines[side].set_visible(False)

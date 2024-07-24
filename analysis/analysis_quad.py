@@ -164,4 +164,5 @@ plot_phases_quad(
     label_2=label_2,
     label_3=label_3,
     label_4=label_4,
+    secondary=False,
 )
