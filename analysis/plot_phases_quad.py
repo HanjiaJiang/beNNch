@@ -19,6 +19,7 @@ def plot_phases_quad(
          label_4='d',
          secondary=True,
          reverse_phases=False,
+         ignore_others=True,
          ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -130,7 +131,9 @@ def plot_phases_quad(
     if reverse_phases:
         phases.reverse()
         fractions.reverse()
-
+    if ignore_others:
+        phases.remove('phase_others_factor')
+        fractions.remove('frac_phase_others')
 
     # RTF for state propagation
     B1.plot_fractions(axis=ax_rtf_1, fill_variables=phases)
