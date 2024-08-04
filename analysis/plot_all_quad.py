@@ -232,16 +232,19 @@ def plot_all_quad(
     plt.close()
 
     # Output raw data
-    df_mean_1 = B1.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
-    df_mean_2 = B2.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
-    df_mean_3 = B3.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
-    df_mean_4 = B4.df_data.groupby(["num_nodes", "threads_per_task"]).mean().reset_index()
-    df_mean_1.to_csv(f"{save_path}/df_mean_1.csv", index=False, float_format="%.3f")
-    df_mean_2.to_csv(f"{save_path}/df_mean_2.csv", index=False, float_format="%.3f")
-    df_mean_3.to_csv(f"{save_path}/df_mean_3.csv", index=False, float_format="%.3f")
-    df_mean_4.to_csv(f"{save_path}/df_mean_4.csv", index=False, float_format="%.3f")
-#    df_rel_diff = (df_data_mean - df_ctrl_mean)/df_ctrl_mean
-#    df_rel_diff.to_csv(f"{save_path}/df_rel_diff.csv", index=False, float_format="%.3f")
+    # means
+    df_means = {}
+    labels = [label_1, label_2, label_3, label_4]
+    for i, B_i in enumerate([B1, B2, B3, B4]):
+        B_i.df_data.to_csv(f"{save_path}/df_{labels[i]}.csv", index=False, float_format="%.3f")
+        df_means[labels[i]] = B_i.df_data.copy()
+    # differences
+    df_2_to_1 = (df_means[label_2] - df_means[label_1])/df_means[label_1]
+    df_2_to_1.to_csv(f"{save_path}/df_{label_2}_to_{label_1}.csv", index=False, float_format="%.3f")
+    df_3_to_1 = (df_means[label_3] - df_means[label_1])/df_means[label_1]
+    df_3_to_1.to_csv(f"{save_path}/df_{label_3}_to_{label_1}.csv", index=False, float_format="%.3f")
+    df_1_to_3 = (df_means[label_1] - df_means[label_3])/df_means[label_3]
+    df_1_to_3.to_csv(f"{save_path}/df_{label_1}_to_{label_3}.csv", index=False, float_format="%.3f")
 
     # Make legend figure
     fig, ax_legend = plt.subplots(figsize=(3, 8))
