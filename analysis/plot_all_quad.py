@@ -60,7 +60,7 @@ def plot_all_quad(
     # Plotting
     widths = [1]
     heights = [2, 1, 2, 1]
-    fig = plt.figure(figsize=(6, 8))
+    fig = plt.figure(figsize=(4, 8))
     spec = gridspec.GridSpec(ncols=1, nrows=4, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
@@ -76,7 +76,7 @@ def plot_all_quad(
     if x_axis == 'num_nvp':
         xlabel = 'Number of threads'
     else:
-        xlabel = 'Number of compute nodes'
+        xlabel = 'Number of\ncompute nodes'
 
     trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
 
@@ -223,7 +223,7 @@ def plot_all_quad(
         ax_cons_twin.set_xticks(xticks)
         xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
         ax_cons_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_cons_twin.set_xlabel('Network size (number of cells)')
+        ax_cons_twin.set_xlabel('Network size\n(number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())
 
     plt.tight_layout()
