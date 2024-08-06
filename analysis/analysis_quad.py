@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import yaml
+import csv
 
 from analysis_helper import shell, load
 from plot_all_quad import plot_all_quad
@@ -140,3 +141,34 @@ plot_phases_quad(
     label_4=labels[3],
     secondary=False,
 )
+
+# concatenate .csv files
+def concatenate_csv_files(file_list, output_file):
+    # Open the output file in write mode
+    with open(output_file, 'w', newline='') as outfile:
+        writer = csv.writer(outfile)
+
+        # Variable to track if the header has been written
+        header_written = False
+
+        # Iterate through each file in the file list
+        for file in file_list:
+            with open(file, 'r') as infile:
+                reader = csv.reader(infile)
+
+                # Write the header only once
+                if not header_written:
+                    # Write the header (first row) from the first file
+                    writer.writerow(next(reader))
+                    header_written = True
+                else:
+                    # Skip the header for subsequent files
+                    next(reader)
+
+                # Write the remaining rows
+                for row in reader:
+                    writer.writerow(row)
+
+output_csv = os.path.join(data_paths[0], "df_all.csv")
+
+concatenate_csv_files(timer_files, output_csv)
