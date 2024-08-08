@@ -29,7 +29,7 @@ sim_params = {
 ###############################################################################
 # Set network parameters.
 
-model = "sparse" # "sparse" or "synchronous"
+model = "synchronous" # "sparse" or "synchronous"
 
 network_params = {
     "N_ex": 8000,  # number of excitatory neurons
