@@ -20,7 +20,7 @@ sim_params = {
     "pre_sim_time": 100.0,  # pre-simulation time in ms (data not recorded)
     "sim_time": 100.0,  # simulation time in ms
     "N_analysis": 100,  # number of samples for analysis
-    "n_threads": os.cpu_count(),  # number of threads for NEST
+    "n_threads": int(sys.argv[1]) if len(sys.argv) > 1 else os.cpu_count(),  # number of threads for NEST
     "seed": 1,  # seed for the random module
     "scale": 1, # scale of the model
 }
