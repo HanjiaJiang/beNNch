@@ -1,6 +1,7 @@
 ###############################################################################
 # Import all necessary modules for simulation and plotting.
 
+import csv
 import inspect
 import os
 import sys
@@ -250,6 +251,18 @@ def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
 ###############################################################################
 # This is the main function to run the simulation with.
 
+def write_csv(mydict, file_name):
+    with open(file_name, 'w') as csv_file:
+        writer = csv.writer(csv_file)
+        for key, value in mydict.items():
+            writer.writerow([key, value])
+
+def read_csv(file_name):
+    with open(file_name) as csv_file:
+        reader = csv.reader(csv_file)
+        mydict = dict(reader)
+    return mydict
+
 def run():
     print(network_params)
     print(neuron_params_ex)
@@ -337,23 +350,28 @@ def run():
     df = pd.DataFrame(data)
     df.to_csv(f"{model}.csv", index=False)
 
+    n_hist = 100
+
     # plot n2a histogram
-    n_n2a_hist = 100
+    n_n2a_hist = n_hist if isinstance(n_hist, int) else len(nodes_astro)
     astro_conns = nest.GetConnections(nodes_ex, nodes_astro[:n_n2a_hist])
     astro_targets = astro_conns.get("target")
     plots.plot_conn_hist(astro_targets, subject="n2a", save_path=model, xlabel="Number of n2a connections of an astrocyte", ylabel="Number of cases", title="Bernoulli")
+    write_csv(astro_conns.get(), f"{model}/conn_n2a.csv")
 
-    # plot n2a histogram
-    n_a2n_hist = 100
+    # plot a2n histogram
+    n_a2n_hist = n_hist if isinstance(n_hist, int) else len(nodes_ex)
     a2n_conns = nest.GetConnections(nodes_astro, nodes_ex[:n_a2n_hist])
     a2n_targets = a2n_conns.get("target")
     plots.plot_conn_hist(a2n_targets, subject="a2n", save_path=model, xlabel="Number of a2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
+    write_csv(a2n_conns.get(), f"{model}/conn_a2n.csv")
 
     # plot n2n histogram
-    n_n2n_hist = 100
+    n_n2n_hist = n_hist if isinstance(n_hist, int) else len(nodes_ex)
     n2n_conns = nest.GetConnections(nodes_ex, nodes_ex[:n_n2n_hist])
     n2n_targets = n2n_conns.get("target")
     plots.plot_conn_hist(n2n_targets, subject="n2n", save_path=model, xlabel="Number of n2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
+    write_csv(n2n_conns.get(), f"{model}/conn_n2n.csv")
 
 ###############################################################################
 # Run the script.
