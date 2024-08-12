@@ -139,7 +139,8 @@ plot_phases_quad(
     label_2=labels[1],
     label_3=labels[2],
     label_4=labels[3],
-    secondary=False,
+    secondary=True,
+    ignore_others=False,
 )
 
 # concatenate .csv files
