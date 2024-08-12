@@ -36,10 +36,22 @@ def plot_benchmark_model(n_neurons_hist, events_sr, events_astro, events_neuro, 
 
     # save figure
     plt.savefig(f'{save_path}/benchmark_model.eps', format='eps', dpi=400)
+    plt.close()
 
     # save data to pickle
     with open(f'{save_path}/data.pkl', 'wb') as f:
         pickle.dump([n_neurons_hist, events_sr, events_astro, events_neuro], f)
+
+def plot_conn_hist(targets, subject="", bins=list(range(0, 1001, 10)), save_path=".", figsize=(4, 3), xlabel="X", ylabel="Y", title=""):
+    hist, bin_edges = np.histogram(targets, bins=np.arange(min(targets), max(targets)+2))
+    plt.hist(hist, bins)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(f'{save_path}/conn_hist_{subject}.eps', dpi=400)
+    plt.savefig(f'{save_path}/conn_hist_{subject}.png', dpi=400)
+    plt.close()
 
 def plot_astro_dynamics(axe, events, start=0.0, xlims=(None, None), ylims_1=(None, None), ylims_2=(None, None), twin=True):
     # astrocyte data

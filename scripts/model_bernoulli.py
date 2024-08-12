@@ -18,8 +18,8 @@ import plots
 
 sim_params = {
     "dt": 0.1,  # simulation resolution in ms
-    "pre_sim_time": 1000.0,  # pre-simulation time in ms (data not recorded)
-    "sim_time": 10000.0,  # simulation time in ms
+    "pre_sim_time": 100.0,  # pre-simulation time in ms (data not recorded)
+    "sim_time": 100.0,  # simulation time in ms
     "N_analysis": 100,  # number of samples for analysis
     "n_threads": int(sys.argv[1]) if len(sys.argv) > 1 else os.cpu_count(),  # number of threads for NEST
     "seed": 1,  # seed for the random module
@@ -336,6 +336,24 @@ def run():
     data["I_SIC"] = [I_SIC]
     df = pd.DataFrame(data)
     df.to_csv(f"{model}.csv", index=False)
+
+    # plot n2a histogram
+    n_n2a_hist = 100
+    astro_conns = nest.GetConnections(nodes_ex, nodes_astro[:n_n2a_hist])
+    astro_targets = astro_conns.get("target")
+    plots.plot_conn_hist(astro_targets, subject="n2a", save_path=model, xlabel="Number of n2a connections of an astrocyte", ylabel="Number of cases", title="Bernoulli")
+
+    # plot n2a histogram
+    n_a2n_hist = 100
+    a2n_conns = nest.GetConnections(nodes_astro, nodes_ex[:n_a2n_hist])
+    a2n_targets = a2n_conns.get("target")
+    plots.plot_conn_hist(a2n_targets, subject="a2n", save_path=model, xlabel="Number of a2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
+
+    # plot n2n histogram
+    n_n2n_hist = 100
+    n2n_conns = nest.GetConnections(nodes_ex, nodes_ex[:n_n2n_hist])
+    n2n_targets = n2n_conns.get("target")
+    plots.plot_conn_hist(n2n_targets, subject="n2n", save_path=model, xlabel="Number of n2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
 
 ###############################################################################
 # Run the script.
