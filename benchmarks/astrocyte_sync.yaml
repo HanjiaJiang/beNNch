@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/fix0809
+outpath: ../outpath/fix0812
 parameterset:
       name: model_commands
       parameter:

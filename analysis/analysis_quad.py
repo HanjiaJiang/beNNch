@@ -86,7 +86,7 @@ else:
 #    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 6.2)
 
-plot_tsodyks = False
+plot_tsodyks = True
 if plot_tsodyks:
     conn_plotted = "tsodyks_synapse"
     if strength == "weak":
@@ -105,7 +105,7 @@ if all_auto:
     cons_ylims = (0, None)
     conn_ylims = (None, None)
     prop_ylims = (0, None)
-    spk_ylims = (0, None)
+    spk_ylims = (None, None)
 
 plot_all_quad(
     timer_file_1=timer_files[0],
@@ -124,6 +124,7 @@ plot_all_quad(
     label_3=labels[2],
     label_4=labels[3],
     conn_plotted=conn_plotted,
+    compare_four=False, # compare only two
 )
 
 plot_phases_quad(

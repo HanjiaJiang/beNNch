@@ -23,8 +23,8 @@ parameterset:
     - name: model_parameters
       parameter:
        - {name: model_name, type: string, _: "astro-bench"}  # for identifying the model, can be any unique string
-       - {name: model_time_sim, type: float, _: "10000."}  # biological time to be simulated in ms
-       - {name: model_time_presim, type: float, _: "1000."}  # presimulation time for avoiding initial transients in ms
+       - {name: model_time_sim, type: float, _: "1000."}  # biological time to be simulated in ms
+       - {name: model_time_presim, type: float, _: "100."}  # presimulation time for avoiding initial transients in ms
        - {name: scale_N, type: float, _: "1."}  # scaling the number of neurons, 1. -> original model
        - {name: record_spikes, type: string, _: "False"}  # whether to write spiking output to file, either True or False
        - {name: rng_seed, type: int, _: "1,2,3,4"}  # rng seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs

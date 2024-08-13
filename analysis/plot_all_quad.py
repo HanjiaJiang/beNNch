@@ -21,6 +21,7 @@ def plot_all_quad(
          label_3='c',
          label_4='d',
          conn_plotted="sic_connection",
+         compare_four=True,
     ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -95,18 +96,19 @@ def plot_all_quad(
                 line_color='k',
                 linewidth=2,
                 linestyle=':')
-    B3.plot_main(quantities=['wall_time_create+wall_time_connect'],
-                axis=ax_cons,
-                subject=label_3,
-                line_color='gray',
-                linewidth=2,
-                linestyle='-')
-    B4.plot_main(quantities=['wall_time_create+wall_time_connect'],
-                axis=ax_cons,
-                subject=label_4,
-                line_color='gray',
-                linewidth=2,
-                linestyle=':')
+    if compare_four:
+        B3.plot_main(quantities=['wall_time_create+wall_time_connect'],
+                    axis=ax_cons,
+                    subject=label_3,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle='-')
+        B4.plot_main(quantities=['wall_time_create+wall_time_connect'],
+                    axis=ax_cons,
+                    subject=label_4,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle=':')
 
     # State propagation
     B1.plot_main(quantities=['wall_time_sim'],
@@ -121,18 +123,19 @@ def plot_all_quad(
                 line_color='k',
                 linewidth=2,
                 linestyle=':')
-    B3.plot_main(quantities=['wall_time_sim'],
-                axis=ax_prop,
-                subject=label_3,
-                line_color='gray',
-                linewidth=2, 
-                linestyle='-')
-    B4.plot_main(quantities=['wall_time_sim'],
-                axis=ax_prop,
-                subject=label_4,
-                line_color='gray',
-                linewidth=2,
-                linestyle=':')
+    if compare_four:
+        B3.plot_main(quantities=['wall_time_sim'],
+                    axis=ax_prop,
+                    subject=label_3,
+                    line_color='gray',
+                    linewidth=2, 
+                    linestyle='-')
+        B4.plot_main(quantities=['wall_time_sim'],
+                    axis=ax_prop,
+                    subject=label_4,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle=':')
 
     # Number of connections
     B1.plot_main(quantities=[conn_plotted],
@@ -147,18 +150,19 @@ def plot_all_quad(
                 line_color='k',
                 linewidth=2,
                 linestyle=':')
-    B3.plot_main(quantities=[conn_plotted],
-                axis=ax_conn,
-                subject=label_3,
-                line_color='gray',
-                linewidth=2,
-                linestyle='-')
-    B4.plot_main(quantities=[conn_plotted],
-                axis=ax_conn,
-                subject=label_4,
-                line_color='gray',
-                linewidth=2,
-                linestyle=':')
+    if compare_four:
+        B3.plot_main(quantities=[conn_plotted],
+                    axis=ax_conn,
+                    subject=label_3,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle='-')
+        B4.plot_main(quantities=[conn_plotted],
+                    axis=ax_conn,
+                    subject=label_4,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle=':')
 
     # Average firing rate
     B1.plot_main(quantities=['average_firing_rate'],
@@ -173,18 +177,19 @@ def plot_all_quad(
                 line_color='k',
                 linewidth=2,
                 linestyle=':')
-    B3.plot_main(quantities=['average_firing_rate'],
-                axis=ax_spk,
-                subject=label_3,
-                line_color='gray',
-                linewidth=2,
-                linestyle='-')
-    B4.plot_main(quantities=['average_firing_rate'],
-                axis=ax_spk,
-                subject=label_4,
-                line_color='gray',
-                linewidth=2,
-                linestyle=':')
+    if compare_four:
+        B3.plot_main(quantities=['average_firing_rate'],
+                    axis=ax_spk,
+                    subject=label_3,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle='-')
+        B4.plot_main(quantities=['average_firing_rate'],
+                    axis=ax_spk,
+                    subject=label_4,
+                    line_color='gray',
+                    linewidth=2,
+                    linestyle=':')
 
     ax_cons.set_ylabel('Network\nconstruction\ntime (s)')
     ax_prop.set_ylabel('State\npropagation\ntime (s) for\n'
@@ -249,7 +254,8 @@ def plot_all_quad(
     # Make legend figure
     fig, ax_legend = plt.subplots(figsize=(3, 8))
     styles = [('k', '-'), ('k', ':'), ('gray', '-'), ('gray', ':')]
-    for i, label in enumerate([label_1, label_2, label_3, label_4]):
+    labels = [label_1, label_2, label_3, label_4] if compare_four else [label_1, label_2]
+    for i, label in enumerate(labels):
         ax_legend.plot(
             [],
             [],
