@@ -350,28 +350,17 @@ def run():
     df = pd.DataFrame(data)
     df.to_csv(f"{model}.csv", index=False)
 
-    n_hist = 100
+    plot_conn_distr(nodes_ex, nodes_astro)
 
-    # plot n2a histogram
-    n_n2a_hist = n_hist if isinstance(n_hist, int) else len(nodes_astro)
-    astro_conns = nest.GetConnections(nodes_ex, nodes_astro[:n_n2a_hist])
-    astro_targets = astro_conns.get("target")
-    plots.plot_conn_hist(astro_targets, subject="n2a", save_path=model, xlabel="Number of n2a connections of an astrocyte", ylabel="Number of cases", title="Bernoulli")
-    write_csv(astro_conns.get(), f"{model}/conn_n2a.csv")
-
-    # plot a2n histogram
-    n_a2n_hist = n_hist if isinstance(n_hist, int) else len(nodes_ex)
-    a2n_conns = nest.GetConnections(nodes_astro, nodes_ex[:n_a2n_hist])
-    a2n_targets = a2n_conns.get("target")
-    plots.plot_conn_hist(a2n_targets, subject="a2n", save_path=model, xlabel="Number of a2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
-    write_csv(a2n_conns.get(), f"{model}/conn_a2n.csv")
-
-    # plot n2n histogram
-    n_n2n_hist = n_hist if isinstance(n_hist, int) else len(nodes_ex)
-    n2n_conns = nest.GetConnections(nodes_ex, nodes_ex[:n_n2n_hist])
-    n2n_targets = n2n_conns.get("target")
-    plots.plot_conn_hist(n2n_targets, subject="n2n", save_path=model, xlabel="Number of n2n connections of a neuron", ylabel="Number of cases", title="Bernoulli")
-    write_csv(n2n_conns.get(), f"{model}/conn_n2n.csv")
+def plot_conn_distr(nodes_ex, nodes_astro, n_hist=None):
+    for conn_name, source_nodes, target_nodes in zip(["n2n", "n2a", "a2n"], [nodes_ex, nodes_ex, nodes_astro], [nodes_ex, nodes_astro, nodes_ex]):
+        n_hist_tmp = n_hist if isinstance(n_hist, int) else len(target_nodes)
+        conns = nest.GetConnections(source_nodes, target_nodes[:n_hist_tmp])
+        targets = conns.get("target")
+        plots.plot_conn_hist(
+            targets, subject=conn_name, save_path=model,
+            xlabel=f"Number of {conn_name} connections per target",
+            ylabel="Number of cases", title="Bernoulli")
 
 ###############################################################################
 # Run the script.
