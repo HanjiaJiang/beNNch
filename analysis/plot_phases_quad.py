@@ -223,7 +223,7 @@ def plot_phases_quad(
             linewidth=0.5,
             edgecolor='#444444')
     ax_legend.legend(
-        frameon=False, fontsize='small', bbox_to_anchor=[0.42, 0.5], loc='center',
+        frameon=False, fontsize='small', bbox_to_anchor=[0.45, 0.5], loc='center',
         ncol=1)
     for side in ['left', 'right', 'top', 'bottom']:
         ax_legend.spines[side].set_visible(False)

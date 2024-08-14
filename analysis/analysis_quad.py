@@ -9,7 +9,7 @@ from plot_all_quad import plot_all_quad
 from plot_phases_quad import plot_phases_quad
 
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 18})
+plt.rcParams.update({'font.size': 16})
 
 # Load analysis configurations
 config_file_name = '../config/analysis_config.yaml'
@@ -124,7 +124,7 @@ plot_all_quad(
     label_3=labels[2],
     label_4=labels[3],
     conn_plotted=conn_plotted,
-    compare_four=False, # compare only two
+    compare_four=True,
 )
 
 plot_phases_quad(
