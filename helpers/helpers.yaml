@@ -166,4 +166,9 @@ patternset:
        - {name: e_counter, mode: pattern, dotall: True, type: float, "_": e_counter $jube_pat_fp}
        - {name: tsodyks_synapse, mode: pattern, dotall: True, type: float, "_": tsodyks_synapse $jube_pat_fp}
        - {name: sic_connection, mode: pattern, dotall: True, type: float, "_": sic_connection $jube_pat_fp}
+       - {name: time_construction_connect_third_inner_count, mode: pattern, type: float, "_": time_construction_connect_third_inner_count $jube_pat_fp}
+       - {name: time_construction_connect_third_inner_max, mode: pattern, type: float, "_": time_construction_connect_third_inner_max $jube_pat_fp}
+       - {name: time_construction_connect_third_inner_fill, mode: pattern, type: float, "_": time_construction_connect_third_inner_fill $jube_pat_fp}
+       - {name: time_construction_connect_third_inner_communicate, mode: pattern, type: float, "_": time_construction_connect_third_inner_communicate $jube_pat_fp}
+       - {name: time_construction_connect_third_inner_connect, mode: pattern, type: float, "_": time_construction_connect_third_inner_connect $jube_pat_fp}
 
