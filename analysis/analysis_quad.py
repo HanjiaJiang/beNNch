@@ -7,6 +7,7 @@ import csv
 from analysis_helper import shell, load
 from plot_all_quad import plot_all_quad
 from plot_phases_quad import plot_phases_quad
+from plot_thirdin import plot_thirdin
 
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 16})
@@ -174,3 +175,11 @@ def concatenate_csv_files(file_list, output_file):
 output_csv = os.path.join(data_paths[0], "df_all.csv")
 
 concatenate_csv_files(timer_files, output_csv)
+
+plot_thirdin(
+     timer_file_1=timer_files[0],
+     save_path=data_paths[0],
+     scaling_strength=strength,
+     x_axis=x_axis_label,
+     label_1=labels[0],
+)
