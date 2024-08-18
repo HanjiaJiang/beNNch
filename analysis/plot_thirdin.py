@@ -26,9 +26,9 @@ def plot_thirdin(
 
     # Plotting
     widths = [1]
-    heights = [1, 1, 1, 1, 1]
-    fig = plt.figure(figsize=(4, 8))
-    spec = gridspec.GridSpec(ncols=1, nrows=5, figure=fig,
+    heights = [1, 1, 1, 1, 1, 1]
+    fig = plt.figure(figsize=(4, 10))
+    spec = gridspec.GridSpec(ncols=1, nrows=6, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
 
@@ -37,6 +37,7 @@ def plot_thirdin(
     ax_fill = fig.add_subplot(spec[2, 0])
     ax_communicate = fig.add_subplot(spec[3, 0])
     ax_connect = fig.add_subplot(spec[4, 0])
+    ax_sync = fig.add_subplot(spec[5, 0])
 
     if scaling_strength == 'weak':
         ax_count_twin = ax_coount.twiny() # top axis for network_size
@@ -79,14 +80,21 @@ def plot_thirdin(
                 line_color='k',
                 linewidth=2,
                 linestyle='-')
+    B1.plot_main(quantities=['time_synchronize'],
+                axis=ax_sync,
+                subject=label_1,
+                line_color='k',
+                linewidth=2,
+                linestyle='-')
 
     ax_count.set_ylabel('Time for\n\"count\" (s)')
     ax_max.set_ylabel('Time for\n\"max\" (s)')
     ax_fill.set_ylabel('Time for\n\"fill\"(s)')
-    ax_communicate.set_ylabel('Time for\n\"communicate\"\n(s)')
+    ax_communicate.set_ylabel('Time for\n\"commun.\"\n(s)')
     ax_connect.set_ylabel('Time for\n\"connect\" (s)')
+    ax_sync.set_ylabel('Time for\n\"synchronize\"\n(s)')
 
-    ax_connect.set_xlabel(xlabel)
+    ax_sync.set_xlabel(xlabel)
 
     if x_axis == 'num_nvp':
         xticks = ax_count.get_xticks().flatten()

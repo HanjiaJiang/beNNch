@@ -77,6 +77,7 @@ metrics = ['time_collocate_spike_data',
            'time_construction_connect_third_inner_fill',
            'time_construction_connect_third_inner_communicate',
            'time_construction_connect_third_inner_connect',
+           'time_synchronize',
           ]
 
 metrics_sum = ['base_memory',

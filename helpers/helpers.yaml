@@ -171,4 +171,5 @@ patternset:
        - {name: time_construction_connect_third_inner_fill, mode: pattern, type: float, "_": time_construction_connect_third_inner_fill $jube_pat_fp}
        - {name: time_construction_connect_third_inner_communicate, mode: pattern, type: float, "_": time_construction_connect_third_inner_communicate $jube_pat_fp}
        - {name: time_construction_connect_third_inner_connect, mode: pattern, type: float, "_": time_construction_connect_third_inner_connect $jube_pat_fp}
+       - {name: time_synchronize, mode: pattern, type: float, "_": time_synchronize $jube_pat_fp}
 
