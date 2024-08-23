@@ -40,7 +40,7 @@ def plot_thirdin(
     ax_sync = fig.add_subplot(spec[5, 0])
 
     if scaling_strength == 'weak':
-        ax_count_twin = ax_coount.twiny() # top axis for network_size
+        ax_count_twin = ax_count.twiny() # top axis for network_size
 
     if x_axis == 'num_nvp':
         xlabel = 'Number of threads'
