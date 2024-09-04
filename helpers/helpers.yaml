@@ -133,19 +133,19 @@ parameterset:
 patternset:
     name: timer_pattern
     pattern:
-       - {name: wall_time_sim, mode: pattern, type: float, "_": time_simulate $jube_pat_fp}
-       - {name: wall_time_create, mode: pattern, type: float, "_": time_construction_create $jube_pat_fp}
-       - {name: wall_time_connect, mode: pattern, type: float, "_": time_construction_connect $jube_pat_fp}
-       - {name: wall_time_phase_collocate, mode: pattern, type: float, "_": time_collocate_spike_data $jube_pat_fp}
-       - {name: wall_time_phase_communicate, mode: pattern, type: float, "_": time_communicate_spike_data $jube_pat_fp}
-       - {name: wall_time_phase_deliver, mode: pattern, type: float, "_": time_deliver_spike_data $jube_pat_fp}
-       - {name: wall_time_phase_update, mode: pattern, type: float, "_": time_update $jube_pat_fp}
-       - {name: wall_time_communicate_target_data, mode: pattern, type: float, "_": time_communicate_target_data $jube_pat_fp}
-       - {name: wall_time_gather_spike_data, mode: pattern, type: float, "_": time_gather_spike_data $jube_pat_fp}
-       - {name: wall_time_gather_target_data, mode: pattern, type: float, "_": time_gather_target_data $jube_pat_fp}
-       - {name: wall_time_communicate_prepare, mode: pattern, type: float, "_": time_communicate_prepare $jube_pat_fp}
-       - {name: wall_time_phase_deliver_secondary, mode: pattern, type: float, "_": time_deliver_secondary_data $jube_pat_fp}
-       - {name: wall_time_phase_gather_secondary, mode: pattern, type: float, "_": time_gather_secondary_data $jube_pat_fp}
+       - {name: time_simulate, mode: pattern, type: float, "_": time_simulate $jube_pat_fp}
+       - {name: time_construction_create, mode: pattern, type: float, "_": time_construction_create $jube_pat_fp}
+       - {name: time_construction_connect, mode: pattern, type: float, "_": time_construction_connect $jube_pat_fp}
+       - {name: time_collocate_spike_data, mode: pattern, type: float, "_": time_collocate_spike_data $jube_pat_fp}
+       - {name: time_communicate_spike_data, mode: pattern, type: float, "_": time_communicate_spike_data $jube_pat_fp}
+       - {name: time_deliver_spike_data, mode: pattern, type: float, "_": time_deliver_spike_data $jube_pat_fp}
+       - {name: time_update, mode: pattern, type: float, "_": time_update $jube_pat_fp}
+       - {name: time_communicate_target_data, mode: pattern, type: float, "_": time_communicate_target_data $jube_pat_fp}
+       - {name: time_gather_spike_data, mode: pattern, type: float, "_": time_gather_spike_data $jube_pat_fp}
+       - {name: time_gather_target_data, mode: pattern, type: float, "_": time_gather_target_data $jube_pat_fp}
+       - {name: time_communicate_prepare, mode: pattern, type: float, "_": time_communicate_prepare $jube_pat_fp}
+       - {name: time_deliver_secondary_data, mode: pattern, type: float, "_": time_deliver_secondary_data $jube_pat_fp}
+       - {name: time_gather_secondary_data, mode: pattern, type: float, "_": time_gather_secondary_data $jube_pat_fp}
        - {name: py_time_kernel_prepare, mode: pattern, dotall: True, type: float, "_": py_time_kernel_prepare $jube_pat_fp}
        - {name: py_time_network_local, mode: pattern, dotall: True, type: float, "_": py_time_network_local $jube_pat_fp}
        - {name: py_time_network_global, mode: pattern, dotall: True, type: float, "_": py_time_network_global $jube_pat_fp}
