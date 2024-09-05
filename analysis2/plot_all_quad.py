@@ -222,7 +222,13 @@ def plot_all_quad(
         ax_spk.set_xticks(xticks)
         ax_spk.set_xticklabels(xticklabels)
 
-    N_size_labels = B1.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
+    # get network size(s) and add to plot
+    if 'N_ex' in B1.df_data and 'N_ex' in B1.df_data and 'N_in' in B1.df_data:
+        # calculate from recording
+        N_size_labels = (B1.df_data['N_ex'].values + B1.df_data['N_in'].values + B1.df_data['N_astro'].values).astype(int)
+    else:
+        # calculate from network_size (all nodes in NEST) minus one poisson generator
+        N_size_labels = B1.df_data['network_size'].values.astype(int) - 1
     if scaling_strength == 'weak':
         xticks = sorted(set(B1.df_data['num_nodes'].values.tolist()))
         ax_cons_twin.set_xticks(xticks)

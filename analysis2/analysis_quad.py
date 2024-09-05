@@ -51,7 +51,7 @@ except:
 bench_path = glob.glob(os.path.join(data_paths[0], '*_bench/work'))
 bench_path.sort()
 #cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
-#job_info = load(os.path.join(bench_path[0], 'job.json'))
+job_info = load(os.path.join(bench_path[0], 'job.json'))
 
 # Strong or weak scaling (if not given, get it from job_info)
 # This is for the "Network size" labeling for weak scaling cases

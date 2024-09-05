@@ -177,7 +177,13 @@ def plot_phases_quad(
         ax_frac_4.set_xticks(xticks)
         ax_frac_4.set_xticklabels(xticklabels)
 
-    N_size_labels = B1.df_data['network_size'].values.astype(int) - 1 # minus 1 poisson generator
+    # get network size(s) and add to plot
+    if 'N_ex' in B1.df_data and 'N_ex' in B1.df_data and 'N_in' in B1.df_data:
+        # calculate from recording
+        N_size_labels = (B1.df_data['N_ex'].values + B1.df_data['N_in'].values + B1.df_data['N_astro'].values).astype(int)
+    else:
+        # calculate from network_size (all nodes in NEST) minus one poisson generator
+        N_size_labels = B1.df_data['network_size'].values.astype(int) - 1
     if scaling_strength == 'weak':
         xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
         # 1

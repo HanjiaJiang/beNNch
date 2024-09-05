@@ -122,9 +122,6 @@ class Plot():
                  'py_time_create': ['mean', 'std'],
                  'py_time_connect': ['mean', 'std'],
                  'network_size': 'first',
-                 'N_ex': 'first',
-                 'N_in': 'first',
-                 'N_astro': 'first',
                  'num_connections': ['mean', 'std'],
                  'local_spike_counter': ['mean', 'std'],
                  'tsodyks_synapse': ['mean', 'std'],
@@ -139,14 +136,17 @@ class Plot():
                'py_time_create', 'py_time_create_std',
                'py_time_connect', 'py_time_connect_std',
                'network_size',
-               'N_ex',
-               'N_in',
-               'N_astro',
                'num_connections', 'num_connections_std',
                'local_spike_counter', 'local_spike_counter_std',
                'tsodyks_synapse', 'tsodyks_synapse_std',
                'sic_connection', 'sic_connection_std',
                ]
+
+        N_recorders = ['N_ex', 'N_in', 'N_astro']
+        for N_recorder in N_recorders:
+            if N_recorder in df.columns:
+                dict_.update({N_recorder: 'first'})
+                col.append(N_recorder)
 
         # Timers for connection building in TripartiteConnect()
         detailed_timers = [
@@ -271,7 +271,6 @@ class Plot():
 
         # average firing rate
         if 'N_ex' in df.columns and 'N_in' in df.columns:
-            print('N_ex and N_in in df. Use them to calculate firing rate.')
             df['average_firing_rate'] = df['total_spike_count_per_s']/(df['N_ex'] + df['N_in'])
             df['average_firing_rate_std'] = df['total_spike_count_per_s_std']/(df['N_ex'] + df['N_in'])
         else:
