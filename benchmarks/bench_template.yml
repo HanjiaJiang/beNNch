@@ -117,6 +117,9 @@ result:
         - py_time_create
         - py_time_connect
         - network_size
+        - N_ex
+        - N_in
+        - N_astro
         - num_connections
         - local_spike_counter
         - tsodyks_synapse

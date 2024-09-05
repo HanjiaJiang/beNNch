@@ -112,7 +112,6 @@ class Plot():
                 raise ValueError('Warning! Python timers are not found. ' +
                                  'Construction time measurements will not ' +
                                  'be accurate.')
-
         dict_ = {'num_nodes': 'first',
                  'threads_per_task': 'first',
                  'tasks_per_node': 'first',
@@ -123,6 +122,9 @@ class Plot():
                  'py_time_create': ['mean', 'std'],
                  'py_time_connect': ['mean', 'std'],
                  'network_size': 'first',
+                 'N_ex': 'first',
+                 'N_in': 'first',
+                 'N_astro': 'first',
                  'num_connections': ['mean', 'std'],
                  'local_spike_counter': ['mean', 'std'],
                  'tsodyks_synapse': ['mean', 'std'],
@@ -137,6 +139,9 @@ class Plot():
                'py_time_create', 'py_time_create_std',
                'py_time_connect', 'py_time_connect_std',
                'network_size',
+               'N_ex',
+               'N_in',
+               'N_astro',
                'num_connections', 'num_connections_std',
                'local_spike_counter', 'local_spike_counter_std',
                'tsodyks_synapse', 'tsodyks_synapse_std',
@@ -265,8 +270,14 @@ class Plot():
         df['total_spike_count_per_s_std'] = (df['local_spike_counter_std'] / df['model_time_sim'])
 
         # average firing rate
-        df['average_firing_rate'] = df['total_spike_count_per_s']/((df['network_size']-1)/2) # minus 1 Poisson generator
-        df['average_firing_rate_std'] = df['total_spike_count_per_s_std']/((df['network_size']-1)/2)
+        if 'N_ex' in df.columns and 'N_in' in df.columns:
+            print('N_ex and N_in in df. Use them to calculate firing rate.')
+            df['average_firing_rate'] = df['total_spike_count_per_s']/(df['N_ex'] + df['N_in'])
+            df['average_firing_rate_std'] = df['total_spike_count_per_s_std']/(df['N_ex'] + df['N_in'])
+        else:
+            print('N_ex or N_in not in df!')
+            df['average_firing_rate'] = df['total_spike_count_per_s']/((df['network_size']-1)/2) # minus 1 Poisson generator
+            df['average_firing_rate_std'] = df['total_spike_count_per_s_std']/((df['network_size']-1)/2)
 
     def plot_fractions(self, axis, fill_variables,
                        interpolate=False, step=None, log=False, alpha=1.,
