@@ -54,7 +54,7 @@ def plot_phases_quad(
     # Plotting
     widths = [1, 1, 1, 1]
     heights = [4, 1]
-    fig = plt.figure(figsize=(12, 8))
+    fig = plt.figure(figsize=(10, 8))
     spec = gridspec.GridSpec(ncols=4, nrows=2, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
