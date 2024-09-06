@@ -26,10 +26,12 @@ for i in [1, 2, 3, 4]:
     timer_file_i = os.path.join(path_i, "timer_file.csv")
     timer_files.append(timer_file_i)
     # analyse and save plot raw data to .csv
-    shell(
-        f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_i};"
-        + f" jube result {config['jube_outpath']} --id {jube_id_i} > "
-        + timer_file_i)
+    if not os.path.isfile(timer_file_i):
+        print(f"reload {timer_file_i} ...")
+        shell(
+            f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_i};"
+            + f" jube result {config['jube_outpath']} --id {jube_id_i} > "
+            + timer_file_i)
 
 # Labels
 try:
