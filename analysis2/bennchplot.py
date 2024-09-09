@@ -201,7 +201,7 @@ class Plot():
             df['time_construct_std'] = (np.sqrt((df['time_construction_create_std']**2 + df['time_construction_connect_std']**2)))
         else:
             df['time_construct'] = (df['py_time_create'] + df['py_time_connect'])
-            df['time_construct_std'] = (np.sqrt((df['py_time_create']**2 + df['py_time_connect']**2)))
+            df['time_construct_std'] = (np.sqrt((df['py_time_create_std']**2 + df['py_time_connect_std']**2)))
         df['sim_factor'] = (df['time_simulate'] / df['model_time_sim'])
         df['sim_factor_std'] = (df['time_simulate_std'] / df['model_time_sim'])
 

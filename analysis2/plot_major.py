@@ -64,7 +64,7 @@ def plot_major(
                 linestyle=styles[i])
 
     ax_cons.set_ylabel('Network construction\ntime (s)')
-    ax_prop.set_ylabel('State propagation time (s)\nfor'
+    ax_prop.set_ylabel('State propagation time (s)\nfor '
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(pobjects[0].df_data.model_time_sim.values)[0]:.0f} s')
 
