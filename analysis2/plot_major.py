@@ -125,3 +125,85 @@ def plot_major(
     plt.savefig(f'{save_path}/legend_major.png', dpi=400)
     plt.savefig(f'{save_path}/legend_major.eps', dpi=400)
     plt.close()
+
+def plot_conn_fr(
+         files,
+         save_path,
+         scaling_strength,
+         x_axis='num_nodes',
+         conn_ylims=(0, None),
+         fr_ylims=(0, None),
+         colors=['k', 'k', 'gray', 'gray'],
+         styles=['-', ':', '-', ':'],
+    ):
+
+    x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
+
+    pobjects = []
+    for i, file in enumerate(files):
+        args = {'data_file': file, 'x_axis': [x_axis], 'time_scaling': 1e3}
+        B = bp.Plot(**args)
+        pobjects.append(B)
+
+    # Plotting
+    widths = [1]
+    heights = [1, 1]
+    fig = plt.figure(figsize=(3, 8))
+    spec = gridspec.GridSpec(ncols=1, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
+
+    ax_conn = fig.add_subplot(spec[0, 0])
+    ax_fr = fig.add_subplot(spec[1, 0])
+
+    if scaling_strength == 'weak':
+        ax_conn_twin = ax_conn.twiny() # top axis for network_size
+
+    if x_axis == 'num_nvp':
+        xlabel = 'Number of VPs'
+    else:
+        xlabel = 'Number of\ncompute nodes'
+
+    trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
+
+    # Network conntruction
+    lw = 2
+    for i in range(len(pobjects)):
+        pobjects[i].plot_main(quantities=['tsodyks_synapse'],
+                axis=ax_conn,
+                subject='tsodyks_synapse',
+                line_color=colors[i],
+                linewidth=lw,
+                linestyle=styles[i])
+        pobjects[i].plot_main(quantities=['average_firing_rate'],
+                axis=ax_fr,
+                subject='average_firing_rate',
+                line_color=colors[i],
+                linewidth=lw,
+                linestyle=styles[i])
+
+    ax_conn.set_ylabel('Number of\ntsodyks_synapse')
+    ax_fr.set_ylabel('Mean neuronal\nfiring rate')
+
+    ax_fr.set_xlabel(xlabel)
+
+    ax_conn.set_ylim(conn_ylims)
+    ax_fr.set_ylim(fr_ylims)
+
+    # get network size(s) and add to plot
+    if 'N_ex' in pobjects[0].df_data and 'N_ex' in pobjects[0].df_data and 'N_in' in pobjects[0].df_data:
+        # calculate from recording
+        N_size_labels = (pobjects[0].df_data['N_ex'].values + pobjects[0].df_data['N_in'].values + pobjects[0].df_data['N_astro'].values).astype(int)
+    else:
+        # calculate from network_size (all nodes in NEST) minus one poisson generator
+        N_size_labels = pobjects[0].df_data['network_size'].values.astype(int) - 1
+    if scaling_strength == 'weak':
+        xticks = sorted(set(pobjects[0].df_data['num_nodes'].values.tolist()))
+        ax_conn_twin.set_xticks(xticks)
+        xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
+        ax_conn_twin.set_xticklabels(xticklabels, fontsize='small')
+        ax_conn_twin.set_xlabel('Network size\n(number of cells)')
+        ax_conn_twin.set_xlim(ax_conn.get_xlim())
+
+    plt.tight_layout()
+    plt.savefig(f'{save_path}/plot_conn_fr.png', dpi=400)
+    plt.savefig(f'{save_path}/plot_conn_fr.eps', format='eps', dpi=400)
+    plt.close()

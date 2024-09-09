@@ -5,10 +5,8 @@ import yaml
 import csv
 
 from analysis_helper import shell, load
-from plot_all_quad import plot_all_quad
 from plot_phases_quad import plot_phases_quad
-from plot_thirdin import plot_thirdin
-from plot_major import plot_major
+from plot_major import plot_major, plot_conn_fr
 
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 16})
@@ -53,7 +51,6 @@ except:
 # take the job and cpu info from first bench job, assuming all nodes are equal
 bench_path = glob.glob(os.path.join(data_paths[0], '*_bench/work'))
 bench_path.sort()
-#cpu_info = load(os.path.join(bench_path[0], 'cpu.json'))
 job_info = load(os.path.join(bench_path[0], 'job.json'))
 
 # Strong or weak scaling (if not given, get it from job_info)
@@ -64,56 +61,26 @@ except:
     strength = 'strong'
 
 # Plot layout
+cons_ylims = (0, None)
+prop_ylims = (0, None)
+spk_ylims = (None, None)
 if x_axis_label == "num_nvp":
-    cons_ylims = (-0.25, 5.25)
-    prop_ylims = (-5.0, 105.0)
-    conn_ylims=(3990000, 4010000),
-    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    cons_ylims = (-0.5, 8.5)
-#    cons_ylims = (-0.25, 5.25)
-#    cons_ylims = (-0.2, 3.2)
-#    cons_ylims = (-0.25, 5.25)
-    prop_ylims = (-1.0, 36.0)
-    spk_ylims = (2.85, 3.15)
-#    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 3.7)
 else:
-#    cons_ylims = (-0.5, 8.5)
-#    cons_ylims = (-0.1, 2.1)
-    cons_ylims = (-2.0, 57.0)
-#    cons_ylims = (-2.0, 52.0)
-    prop_ylims = (-2.0, 62.0)
-#    prop_ylims = (-2.0, 52.0)
-    spk_ylims = (2.85, 3.15)
-#    spk_ylims = (-0.5, 10.5)
     rtf_ylims = (-0.2, 6.2)
-
-plot_tsodyks = True
-if plot_tsodyks:
-    conn_plotted = "tsodyks_synapse"
-    if strength == "weak":
-        conn_ylims = (None, None)
-    else:
-        conn_ylims = (13990000, 14010000)
-else:
-    conn_plotted = "sic_connection"
-    if strength == "weak":
-        conn_ylims = (None, None)
-    else:
-        conn_ylims = (3990000, 4010000)
-
-all_auto = True
-if all_auto:
-    cons_ylims = (0, None)
-    conn_ylims = (None, None)
-    prop_ylims = (0, None)
-    spk_ylims = (None, None)
 
 plot_major(
     timer_files,
     labels,
+    data_paths[0],
+    strength,
+    x_axis=x_axis_label,
+)
+
+plot_conn_fr(
+    timer_files,
     data_paths[0],
     strength,
     x_axis=x_axis_label,
@@ -166,11 +133,3 @@ def concatenate_csv_files(file_list, output_file):
 output_csv = os.path.join(data_paths[0], "df_all.csv")
 
 concatenate_csv_files(timer_files, output_csv)
-
-plot_thirdin(
-     timer_file_1=timer_files[0],
-     save_path=data_paths[0],
-     scaling_strength=strength,
-     x_axis=x_axis_label,
-     label_1=labels[0],
-)
