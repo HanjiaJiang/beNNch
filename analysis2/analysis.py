@@ -5,7 +5,7 @@ import yaml
 import csv
 
 from analysis_helper import shell, load
-from plot_phases_quad import plot_phases_quad
+from plot_phases import plot_phases
 from plot_major import plot_major, plot_conn_fr
 
 import matplotlib.pyplot as plt
@@ -36,7 +36,7 @@ for i in [1, 2, 3, 4]:
 try:
     labels = []
     for i in [5, 6, 7, 8]:
-        labels.append(str(sys.argv[i]))
+        labels.append(str(sys.argv[i]).replace('#', '\n'))
 except:
     labels = ['Sparse', 'Synchronous', 'Surrogate', 'No Tripartite']
 
@@ -61,15 +61,17 @@ except:
     strength = 'strong'
 
 # Plot layout
-cons_ylims = (0, None)
-prop_ylims = (0, None)
-spk_ylims = (None, None)
 if x_axis_label == "num_nvp":
+    cons_ylims = (-0.1, 2.1)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    rtf_ylims = (-0.2, 3.7)
+    cons_ylims = (-0.1, 2.1)
+    prop_ylims = (-1, 41)
+    rtf_ylims = (-0.1, 3.1)
 else:
-    rtf_ylims = (-0.2, 6.2)
+    cons_ylims = (-0.1, 4.6)
+    prop_ylims = (-1, 41)
+    rtf_ylims = (-0.1, 4.1)
 
 plot_major(
     timer_files,
@@ -77,6 +79,8 @@ plot_major(
     data_paths[0],
     strength,
     x_axis=x_axis_label,
+    cons_ylims=cons_ylims,
+    prop_ylims=prop_ylims,
 )
 
 plot_conn_fr(
@@ -86,22 +90,23 @@ plot_conn_fr(
     x_axis=x_axis_label,
 )
 
-plot_phases_quad(
-    timer_file_1=timer_files[0],
-    timer_file_2=timer_files[1],
-    timer_file_3=timer_files[2],
-    timer_file_4=timer_files[3],
-    save_path=data_paths[0],
-    scaling_strength=strength,
-    x_axis=x_axis_label,
-    rtf_ylims=rtf_ylims,
-    label_1=labels[0],
-    label_2=labels[1],
-    label_3=labels[2],
-    label_4=labels[3],
-    secondary=True,
-    ignore_others=False,
-)
+for detail in [False, True]:
+    plot_phases(
+        timer_file_1=timer_files[0],
+        timer_file_2=timer_files[1],
+        timer_file_3=timer_files[2],
+        timer_file_4=timer_files[3],
+        save_path=data_paths[0],
+        scaling_strength=strength,
+        x_axis=x_axis_label,
+        rtf_ylims=rtf_ylims,
+        label_1=labels[0],
+        label_2=labels[1],
+        label_3=labels[2],
+        label_4=labels[3],
+        detail=detail,
+        ignore_others=False,
+    )
 
 # concatenate .csv files
 def concatenate_csv_files(file_list, output_file):
