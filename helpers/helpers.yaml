@@ -175,4 +175,6 @@ patternset:
        - {name: time_construction_connect_third_inner_communicate, mode: pattern, type: float, "_": time_construction_connect_third_inner_communicate $jube_pat_fp}
        - {name: time_construction_connect_third_inner_connect, mode: pattern, type: float, "_": time_construction_connect_third_inner_connect $jube_pat_fp}
        - {name: time_synchronize, mode: pattern, type: float, "_": time_synchronize $jube_pat_fp}
+       - {name: pool_size, mode: pattern, type: float, "_": pool_size $jube_pat_fp}
+       - {name: pool_type, mode: pattern, type: float, "_": pool_type $jube_pat_fp}
 

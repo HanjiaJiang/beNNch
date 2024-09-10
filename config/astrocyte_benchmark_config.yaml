@@ -29,6 +29,8 @@ parameterset:
        - {name: record_spikes, type: string, _: "False"}  # whether to write spiking output to file, either True or False
        - {name: rng_seed, type: int, _: "1,1,1,2,2,2,3,3,3"}  # rng seed for NEST, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: scaling_type, _: "strong"}  # can be either weak or strong
+       - {name: astro_pool_size, _: "10"}
+       - {name: astro_pool_type, _: "random"}
 
     - name: machine_parameters
       parameter:

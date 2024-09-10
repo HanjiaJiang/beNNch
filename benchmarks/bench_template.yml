@@ -20,7 +20,7 @@ include-path:
 
 # model-specific name and output path
 name: astrocyte
-outpath: ../outpath/production
+outpath: ../outpath/test
 parameterset:
       name: model_commands
       parameter:
@@ -48,6 +48,8 @@ substituteset:
       - {source: "{model_time_presim}", dest: $model_time_presim}
       - {source: "{scale_N}", dest: $scale}
       - {source: "{rng_seed}", dest: $rng_seed}
+      - {source: "{pool_size}", dest: $astro_pool_size}
+      - {source: "{pool_type}", dest: $astro_pool_type}
 
 step:
 # build step
@@ -130,3 +132,5 @@ result:
         - time_construction_connect_third_inner_communicate
         - time_construction_connect_third_inner_connect
         - time_synchronize
+        - pool_size
+        - pool_type
