@@ -3,6 +3,7 @@ import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
+import matplotlib.ticker as ticker
 
 def plot_major(
          files,
@@ -11,6 +12,7 @@ def plot_major(
          scaling_strength,
          x_axis='num_nodes',
          cons_ylims=(0, None),
+         conn_ylims=(0, None),
          prop_ylims=(0, None),
          colors=['k', 'k', 'gray', 'gray'],
          styles=['-', ':', '-', ':'],
@@ -27,12 +29,13 @@ def plot_major(
 
     # Plotting
     widths = [1]
-    heights = [1, 1]
+    heights = [1, 1, 1]
     fig = plt.figure(figsize=(3, 8))
-    spec = gridspec.GridSpec(ncols=1, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
+    spec = gridspec.GridSpec(ncols=1, nrows=3, figure=fig, width_ratios=widths, height_ratios=heights)
 
     ax_cons = fig.add_subplot(spec[0, 0])
-    ax_prop = fig.add_subplot(spec[1, 0])
+    ax_conn = fig.add_subplot(spec[1, 0])
+    ax_prop = fig.add_subplot(spec[2, 0])
 
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
@@ -49,8 +52,14 @@ def plot_major(
     # Network construction
     lw = 2
     for i in range(len(pobjects)):
-        pobjects[i].plot_main(quantities=['time_construct'],
+        pobjects[i].plot_main(quantities=['py_time_create'],
                 axis=ax_cons,
+                subject=labels[i],
+                line_color=colors[i],
+                linewidth=lw,
+                linestyle=styles[i])
+        pobjects[i].plot_main(quantities=['py_time_connect'],
+                axis=ax_conn,
                 subject=labels[i],
                 line_color=colors[i],
                 linewidth=lw,
@@ -62,14 +71,20 @@ def plot_major(
                 linewidth=lw,
                 linestyle=styles[i])
 
-    ax_cons.set_ylabel('Network construction\ntime (s)')
-    ax_prop.set_ylabel('State propagation time (s)\nfor '
+    ax_cons.set_ylabel('Network creation\ntime (s)')
+    ax_conn.set_ylabel('Network connection\ntime (s)')
+    ax_prop.set_ylabel('State propagation\ntime (s)\nfor '
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(pobjects[0].df_data.model_time_sim.values)[0]:.0f} s')
 
     ax_prop.set_xlabel(xlabel)
 
+    ax_cons.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
+    ax_conn.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
+    ax_prop.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
+
     ax_cons.set_ylim(cons_ylims)
+    ax_conn.set_ylim(conn_ylims)
     ax_prop.set_ylim(prop_ylims)
 
     # get network size(s) and add to plot

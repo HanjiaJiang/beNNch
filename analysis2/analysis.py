@@ -62,14 +62,17 @@ except:
 
 # Plot layout
 if x_axis_label == "num_nvp":
-    cons_ylims = (-0.1, 2.1)
+    cons_ylims = (-0.01, 0.11)
+    conn_ylims = (-0.1, 2.1)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
-    cons_ylims = (-0.1, 2.1)
+    cons_ylims = (-0.01, 0.11)
+    conn_ylims = (-0.1, 2.1)
     prop_ylims = (-1, 41)
     rtf_ylims = (-0.1, 3.1)
 else:
-    cons_ylims = (-0.1, 4.6)
+    cons_ylims = (-0.01, 0.11)
+    conn_ylims = (-0.1, 4.6)
     prop_ylims = (-1, 41)
     rtf_ylims = (-0.1, 4.1)
 
@@ -80,6 +83,7 @@ plot_major(
     strength,
     x_axis=x_axis_label,
     cons_ylims=cons_ylims,
+    conn_ylims=conn_ylims,
     prop_ylims=prop_ylims,
 )
 
