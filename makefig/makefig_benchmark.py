@@ -7,40 +7,35 @@ import os
 composite_figure_name_root = 'benchmark'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
-pwi, phi = 0.8, 1.4   # plot width inch, plot height inch
-lhi = 0.2             # label (A, B, ...) height inch
-shi_top = 0.2         # subtitle height inch (top)
-shi_bottom = 0.05      # subtitle height inch (bottom)
-ii = 0.2              # interval inch
 panels_dict = {
-    "plot_all_quad_strong": {"width": 6, "height": 8, "position": (0, 8+1)},
-    "legend_all_strong":    {"width": 3, "height": 8, "position": (6, 8+1)},
-    "plot_phases_quad_strong": {"width": 14, "height": 8, "position": (6+3, 8+1)},
-    "legend_phases_strong": {"width": 3, "height": 8, "position": (6+3+14, 8+1)},
+    "plot_major_strong":      {"width": 3, "height": 8, "position": (0, 8+1)},
+    "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+1)},
+    "plot_phases_strong":     {"width": 10, "height": 8, "position": (3+3, 8+1)},
+    "legend_phases_strong":   {"width": 3, "height": 8, "position": (3+3+10, 8+1)},
 
-    "plot_all_quad_weak": {"width": 6, "height": 8, "position": (0, 0)},
-    "legend_all_weak":    {"width": 3, "height": 8, "position": (6, 0)},
-    "plot_phases_quad_weak": {"width": 14, "height": 8, "position": (6+3, 0)},
-    "legend_phases_weak":    {"width": 3, "height": 8, "position": (6+3+14, 0)},
+    "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
+    "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
+    "plot_phases_weak":       {"width": 10, "height": 8, "position": (3+3, 0)},
+    "legend_phases_weak":     {"width": 3, "height": 8, "position": (3+3+10, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (6+3+14+3, 8+1+8+1)
+figure_size_inch = (3+3+10+3, 8+1+8+1)
 
 ########## SET PANEL LABELS ##########
 label_names = [
     [
-        {"A": (0.5, 8+1+8+0.5)},
-        {"B": (6+3+0.5, 8+1+8+0.5)},
-        {"C": (0.5, 8+0.5)},
-        {"D": (6+3+0.5, 8+0.5)},
+        {"A": (0.25, 8+1+8+0.5)},
+        {"B": (3+3+0.25, 8+1+8+0.5)},
+        {"C": (0.25, 8+0.5)},
+        {"D": (3+3+0.25, 8+0.5)},
     ],
 ]
 label_text = [
     [
-        {"Strong scaling": (1.5, 8+1+8+0.5)},
-        {"Strong scaling, phases of state propagation":  (6+3+1.5, 8+1+8+0.5)},
-        {"Weak scaling": (1.5, 8+0.5)},
-        {"Weak scaling, phases of state propagation": (6+3+1.5, 8+0.5)},
+        {"Strong scaling": (1.2, 8+1+8+0.5)},
+        {"Strong scaling, phases of state propagation":  (3+3+1.2, 8+1+8+0.5)},
+        {"Weak scaling": (1.2, 8+0.5)},
+        {"Weak scaling, phases of state propagation": (3+3+1.2, 8+0.5)},
     ],
 ]
 
