@@ -25,6 +25,7 @@
 #SBATCH --time=#TIME#
 #SBATCH --exclusive
 #SBATCH --account=#ACCOUNT#
+#SBATCH --exclude=jrc0677,jrc0679,jrc0678,jrc0557,jrc0574,jrc0669,jrc0675,jrc0563,jrc0564,jrc0565,jrc0566,jrc0518,jrc0519,jrc0146,jrc0100,jrc0148,jrc0153,jrc0512,jrc0513,jrc0514,jrc0048,jrc0047,jrc0046,jrc0682,jrc0676,jrc0748,jrc0747,jrc0746,jrc0604,jrc0605,jrc0606,jrc0110,jrc0109,jrc0112,jrc0111,jrc0520,jrc0659,jrc0660,jrc0661,jrc0503,jrc0531,jrc0532,jrc0530,jrc0152,jrc0485,jrc0486,jrc0491,jrc0057,jrc0055,jrc0607,jrc0639,jrc0623,jrc0620,jrc0621,jrc0622,jrc0662,jrc0674,jrc0575,jrc0577,jrc0578,jrc0576,jrc0470,jrc0680,jrc0744,jrc0745,jrc0752,jrc0797,jrc0798,jrc0799,jrc0803,jrc0804,jrc0805,jrc0690,jrc0691,jrc0692,jrc0716,jrc0717,jrc0718,jrc0719
 #COMMANDS#
 
 echo "------------------------------------------------------"

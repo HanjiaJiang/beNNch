@@ -110,14 +110,14 @@ def plot_major(
     # Output raw data
     for i, B_i in enumerate(pobjects):
         label_i = labels[i].replace("\n", "")
-        B_i.df_data.to_csv(f"{save_path}/df_{label_i}.csv", index=False, float_format="%.3f")
+        #B_i.df_data.to_csv(f"{save_path}/df_{label_i}.csv", index=False, float_format="%.3f")
         for j, B_j in enumerate(pobjects):
             if j == i:
                 continue
             else:
                 label_j = labels[j].replace("\n", "")
-                df_diff = (B_j.df_data - B_i.df_data)/B_i.df_data
-                df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
+                #df_diff = (B_j.df_data - B_i.df_data)/B_i.df_data
+                #df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
 
     # Make legend figure
     fig, ax_legend = plt.subplots(figsize=(3, 8))

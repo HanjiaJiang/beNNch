@@ -35,8 +35,8 @@ parameterset:
     - name: machine_parameters
       parameter:
        - {name: num_nodes, type: int, _: "1,2,3,4"}  # number of nodes, accepts a list in the format a,b,c,... for generating multiple runs
-       - {name: tasks_per_node, type: int, _: "8"}  # number of (MPI) tasks per node, accepts a list in the format a,b,c,... for generating multiple runs
-       - {name: threads_per_task, type: int, _: "16"}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
+       - {name: tasks_per_node, type: int, _: "2"}  # number of (MPI) tasks per node, accepts a list in the format a,b,c,... for generating multiple runs
+       - {name: threads_per_task, type: int, _: "64"}  # number of threads per task, accepts a list in the format a,b,c,... for generating multiple runs
        - {name: walltime, type: string, _: "01:00:00"}  # wall time for the job in format hh:mm:ss
        - {name: affinity, type: string, separator: ";", _: "--cpu-bind=verbose,threads --distribution=block:cyclic:fcyclic --threads-per-core=1"}  # processor affinity/pinning
     - name: software_parameters
