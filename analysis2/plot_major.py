@@ -5,6 +5,8 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 import matplotlib.ticker as ticker
 
+do_diff = False
+
 def plot_major(
          files,
          labels,
@@ -107,17 +109,16 @@ def plot_major(
     plt.savefig(f'{save_path}/plot_major.eps', format='eps', dpi=400)
     plt.close()
 
-    # Output raw data
-    for i, B_i in enumerate(pobjects):
-        label_i = labels[i].replace("\n", "")
-        #B_i.df_data.to_csv(f"{save_path}/df_{label_i}.csv", index=False, float_format="%.3f")
-        for j, B_j in enumerate(pobjects):
-            if j == i:
-                continue
-            else:
-                label_j = labels[j].replace("\n", "")
-                #df_diff = (B_j.df_data - B_i.df_data)/B_i.df_data
-                #df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
+    # Output difference data
+    if do_diff:
+        for i, B_i in enumerate(pobjects):
+            label_i = labels[i].replace("\n", "")
+            B_i.df_data.to_csv(f"{save_path}/df_{label_i}.csv", index=False, float_format="%.3f")
+            for j, B_j in enumerate(pobjects):
+                if j != i:
+                    label_j = labels[j].replace("\n", "")
+                    df_diff = (B_j.df_data - B_i.df_data)/B_i.df_data
+                    df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
 
     # Make legend figure
     fig, ax_legend = plt.subplots(figsize=(3, 8))

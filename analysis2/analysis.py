@@ -4,6 +4,8 @@ import glob
 import yaml
 import csv
 
+import pandas as pd
+
 from analysis_helper import shell, load
 from plot_phases import plot_phases
 from plot_major import plot_major, plot_conn_fr
@@ -63,19 +65,25 @@ except:
 # Plot layout
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.01, 0.11)
-    conn_ylims = (-0.02, 0.52)
-#    conn_ylims = (-0.1, 2.1)
+    if "Fixed-outdegree" in labels:
+        conn_ylims = (-0.1, 2.1)
+    else:
+        conn_ylims = (-0.02, 0.52)
     rtf_ylims = (-0.5, 10.5)
 elif strength == "strong":
     cons_ylims = (-0.01, 0.11)
-    conn_ylims = (-0.02, 0.52)
-#    conn_ylims = (-0.1, 2.1)
+    if "Fixed-outdegree" in labels:
+        conn_ylims = (-0.1, 2.1)
+    else:
+        conn_ylims = (-0.02, 0.52)
     prop_ylims = (-1, 41)
     rtf_ylims = (-0.1, 3.1)
 else:
     cons_ylims = (-0.01, 0.11)
-    conn_ylims = (-0.02, 0.52)
-#    conn_ylims = (-0.1, 4.6)
+    if "Fixed-outdegree" in labels:
+        conn_ylims = (-0.1, 4.6)
+    else:
+        conn_ylims = (-0.02, 0.52)
     prop_ylims = (-1, 41)
     rtf_ylims = (-0.1, 4.1)
 
@@ -115,33 +123,17 @@ for detail in [False, True]:
         ignore_others=False,
     )
 
-# concatenate .csv files
-def concatenate_csv_files(file_list, output_file):
-    # Open the output file in write mode
-    with open(output_file, 'w', newline='') as outfile:
-        writer = csv.writer(outfile)
-
-        # Variable to track if the header has been written
-        header_written = False
-
-        # Iterate through each file in the file list
-        for file in file_list:
-            with open(file, 'r') as infile:
-                reader = csv.reader(infile)
-
-                # Write the header only once
-                if not header_written:
-                    # Write the header (first row) from the first file
-                    writer.writerow(next(reader))
-                    header_written = True
-                else:
-                    # Skip the header for subsequent files
-                    next(reader)
-
-                # Write the remaining rows
-                for row in reader:
-                    writer.writerow(row)
-
 output_csv = os.path.join(data_paths[0], "df_all.csv")
 
-concatenate_csv_files(timer_files, output_csv)
+def concat_df(file_list, output_file, labels_list):
+    df_all = None
+    for i, file_name in enumerate(file_list):
+        df = pd.read_csv(file_name)
+        df["model"] = labels_list[i]
+        if df_all is None:
+            df_all = df.copy()
+        else:
+            df_all = pd.concat((df_all, df))
+    df_all.to_csv(output_csv, index=False)
+
+concat_df(timer_files, output_csv, labels)
