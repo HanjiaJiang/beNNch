@@ -124,8 +124,8 @@ def plot_phases(
         phases.reverse()
         fractions.reverse()
     if ignore_others:
-        phases.remove('phase_others_factor')
-        fractions.remove('frac_phase_others')
+        phases.remove('others_factor')
+        fractions.remove('others_frac')
 
     # RTF for state propagation
     B1.plot_fractions(axis=ax_rtf_1, fill_variables=phases)

@@ -120,7 +120,7 @@ for detail in [False, True]:
         label_3=labels[2],
         label_4=labels[3],
         detail=detail,
-        ignore_others=False,
+        ignore_others=True,
     )
 
 output_csv = os.path.join(data_paths[0], "df_all.csv")
