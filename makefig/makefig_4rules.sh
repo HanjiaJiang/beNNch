@@ -1,7 +1,7 @@
 #!/bin/bash
 
-paths="../outpath/production/000004"
-pathw="../outpath/production/000012"
+paths="../outpath/production1/000013"
+pathw="../outpath/production1/000017"
 
 cp $paths/plot_major.eps ./plot_major_4rules_strong.eps
 cp $pathw/plot_major.eps ./plot_major_4rules_weak.eps
