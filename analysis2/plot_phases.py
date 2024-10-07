@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import bennchplot as bp
 from matplotlib import pyplot as plt
@@ -5,89 +7,43 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 
 def plot_phases(
-         timer_file_1,
-         timer_file_2,
-         timer_file_3,
-         timer_file_4,
+         timer_files,
+         labels,
          save_path,
          scaling_strength,
          x_axis='num_nodes',
          rtf_ylims=(-0.5, 12.5),
-         label_1='a',
-         label_2='b',
-         label_3='c',
-         label_4='d',
          detail=True,
          reverse_phases=False,
          ignore_others=True,
          ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
-    print(f'x axis: {x_axis}')
-    args1 = {
-        'data_file': timer_file_1,
-        'x_axis': [x_axis],
-        'time_scaling': 1e3,
-    }
-    args2 = {
-        'data_file': timer_file_2,
-        'x_axis': [x_axis],
-        'time_scaling': 1e3,
-    }
-    args3 = {
-        'data_file': timer_file_3,
-        'x_axis': [x_axis],
-        'time_scaling': 1e3,
-    }
-    args4 = {
-        'data_file': timer_file_4,
-        'x_axis': [x_axis],
-        'time_scaling': 1e3,
-    }
-
-    # Instantiate class
-    B1 = bp.Plot(**args1)
-    B2 = bp.Plot(**args2)
-    B3 = bp.Plot(**args3)
-    B4 = bp.Plot(**args4)
-
-    # Plotting
-    widths = [1, 1, 1, 1]
-    heights = [4, 1]
-    fig = plt.figure(figsize=(10, 8))
-    spec = gridspec.GridSpec(ncols=4, nrows=2, figure=fig,
-                             width_ratios=widths,
-                             height_ratios=heights)
-
-    ax_rtf_1 = fig.add_subplot(spec[0, 0])
-    ax_frac_1 = fig.add_subplot(spec[1, 0])
-    ax_rtf_2 = fig.add_subplot(spec[0, 1])
-    ax_frac_2 = fig.add_subplot(spec[1, 1])
-    ax_rtf_3 = fig.add_subplot(spec[0, 2])
-    ax_frac_3 = fig.add_subplot(spec[1, 2])
-    ax_rtf_4 = fig.add_subplot(spec[0, 3])
-    ax_frac_4 = fig.add_subplot(spec[1, 3])
-
-    ax_rtf_1.set_title(label_1.replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
-    ax_rtf_2.set_title(label_2.replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
-    ax_rtf_3.set_title(label_3.replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
-    ax_rtf_4.set_title(label_4.replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
-
-    if scaling_strength == 'weak':
-        ax_rtf_1_twin = ax_rtf_1.twiny() # top axis for network_size
-        ax_rtf_2_twin = ax_rtf_2.twiny()
-        ax_rtf_3_twin = ax_rtf_3.twiny()
-        ax_rtf_4_twin = ax_rtf_4.twiny()
 
     if x_axis == 'num_nvp':
         xlabel = 'Number of threads'
     else:
         xlabel = 'Number of\ncompute nodes'
 
-    trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
+    # File count
+    fcount = 0
+    for timer_file in timer_files:
+        if os.path.isfile(timer_file):
+            fcount += 1
+        else:
+            continue
 
-    print("plotting RTF ...")
 
+    # Plotting
+    widths = [1]*fcount
+    heights = [4, 1]
+    figsize = (2+2*fcount, 8)
+    fig = plt.figure(figsize=figsize)
+    spec = gridspec.GridSpec(ncols=fcount, nrows=2, figure=fig,
+                             width_ratios=widths,
+                             height_ratios=heights)
+
+    # phase labels
     if detail:
         phases = [
             'time_update_factor',
@@ -127,81 +83,66 @@ def plot_phases(
         phases.remove('others_factor')
         fractions.remove('others_frac')
 
-    # RTF for state propagation
-    B1.plot_fractions(axis=ax_rtf_1, fill_variables=phases)
-    B1.plot_fractions(axis=ax_frac_1, fill_variables=fractions)
-    B2.plot_fractions(axis=ax_rtf_2, fill_variables=phases)
-    B2.plot_fractions(axis=ax_frac_2, fill_variables=fractions)
-    B3.plot_fractions(axis=ax_rtf_3, fill_variables=phases)
-    B3.plot_fractions(axis=ax_frac_3, fill_variables=fractions)
-    B4.plot_fractions(axis=ax_rtf_4,  fill_variables=phases)
-    B4.plot_fractions(axis=ax_frac_4, fill_variables=fractions)
+    Bs = []
+    axs_rtf = []
+    axs_frac = []
+    trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
+    for i, timer_file in enumerate(timer_files):
+        if not os.path.isfile(timer_file):
+            break
+        args = {
+            'data_file': timer_file,
+            'x_axis': [x_axis],
+            'time_scaling': 1e3,
+        }
 
-    ax_rtf_1.set_ylabel('Real-time factor for\nstate propagation')
-    ax_frac_1.set_ylabel('Relative\nreal-time\nfactor (%)')
-    ax_frac_1.set_xlabel(xlabel)
-    ax_frac_2.set_xlabel(xlabel)
-    ax_frac_3.set_xlabel(xlabel)
-    ax_frac_4.set_xlabel(xlabel)
+        # Instantiate class
+        B = bp.Plot(**args)
+        Bs.append(B)
 
-    ax_rtf_1.set_ylim(rtf_ylims)
-    ax_frac_1.set_ylim(-10.0, 110.0)
-    ax_rtf_2.set_ylim(rtf_ylims)
-    ax_frac_2.set_ylim(-10.0, 110.0)
-    ax_rtf_3.set_ylim(rtf_ylims)
-    ax_frac_3.set_ylim(-10.0, 110.0)
-    ax_rtf_4.set_ylim(rtf_ylims)
-    ax_frac_4.set_ylim(-10.0, 110.0)
+        # create axe object
+        ax_rtf = fig.add_subplot(spec[0, i])
+        ax_frac = fig.add_subplot(spec[1, i])
+        axs_rtf.append(ax_rtf)
+        axs_frac.append(ax_frac)
 
-    if x_axis == 'num_nvp':
-        xticks = ax_rtf_1.get_xticks().flatten()
-        xticklabels = (xticks).astype(int)
-        ax_rtf_1.set_xticks(xticks)
-        ax_rtf_1.set_xticklabels(xticklabels)
-        ax_frac_1.set_xticks(xticks)
-        ax_frac_1.set_xticklabels(xticklabels)
-        ax_rtf_2.set_xticks(xticks)
-        ax_rtf_2.set_xticklabels(xticklabels)
-        ax_frac_2.set_xticks(xticks)
-        ax_frac_2.set_xticklabels(xticklabels)
-        ax_rtf_3.set_xticks(xticks)
-        ax_rtf_3.set_xticklabels(xticklabels)
-        ax_frac_3.set_xticks(xticks)
-        ax_frac_3.set_xticklabels(xticklabels)
-        ax_rtf_4.set_xticks(xticks)
-        ax_rtf_4.set_xticklabels(xticklabels)
-        ax_frac_4.set_xticks(xticks)
-        ax_frac_4.set_xticklabels(xticklabels)
+        # panel title
+        ax_rtf.set_title(labels[i].replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
 
-    # get network size(s) and add to plot
-    if 'N_ex' in B1.df_data and 'N_ex' in B1.df_data and 'N_in' in B1.df_data:
-        # calculate from recording
-        N_size_labels = (B1.df_data['N_ex'].values + B1.df_data['N_in'].values + B1.df_data['N_astro'].values).astype(int)
-    else:
-        # calculate from network_size (all nodes in NEST) minus one poisson generator
-        N_size_labels = B1.df_data['network_size'].values.astype(int) - 1
-    if scaling_strength == 'weak':
-        xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
-        # 1
-        ax_rtf_1_twin.set_xticks(ax_rtf_1.get_xticks().flatten())
-        ax_rtf_1_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_rtf_1_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
-        ax_rtf_1_twin.set_xlim(ax_rtf_1.get_xlim())
-        # 2
-        ax_rtf_2_twin.set_xticks(ax_rtf_2.get_xticks().flatten())
-        ax_rtf_2_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_rtf_2_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
-        ax_rtf_2_twin.set_xlim(ax_rtf_2.get_xlim())
-        # 3            
-        ax_rtf_3_twin.set_xticks(ax_rtf_3.get_xticks().flatten())
-        ax_rtf_3_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_rtf_3_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
-        ax_rtf_3_twin.set_xlim(ax_rtf_3.get_xlim())
-        # 4
-        ax_rtf_4_twin.set_xticks(ax_rtf_4.get_xticks().flatten())
-        ax_rtf_4_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_rtf_4_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
-        ax_rtf_4_twin.set_xlim(ax_rtf_4.get_xlim())
+        # RTF for state propagation
+        Bs[i].plot_fractions(axis=ax_rtf, fill_variables=phases)
+        Bs[i].plot_fractions(axis=ax_frac, fill_variables=fractions)
+
+        ax_frac.set_xlabel(xlabel)
+
+        ax_rtf.set_ylim(rtf_ylims)
+        ax_frac.set_ylim(-10.0, 110.0)
+
+        if x_axis == 'num_nvp':
+            xticks = ax_rtf.get_xticks().flatten()
+            xticklabels = (xticks).astype(int)
+            ax_rtf.set_xticks(xticks)
+            ax_rtf.set_xticklabels(xticklabels)
+            ax_frac.set_xticks(xticks)
+            ax_frac.set_xticklabels(xticklabels)
+
+        # get network size(s) and add to plot
+        if 'N_ex' in Bs[i].df_data and 'N_ex' in Bs[i].df_data and 'N_in' in Bs[i].df_data:
+            # calculate from recording
+            N_size_labels = (Bs[i].df_data['N_ex'].values + Bs[i].df_data['N_in'].values + Bs[i].df_data['N_astro'].values).astype(int)
+        else:
+            # calculate from network_size (all nodes in NEST) minus one poisson generator
+            N_size_labels = Bs[i].df_data['network_size'].values.astype(int) - 1
+        if scaling_strength == 'weak':
+            ax_rtf_twin = ax_rtf.twiny() # top axis for network_size
+            xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
+            ax_rtf_twin.set_xticks(ax_rtf.get_xticks().flatten())
+            ax_rtf_twin.set_xticklabels(xticklabels, fontsize='small')
+            ax_rtf_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
+            ax_rtf_twin.set_xlim(ax_rtf.get_xlim())
+
+    axs_rtf[0].set_ylabel('Real-time factor for\nstate propagation')
+    axs_frac[0].set_ylabel('Relative\nreal-time\nfactor (%)')
 
     plt.tight_layout()
     pname = "plot_phases_detail" if detail else "plot_phases"
@@ -217,8 +158,8 @@ def plot_phases(
             [],
             [],
             [],
-            label=B1.label_params[phase],
-            facecolor=B1.color_params[phase],
+            label=Bs[0].label_params[phase],
+            facecolor=Bs[0].color_params[phase],
             linewidth=0.5,
             edgecolor='#444444')
     ax_legend.legend(

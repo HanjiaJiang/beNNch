@@ -56,7 +56,7 @@ try:
 except:
     strength = 'strong'
 
-# Plot layout
+# ylims
 if x_axis_label == "num_nvp":
     cons_ylims = (-0.01, 0.11)
     if "Fixed-outdegree" in labels:
@@ -85,6 +85,7 @@ else:
         prop_ylims = (-1, 51)
         rtf_ylims = (-0.1, 5.1)
 
+# plot major data
 plot_major(
     timer_files,
     labels,
@@ -96,6 +97,7 @@ plot_major(
     prop_ylims=prop_ylims,
 )
 
+# plot connection number and firing rate
 plot_conn_fr(
     timer_files,
     data_paths[0],
@@ -103,29 +105,25 @@ plot_conn_fr(
     x_axis=x_axis_label,
 )
 
+# plot phases
 for detail in [False, True]:
     plot_phases(
-        timer_file_1=timer_files[0],
-        timer_file_2=timer_files[1],
-        timer_file_3=timer_files[2],
-        timer_file_4=timer_files[3],
-        save_path=data_paths[0],
-        scaling_strength=strength,
+        timer_files,
+        labels,
+        data_paths[0],
+        strength,
         x_axis=x_axis_label,
         rtf_ylims=rtf_ylims,
-        label_1=labels[0],
-        label_2=labels[1],
-        label_3=labels[2],
-        label_4=labels[3],
         detail=detail,
         ignore_others=False,
     )
 
-output_csv = os.path.join(data_paths[0], "df_all.csv")
-
+# concatenate and save results
 def concat_df(file_list, output_file, labels_list):
     df_all = None
     for i, file_name in enumerate(file_list):
+        if not os.path.isfile(file_name):
+            break
         df = pd.read_csv(file_name)
         df["model"] = labels_list[i]
         if df_all is None:
@@ -134,4 +132,5 @@ def concat_df(file_list, output_file, labels_list):
             df_all = pd.concat((df_all, df))
     df_all.to_csv(output_csv, index=False)
 
+output_csv = os.path.join(data_paths[0], "df_all.csv")
 concat_df(timer_files, output_csv, labels)

@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import bennchplot as bp
 from matplotlib import pyplot as plt
@@ -8,7 +10,7 @@ import matplotlib.ticker as ticker
 do_diff = False
 
 def plot_major(
-         files,
+         timer_files,
          labels,
          save_path,
          scaling_strength,
@@ -24,8 +26,10 @@ def plot_major(
     print(f'x axis: {x_axis}')
 
     pobjects = []
-    for i, file in enumerate(files):
-        args = {'data_file': file, 'x_axis': [x_axis], 'time_scaling': 1e3}
+    for i, timer_file in enumerate(timer_files):
+        if not os.path.isfile(timer_file):
+            break
+        args = {'data_file': timer_file, 'x_axis': [x_axis], 'time_scaling': 1e3}
         B = bp.Plot(**args)
         pobjects.append(B)
 
@@ -124,6 +128,8 @@ def plot_major(
     fig, ax_legend = plt.subplots(figsize=(3, 8))
     styles = [('k', '-'), ('k', ':'), ('gray', '-'), ('gray', ':')]
     for i, label in enumerate(labels):
+        if not os.path.isfile(timer_files[i]):
+            break
         ax_legend.plot(
             [],
             [],
@@ -144,7 +150,7 @@ def plot_major(
     plt.close()
 
 def plot_conn_fr(
-         files,
+         timer_files,
          save_path,
          scaling_strength,
          x_axis='num_nodes',
@@ -157,8 +163,10 @@ def plot_conn_fr(
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
 
     pobjects = []
-    for i, file in enumerate(files):
-        args = {'data_file': file, 'x_axis': [x_axis], 'time_scaling': 1e3}
+    for i, timer_file in enumerate(timer_files):
+        if not os.path.isfile(timer_file):
+            break
+        args = {'data_file': timer_file, 'x_axis': [x_axis], 'time_scaling': 1e3}
         B = bp.Plot(**args)
         pobjects.append(B)
 
