@@ -161,6 +161,7 @@ patternset:
        - {name: N_in, mode: pattern, dotall: True, type: float, "_": N_in $jube_pat_fp}
        - {name: N_astro, mode: pattern, dotall: True, type: float, "_": N_astro $jube_pat_fp}
        - {name: base_memory, mode: pattern, dotall: True, type: float, "_": base_memory $jube_pat_fp}
+       - {name: node_memory, mode: pattern, dotall: True, type: float, "_": node_memory $jube_pat_fp}
        - {name: network_memory, mode: pattern, dotall: True, type: float, "_": network_memory $jube_pat_fp}
        - {name: init_memory, mode: pattern, dotall: True, type: float, "_": init_memory $jube_pat_fp}
        - {name: total_memory, mode: pattern, dotall: True, type: float, "_": total_memory $jube_pat_fp}

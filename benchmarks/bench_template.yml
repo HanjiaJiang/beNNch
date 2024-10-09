@@ -126,11 +126,10 @@ result:
         - local_spike_counter
         - tsodyks_synapse
         - sic_connection
-        - time_construction_connect_third_inner_count
-        - time_construction_connect_third_inner_max
-        - time_construction_connect_third_inner_fill
-        - time_construction_connect_third_inner_communicate
-        - time_construction_connect_third_inner_connect
-        - time_synchronize
         - pool_size
         - pool_type
+        - base_memory
+        - node_memory
+        - network_memory
+        - init_memory
+        - total_memory
