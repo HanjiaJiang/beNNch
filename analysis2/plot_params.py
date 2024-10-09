@@ -126,4 +126,8 @@ label_params = {
     'time_construction_connect_third_inner_fill': 'Third inner fill',
     'time_construction_connect_third_inner_communicate': 'Third inner communicate',
     'time_construction_connect_third_inner_connect': 'Third inner connect',
+    'base_memory': 'Base memory',
+    'network_memory': 'Network memory',
+    'init_memory': 'Initial memory',
+    'total_memory': 'Total memory',
 }

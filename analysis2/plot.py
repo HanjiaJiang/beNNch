@@ -10,6 +10,7 @@ import pandas as pd
 from analysis_helper import load
 from plot_phases import plot_phases
 from plot_major import plot_major, plot_conn_fr
+from plot_separate import plot_separate
 
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 16})
@@ -117,6 +118,27 @@ for (detail, fontsize) in [(False, 'small'), (True, 'x-small')]:
         detail=detail,
         ignore_others=False,
         legend_fontsize=fontsize,
+    )
+
+# plot RTF of phases separately
+plot_separate(
+     timer_files,
+     labels,
+     data_paths[0],
+     strength,
+     quantities=['time_update_factor', 'spike_ccd_factor', 'secondary_gd_factor', 'others_factor'],
+     file_postfix='rtf',
+     ylabel_prefix='RTF of ',
+    )
+
+# plot memory data
+plot_separate(
+     timer_files,
+     labels,
+     data_paths[0],
+     strength,
+     quantities=['base_memory', 'network_memory', 'init_memory', 'total_memory'],
+     file_postfix='memory',
     )
 
 # concatenate and save results

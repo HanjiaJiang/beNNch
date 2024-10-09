@@ -166,6 +166,11 @@ class Plot():
             'time_construction_connect_third_inner_communicate',
             'time_construction_connect_third_inner_connect',
             'time_synchronize',
+            'base_memory',
+            'node_memory',
+            'network_memory',
+            'init_memory',
+            'total_memory',
         ]
         for timer in detailed_timers:
             if timer in df.columns:
@@ -355,7 +360,9 @@ class Plot():
                 matplotlib.ticker.ScalarFormatter())
 
     def plot_main(self, quantities, axis, log=(False, False),
-                  error_only=False, fmt='none', control=False, subject=None, line_color=None, ylims=None, linewidth=1.5, linestyle=None):
+                  error_only=False, fmt='none', control=False, subject=None, line_color=None, ylims=None, linewidth=1.5, linestyle=None,
+                  alpha=1.0,
+                  ):
         """
         Main plotting function.
 
@@ -392,23 +399,20 @@ class Plot():
                           color=line_color,
                           linewidth=linewidth,
                           linestyle=line_style,
-                          label=label)
-            axis.errorbar(
-                df[self.x_axis].values,
-                df[y].values,
-                yerr=df[y + '_std'].values,
-                marker=None,
-                capsize=3,
-                capthick=1.5,
-                linewidth=linewidth,
-#                label=label,
-                color=line_color,
-                fmt=fmt)
-
-#        if self.x_ticks == 'data':
-#           axis.set_xticks(df[self.x_axis].values)
-#        else:
-#           axis.set_xticks(self.x_ticks)
+                          label=label,
+                          alpha=alpha)
+            if y + '_std' in df:
+                axis.errorbar(
+                    df[self.x_axis].values,
+                    df[y].values,
+                    yerr=df[y + '_std'].values,
+                    marker=None,
+                    capsize=3,
+                    capthick=1.5,
+                    linewidth=linewidth,
+                    color=line_color,
+                    fmt=fmt,
+                    alpha=alpha)
 
         if isinstance(ylims, tuple):
             axis.set_ylim(ylims)
