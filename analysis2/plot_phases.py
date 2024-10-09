@@ -16,6 +16,7 @@ def plot_phases(
          detail=True,
          reverse_phases=False,
          ignore_others=True,
+         legend_fontsize='small',
          ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -107,7 +108,8 @@ def plot_phases(
         axs_frac.append(ax_frac)
 
         # panel title
-        ax_rtf.set_title(labels[i].replace("-", "-\n", 1), pad=20, fontsize='medium', fontweight='bold')
+        label_i = labels[i].replace("-", "-\n", 1).replace("=", "=\n", 1)
+        ax_rtf.set_title(label_i, pad=20, fontsize='medium', fontweight='bold')
 
         # RTF for state propagation
         Bs[i].plot_fractions(axis=ax_rtf, fill_variables=phases)
@@ -151,7 +153,7 @@ def plot_phases(
     plt.close()
 
     # Make legend figure
-    fig, ax_legend = plt.subplots(figsize=(3, 8))
+    fig, ax_legend = plt.subplots(figsize=(2, 8))
     phases_ = phases if reverse_phases else phases[::-1]
     for i, phase in enumerate(phases_):
         ax_legend.fill_between(
@@ -163,8 +165,8 @@ def plot_phases(
             linewidth=0.5,
             edgecolor='#444444')
     ax_legend.legend(
-        frameon=False, fontsize='small', bbox_to_anchor=[0.45, 0.5], loc='center',
-        ncol=1)
+        frameon=False, fontsize=legend_fontsize, bbox_to_anchor=[0.45, 0.5], loc='center',
+        ncol=1, labelspacing=1)
     for side in ['left', 'right', 'top', 'bottom']:
         ax_legend.spines[side].set_visible(False)
     ax_legend.set_axis_off()

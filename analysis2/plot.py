@@ -82,8 +82,8 @@ else:
         prop_ylims = (-1, 41)
         rtf_ylims = (-0.1, 4.1)
     else:
-        prop_ylims = (-1, 51)
-        rtf_ylims = (-0.1, 5.1)
+        prop_ylims = (-1, 61)
+        rtf_ylims = (-0.1, 6.1)
 
 # plot major data
 plot_major(
@@ -106,7 +106,7 @@ plot_conn_fr(
 )
 
 # plot phases
-for detail in [False, True]:
+for (detail, fontsize) in [(False, 'small'), (True, 'x-small')]:
     plot_phases(
         timer_files,
         labels,
@@ -116,6 +116,7 @@ for detail in [False, True]:
         rtf_ylims=rtf_ylims,
         detail=detail,
         ignore_others=False,
+        legend_fontsize=fontsize,
     )
 
 # concatenate and save results
