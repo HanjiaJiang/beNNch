@@ -283,6 +283,11 @@ class Plot():
             df['average_firing_rate'] = df['total_spike_count_per_s']/((df['network_size']-1)/2) # minus 1 Poisson generator
             df['average_firing_rate_std'] = df['total_spike_count_per_s_std']/((df['network_size']-1)/2)
 
+        if 'base_memory' in df and 'network_memory' in df and 'init_memory' in df and 'total_memory' in df:
+            df['memory_network_minus_base'] = df['network_memory'] - df['base_memory']
+            df['memory_init_minus_network'] = df['init_memory'] - df['network_memory']
+            df['memory_total_minus_init'] = df['total_memory'] - df['init_memory']
+
     def plot_fractions(self, axis, fill_variables,
                        interpolate=False, step=None, log=False, alpha=1.,
                        error=False, control=False, line=False, subject=None, ylims=None):

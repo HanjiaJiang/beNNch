@@ -130,4 +130,7 @@ label_params = {
     'network_memory': 'Network memory',
     'init_memory': 'Initial memory',
     'total_memory': 'Total memory',
+    'memory_network_minus_base': '(network - base) memory',
+    'memory_init_minus_network': '(initial - network) memory',
+    'memory_total_minus_init': '(total - initial) memory',
 }

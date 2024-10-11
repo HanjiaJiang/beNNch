@@ -78,6 +78,7 @@ else:
     if "Fixed-outdegree" in labels:
         conn_ylims = (-0.1, 4.6)
     else:
+#        conn_ylims = (-0.02, 0.72)
         conn_ylims = (-0.02, 0.52)
     if "Sparse" in labels or "Bernoulli" in labels:
         prop_ylims = (-1, 41)
@@ -141,6 +142,26 @@ plot_separate(
      file_postfix='memory',
     )
 
+# plot memory difference data
+plot_separate(
+     timer_files,
+     labels,
+     data_paths[0],
+     strength,
+     quantities=['memory_network_minus_base', 'memory_init_minus_network', 'memory_total_minus_init'],
+     file_postfix='memory-diff',
+    )
+
+
+def pivot_df(df, columns, index, values):
+    df_mean = df.groupby([columns, index]).mean().reset_index()
+    df_std = df.groupby([columns, index]).std().reset_index()
+    df_mean_table = df_mean.pivot(columns=columns, index=index, values=values)
+    df_std_table = df_std.pivot(columns=columns, index=index, values=values)
+    df_mean_table.to_csv(f'{values}_mean.csv')
+    df_std_table.to_csv(f'{values}_std.csv')
+
+
 # concatenate and save results
 def concat_df(file_list, output_file, labels_list):
     df_all = None
@@ -154,6 +175,12 @@ def concat_df(file_list, output_file, labels_list):
         else:
             df_all = pd.concat((df_all, df))
     df_all.to_csv(output_csv, index=False)
+    df_all['memory_network_minus_base'] = df_all['network_memory'] - df_all['base_memory']
+    df_all['memory_init_minus_network'] = df_all['init_memory'] - df_all['network_memory']
+    df_all['memory_total_minus_init'] = df_all['total_memory'] - df_all['init_memory']
+    pivot_df(df_all, 'num_nodes', 'model', 'memory_network_minus_base')
+    pivot_df(df_all, 'num_nodes', 'model', 'memory_init_minus_network')
+    pivot_df(df_all, 'num_nodes', 'model', 'memory_total_minus_init')
 
 output_csv = os.path.join(data_paths[0], "df_all.csv")
 concat_df(timer_files, output_csv, labels)

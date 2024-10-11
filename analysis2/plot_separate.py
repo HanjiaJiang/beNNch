@@ -31,7 +31,7 @@ def plot_separate(
         pobjects.append(B)
 
     # create figure
-    fig, axs = plt.subplots(1, 4, figsize=(12, 8))    
+    fig, axs = plt.subplots(1, len(quantities), figsize=(12, 8))
 
     # set xlabel
     if x_axis == 'num_nvp':
@@ -60,6 +60,7 @@ def plot_separate(
         ax.set_xlabel(xlabel)
         ylabel = pobjects[0].label_params[quantities[i]]
         ax.set_ylabel(f"{ylabel_prefix}{ylabel}")
+        ax.get_yaxis().get_offset_text().set_x(-0.3)
         if scaling_strength == 'weak':
             ax_twin = ax.twiny() # top axis for network_size            
             ax_twin.set_xticks(xticks)            
