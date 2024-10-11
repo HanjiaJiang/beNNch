@@ -121,7 +121,14 @@ def plot_major(
             for j, B_j in enumerate(pobjects):
                 if j != i:
                     label_j = labels[j].replace("\n", "")
-                    df_diff = (B_j.df_data - B_i.df_data)/B_i.df_data
+                    df_i, df_j = B_i.df_data.copy(), B_j.df_data.copy()
+                    for key in df_i.columns:
+                        if key not in df_j:
+                            df_i = df_i.drop(columns=[key])
+                    for key in df_j.columns:
+                        if key not in df_i:
+                            df_j = df_j.drop(columns=[key])
+                    df_diff = (df_j - df_i)/df_i
                     df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
 
     # Make legend figure
