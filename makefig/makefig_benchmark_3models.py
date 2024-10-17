@@ -7,11 +7,12 @@ import os
 composite_figure_name_root = 'benchmark'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
+space = 1.0
 panels_dict = {
-    "plot_major_strong":      {"width": 3, "height": 8, "position": (0, 8+1)},
-    "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+1)},
-    "plot_phases_strong":     {"width": 8, "height": 8, "position": (3+3, 8+1)},
-    "legend_phases_strong":   {"width": 2, "height": 8, "position": (3+3+8, 8+1)},
+    "plot_major_strong":      {"width": 3, "height": 8, "position": (0, 8+space+0.5)},
+    "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+space+0.5)},
+    "plot_phases_strong":     {"width": 8, "height": 8, "position": (3+3, 8+space)},
+    "legend_phases_strong":   {"width": 2, "height": 8, "position": (3+3+8, 8+space)},
 
     "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
     "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
@@ -19,26 +20,39 @@ panels_dict = {
     "legend_phases_weak":     {"width": 2, "height": 8, "position": (3+3+8, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (3+3+8+3, 8+1+8+1)
+figure_size_inch = (3+3+8+3, 8+space+8+space)
 
 ########## SET PANEL LABELS ##########
 label_shift_x = 0.1
-label_shift_y = 0.25
+label_shift_y = 0.7
 label_names = [
     [
-        {"A": (label_shift_x, 8+1+8+label_shift_y)},
-        {"B": (3+3+label_shift_x, 8+1+8+label_shift_y)},
-        {"C": (label_shift_x, 8+label_shift_y)},
-        {"D": (3+3+label_shift_x, 8+label_shift_y)},
+        {"A": (label_shift_x, 8+space+8+label_shift_y)},
+        #{"B": (3+3+label_shift_x, 8+1+8+label_shift_y)},
+        {"B": (label_shift_x, 8+label_shift_y)},
+        #{"D": (3+3+label_shift_x, 8+label_shift_y)},
     ],
 ]
 text_shift_x = 1.0
 label_text = [
     [
-        {"Strong scaling": (text_shift_x, 8+1+8+label_shift_y)},
-        {"Strong scaling, phases of state propagation":  (3+3+text_shift_x, 8+1+8+label_shift_y)},
+        {"Strong scaling": (text_shift_x, 8+space+8+label_shift_y)},
+        #{"Strong scaling, phases of state propagation":  (3+3+text_shift_x, 8+1+8+label_shift_y)},
         {"Weak scaling": (text_shift_x, 8+label_shift_y)},
-        {"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
+        #{"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
+    ],
+]
+
+########## SET PANEL SUBTITILES ##########
+subtitle_shift_x_left = 0.2
+subtitle_shift_x_right = 2.2
+subtitle_shift_y = 0.25
+subtitles = [
+    [
+        {"": (subtitle_shift_x_left, 8+space+8+subtitle_shift_y)},
+        {"Phases of state propagation":  (3+3+subtitle_shift_x_right, 8+space+8+subtitle_shift_y)},
+        {"": (subtitle_shift_x_left, 8+subtitle_shift_y)},
+        {"Phases of state propagation": (3+3+subtitle_shift_x_right, 8+subtitle_shift_y)},
     ],
 ]
 
@@ -62,8 +76,6 @@ def panel_label(s, pos, size=15, bold=True, transform="figure", ha="left", va="c
 def some_matplotlib_figure(
         fig_size=(8, 4),             ## figure size (width, height) in inches
         dpi=400,                     ## print resolution
-        subtitles=[],
-        subtitle_size=8,
         name_root="",
     ):
 
@@ -85,7 +97,7 @@ def some_matplotlib_figure(
 
     function_a(label_names, size=40, bold=True, ha="left", va="center")
     function_a(label_text, size=30, bold=False, ha="left", va="center")
-    function_a(subtitles, size=subtitle_size, bold=False, ha="center", va="center")
+    function_a(subtitles, size=30, bold=False, ha="left", va="center")
 
     fname = 'master_figure'
     plt.savefig("%s.pdf" % fname)

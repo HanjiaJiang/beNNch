@@ -14,22 +14,25 @@ panels_dict = {
     "legend_phases_weak":     {"width": 2, "height": 8, "position": (3+3+10, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (3+3+10+2, 8+1)
+figure_size_inch = (3+3+10+2, 8+0.5)
 
 ########## SET PANEL LABELS ##########
 label_shift_x = 0.1
-label_shift_y = 0.35
+label_shift_y = 0.2
+#label_shift_y = 0.35
 label_names = [
     [
-        {"A": (label_shift_x, 8+label_shift_y)},
-        {"B": (3+3+label_shift_x, 8+label_shift_y)},
+#        {"A": (label_shift_x, 8+label_shift_y)},
+#        {"B": (3+3+label_shift_x, 8+label_shift_y)},
     ],
 ]
-text_shift_x = 1.0
+text_shift_x = 3.2
+#text_shift_x = 1.0
 label_text = [
     [
-        {"Weak scaling": (text_shift_x, 8+label_shift_y)},
-        {"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
+#        {"Weak scaling": (text_shift_x, 8+label_shift_y)},
+#        {"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
+        {"Phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
     ],
 ]
 
