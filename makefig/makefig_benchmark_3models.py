@@ -10,32 +10,35 @@ composite_figure_name_root = 'benchmark'
 panels_dict = {
     "plot_major_strong":      {"width": 3, "height": 8, "position": (0, 8+1)},
     "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+1)},
-    "plot_phases_strong":     {"width": 10, "height": 8, "position": (3+3, 8+1)},
-    "legend_phases_strong":   {"width": 3, "height": 8, "position": (3+3+10, 8+1)},
+    "plot_phases_strong":     {"width": 8, "height": 8, "position": (3+3, 8+1)},
+    "legend_phases_strong":   {"width": 2, "height": 8, "position": (3+3+8, 8+1)},
 
     "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
     "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
-    "plot_phases_weak":       {"width": 10, "height": 8, "position": (3+3, 0)},
-    "legend_phases_weak":     {"width": 3, "height": 8, "position": (3+3+10, 0)},
+    "plot_phases_weak":       {"width": 8, "height": 8, "position": (3+3, 0)},
+    "legend_phases_weak":     {"width": 2, "height": 8, "position": (3+3+8, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (3+3+10+3, 8+1+8+1)
+figure_size_inch = (3+3+8+3, 8+1+8+1)
 
 ########## SET PANEL LABELS ##########
+label_shift_x = 0.1
+label_shift_y = 0.25
 label_names = [
     [
-        {"A": (0.25, 8+1+8+0.5)},
-        {"B": (3+3+0.25, 8+1+8+0.5)},
-        {"C": (0.25, 8+0.5)},
-        {"D": (3+3+0.25, 8+0.5)},
+        {"A": (label_shift_x, 8+1+8+label_shift_y)},
+        {"B": (3+3+label_shift_x, 8+1+8+label_shift_y)},
+        {"C": (label_shift_x, 8+label_shift_y)},
+        {"D": (3+3+label_shift_x, 8+label_shift_y)},
     ],
 ]
+text_shift_x = 1.0
 label_text = [
     [
-        {"Strong scaling": (1.2, 8+1+8+0.5)},
-        {"Strong scaling, phases of state propagation":  (3+3+1.2, 8+1+8+0.5)},
-        {"Weak scaling": (1.2, 8+0.5)},
-        {"Weak scaling, phases of state propagation": (3+3+1.2, 8+0.5)},
+        {"Strong scaling": (text_shift_x, 8+1+8+label_shift_y)},
+        {"Strong scaling, phases of state propagation":  (3+3+text_shift_x, 8+1+8+label_shift_y)},
+        {"Weak scaling": (text_shift_x, 8+label_shift_y)},
+        {"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
     ],
 ]
 
@@ -80,8 +83,8 @@ def some_matplotlib_figure(
                 except:
                     pass
 
-    function_a(label_names, size=50, bold=True, ha="left", va="center")
-    function_a(label_text, size=40, bold=False, ha="left", va="center")
+    function_a(label_names, size=40, bold=True, ha="left", va="center")
+    function_a(label_text, size=30, bold=False, ha="left", va="center")
     function_a(subtitles, size=subtitle_size, bold=False, ha="center", va="center")
 
     fname = 'master_figure'

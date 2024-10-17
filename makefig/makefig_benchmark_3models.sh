@@ -13,4 +13,5 @@ cp $paths/legend_phases.eps ./legend_phases_strong.eps
 cp $pathw/legend_major.eps ./legend_major_weak.eps
 cp $pathw/legend_phases.eps ./legend_phases_weak.eps
 
-python makefig_benchmark.py
+python makefig_benchmark_3models.py
+#python makefig_benchmark.py
