@@ -94,9 +94,12 @@ plot_major(
     data_paths[0],
     strength,
     x_axis=x_axis_label,
-    cons_ylims=cons_ylims,
-    conn_ylims=conn_ylims,
-    prop_ylims=prop_ylims,
+#    cons_ylims=cons_ylims,
+#    conn_ylims=conn_ylims,
+#    prop_ylims=prop_ylims,
+    colors=['#004488','#994455','#997700','#6699cc'],
+    styles=['-', '--', ':', ':'],
+    lw=3,
 )
 
 # plot connection number and firing rate
@@ -175,12 +178,13 @@ def concat_df(file_list, output_file, labels_list):
         else:
             df_all = pd.concat((df_all, df))
     df_all.to_csv(output_csv, index=False)
-    df_all['memory_network_minus_base'] = df_all['network_memory'] - df_all['base_memory']
-    df_all['memory_init_minus_network'] = df_all['init_memory'] - df_all['network_memory']
-    df_all['memory_total_minus_init'] = df_all['total_memory'] - df_all['init_memory']
-    pivot_df(df_all, 'num_nodes', 'model', 'memory_network_minus_base')
-    pivot_df(df_all, 'num_nodes', 'model', 'memory_init_minus_network')
-    pivot_df(df_all, 'num_nodes', 'model', 'memory_total_minus_init')
+    if 'network_memory' in df_all:
+        df_all['memory_network_minus_base'] = df_all['network_memory'] - df_all['base_memory']
+        df_all['memory_init_minus_network'] = df_all['init_memory'] - df_all['network_memory']
+        df_all['memory_total_minus_init'] = df_all['total_memory'] - df_all['init_memory']
+        pivot_df(df_all, 'num_nodes', 'model', 'memory_network_minus_base')
+        pivot_df(df_all, 'num_nodes', 'model', 'memory_init_minus_network')
+        pivot_df(df_all, 'num_nodes', 'model', 'memory_total_minus_init')
 
 output_csv = os.path.join(data_paths[0], "df_all.csv")
 concat_df(timer_files, output_csv, labels)

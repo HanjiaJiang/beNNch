@@ -15,11 +15,12 @@ def plot_major(
          save_path,
          scaling_strength,
          x_axis='num_nodes',
-         cons_ylims=(0, None),
-         conn_ylims=(0, None),
-         prop_ylims=(0, None),
+         cons_ylims=(None, None),
+         conn_ylims=(None, None),
+         prop_ylims=(None, None),
          colors=['k', 'k', 'gray', 'gray'],
          styles=['-', ':', '-', ':'],
+         lw=2,
     ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -43,8 +44,13 @@ def plot_major(
     ax_conn = fig.add_subplot(spec[1, 0])
     ax_prop = fig.add_subplot(spec[2, 0])
 
+    ax_cons.set_position([0.45, 0.67, 0.45, 0.22])
+    ax_conn.set_position([0.45, 0.40, 0.45, 0.22])
+    ax_prop.set_position([0.45, 0.13, 0.45, 0.22])
+
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
+        ax_cons_twin.set_position(ax_cons.get_position())
 
     if x_axis == 'num_nvp':
         xlabel = 'Number of VPs'
@@ -56,7 +62,6 @@ def plot_major(
     print('plotting timer data ...')
 
     # Network construction
-    lw = 2
     for i in range(len(pobjects)):
         pobjects[i].plot_main(quantities=['py_time_create'],
                 axis=ax_cons,
@@ -78,7 +83,7 @@ def plot_major(
                 linestyle=styles[i])
 
     ax_cons.set_ylabel('Network creation\ntime (s)')
-    ax_conn.set_ylabel('Network connection\ntime (s)')
+    ax_conn.set_ylabel('Network\nconnection\ntime (s)')
     ax_prop.set_ylabel('State propagation\ntime (s)\nfor '
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(pobjects[0].df_data.model_time_sim.values)[0]:.0f} s')
@@ -108,7 +113,7 @@ def plot_major(
         ax_cons_twin.set_xlabel('Network size\n(number of cells)')
         ax_cons_twin.set_xlim(ax_cons.get_xlim())
 
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.savefig(f'{save_path}/plot_major.png', dpi=400)
     plt.savefig(f'{save_path}/plot_major.eps', format='eps', dpi=400)
     plt.close()
@@ -133,7 +138,6 @@ def plot_major(
 
     # Make legend figure
     fig, ax_legend = plt.subplots(figsize=(3, 8))
-    styles = [('k', '-'), ('k', ':'), ('gray', '-'), ('gray', ':')]
     for i, label in enumerate(labels):
         if not os.path.isfile(timer_files[i]):
             break
@@ -142,9 +146,9 @@ def plot_major(
             [],
             label=label,
             marker=None,
-            color=styles[i][0],
+            color=colors[i],
             linewidth=3,
-            linestyle=styles[i][1],
+            linestyle=styles[i],
         )
     ax_legend.legend(
         frameon=False, fontsize='medium', bbox_to_anchor=[0.4, 0.5], loc='center',

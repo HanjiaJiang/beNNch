@@ -366,7 +366,7 @@ class Plot():
 
     def plot_main(self, quantities, axis, log=(False, False),
                   error_only=False, fmt='none', control=False, subject=None, line_color=None, ylims=None, linewidth=1.5, linestyle=None,
-                  alpha=1.0,
+                  alpha=1.0, elinewidth=1.5
                   ):
         """
         Main plotting function.
@@ -414,10 +414,13 @@ class Plot():
                     marker=None,
                     capsize=3,
                     capthick=1.5,
-                    linewidth=linewidth,
+                    linewidth=elinewidth,
                     color=line_color,
                     fmt=fmt,
                     alpha=alpha)
+            else:
+                str_std = y + '_std'
+                print(f'plot_main(): {str_std} not in data!')
 
         if isinstance(ylims, tuple):
             axis.set_ylim(ylims)
