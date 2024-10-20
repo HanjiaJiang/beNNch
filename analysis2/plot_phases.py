@@ -17,6 +17,7 @@ def plot_phases(
          reverse_phases=False,
          ignore_others=True,
          legend_fontsize='small',
+         title_weight='normal',
          ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -109,7 +110,7 @@ def plot_phases(
 
         # panel title
         label_i = labels[i].replace("-", "-\n", 1).replace("=", "=\n", 1)
-        ax_rtf.set_title(label_i, pad=20, fontsize='medium', fontweight='bold')
+        ax_rtf.set_title(label_i, pad=20, fontsize='medium', fontweight=title_weight)
 
         # RTF for state propagation
         Bs[i].plot_fractions(axis=ax_rtf, fill_variables=phases)
@@ -143,7 +144,7 @@ def plot_phases(
             ax_rtf_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
             ax_rtf_twin.set_xlim(ax_rtf.get_xlim())
 
-    axs_rtf[0].set_ylabel('Real-time factor for\nstate propagation')
+    axs_rtf[0].set_ylabel('Real-time factor')
     axs_frac[0].set_ylabel('Relative\nreal-time\nfactor (%)')
 
     plt.tight_layout()

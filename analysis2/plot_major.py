@@ -20,7 +20,7 @@ def plot_major(
          prop_ylims=(None, None),
          colors=['k', 'k', 'gray', 'gray'],
          styles=['-', ':', '-', ':'],
-         lw=2,
+         lw=3,
     ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
