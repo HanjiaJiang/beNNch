@@ -7,32 +7,58 @@ import os
 composite_figure_name_root = 'benchmark_poolsize'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
+space = 1.5
+h = 1.75
+bottom = 0.8
 panels_dict = {
     "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
     "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
-    "plot_phases_weak":       {"width": 10, "height": 8, "position": (3+3, 0)},
-    "legend_phases_weak":     {"width": 2, "height": 8, "position": (3+3+10, 0)},
+
+    "conn_source_distr_a2n_10":   {"width": 2.5, "height": h, "position": (3+3+space, bottom+h*3)},
+    "conn_target_distr_a2n_10":   {"width": 2.5, "height": h, "position": (3+3+space+2.5, bottom+h*3)},
+    "conn_num_distr_a2n_10":      {"width": 2.5, "height": h, "position": (3+3+space+5, bottom+h*3)},
+
+    "conn_source_distr_a2n_100":   {"width": 2.5, "height": h, "position": (3+3+space, bottom+h*2)},
+    "conn_target_distr_a2n_100":   {"width": 2.5, "height": h, "position": (3+3+space+2.5, bottom+h*2)},
+    "conn_num_distr_a2n_100":      {"width": 2.5, "height": h, "position": (3+3+space+5, bottom+h*2)},
+
+    "conn_source_distr_a2n_1000":   {"width": 2.5, "height": h, "position": (3+3+space, bottom+h)},
+    "conn_target_distr_a2n_1000":   {"width": 2.5, "height": h, "position": (3+3+space+2.5, bottom+h)},
+    "conn_num_distr_a2n_1000":      {"width": 2.5, "height": h, "position": (3+3+space+5, bottom+h)},
+
+    "conn_source_distr_a2n_10000":   {"width": 2.5, "height": h, "position": (3+3+space, bottom)},
+    "conn_target_distr_a2n_10000":   {"width": 2.5, "height": h, "position": (3+3+space+2.5, bottom)},
+    "conn_num_distr_a2n_10000":      {"width": 2.5, "height": h, "position": (3+3+space+5, bottom)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (3+3+10+2, 8+0.5)
+figure_size_inch = (3+3+space+2.5*3+0.5, 8+0.5)
 
 ########## SET PANEL LABELS ##########
 label_shift_x = 0.1
 label_shift_y = 0.2
-#label_shift_y = 0.35
 label_names = [
     [
-#        {"A": (label_shift_x, 8+label_shift_y)},
-#        {"B": (3+3+label_shift_x, 8+label_shift_y)},
+        {"A": (label_shift_x, 8+label_shift_y)},
+        {"B": (3+3+label_shift_x, 8+label_shift_y)},
     ],
 ]
-text_shift_x = 3.2
-#text_shift_x = 1.0
-label_text = [
+label_text_1 = [
     [
-#        {"Weak scaling": (text_shift_x, 8+label_shift_y)},
-#        {"Weak scaling, phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
-        {"Phases of state propagation": (3+3+text_shift_x, 8+label_shift_y)},
+        {"Weak scaling benchmarks": (0.8, 8+label_shift_y)},
+        {"Benchmark model (scale = 2) connectivity": (3+3+0.8, 8+label_shift_y)},
+    ],
+]
+text_shift_x = 1.6
+text_shift_y = 0.9
+label_text_2 = [
+    [
+        {"pool_size\n= 10": (3+3+0.5*space, bottom+h*3+text_shift_y)},
+        {"pool_size\n= 100": (3+3+0.5*space, bottom+h*2+text_shift_y)},
+        {"pool_size\n= 1000": (3+3+0.5*space, bottom+h+text_shift_y)},
+        {"pool_size\n= 10000": (3+3+0.5*space, bottom+text_shift_y)},
+        {"Number of connected\nastrocytes\nper target neuron": (3+3+space+text_shift_x, 0.5*bottom)},
+        {"Number of connected\ntarget neurons\nper astrocyte": (3+3+space+2.5+text_shift_x, 0.5*bottom)},
+        {"Number of connections\nper astrocyte-neuron\npair": (3+3+space+5+text_shift_x, 0.5*bottom)},
     ],
 ]
 
@@ -56,8 +82,6 @@ def panel_label(s, pos, size=15, bold=True, transform="figure", ha="left", va="c
 def some_matplotlib_figure(
         fig_size=(8, 4),             ## figure size (width, height) in inches
         dpi=400,                     ## print resolution
-        subtitles=[],
-        subtitle_size=8,
         name_root="",
     ):
 
@@ -78,8 +102,8 @@ def some_matplotlib_figure(
                     pass
 
     function_a(label_names, size=40, bold=True, ha="left", va="center")
-    function_a(label_text, size=30, bold=False, ha="left", va="center")
-    function_a(subtitles, size=subtitle_size, bold=False, ha="center", va="center")
+    function_a(label_text_1, size=30, bold=False, ha="left", va="center")
+    function_a(label_text_2, size=18, bold=False, ha="center", va="center")
 
     fname = 'master_figure'
     plt.savefig("%s.pdf" % fname)
