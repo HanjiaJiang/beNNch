@@ -27,12 +27,15 @@ def plot_major(
     print(f'x axis: {x_axis}')
 
     pobjects = []
+    model_time_in_s = None
     for i, timer_file in enumerate(timer_files):
         if not os.path.isfile(timer_file):
             break
         args = {'data_file': timer_file, 'x_axis': [x_axis], 'time_scaling': 1e3}
         B = bp.Plot(**args)
         pobjects.append(B)
+        if model_time_in_s is None:
+            model_time_in_s = B.df_data["model_time_sim"][0]
 
     # Plotting
     widths = [1, 1]
@@ -47,6 +50,9 @@ def plot_major(
     ax_cons.set_position([0.23, 0.57, 0.23, 0.3])
     ax_conn.set_position([0.72, 0.57, 0.23, 0.3])
     ax_prop.set_position([0.23, 0.15, 0.23, 0.3])
+
+    ax_prop_rtf = ax_prop.twinx()
+    ax_prop_rtf.set_position(ax_prop.get_position())
 
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
@@ -101,6 +107,9 @@ def plot_major(
     ax_cons.set_ylim(cons_ylims)
     ax_conn.set_ylim(conn_ylims)
     ax_prop.set_ylim(prop_ylims)
+
+    ax_prop_rtf.set_ylim((ax_prop.get_ylim()[0]/model_time_in_s, ax_prop.get_ylim()[1]/model_time_in_s))
+    ax_prop_rtf.set_ylabel('Real-time factor', rotation=270, labelpad=20)
 
     # get network size(s) and add to plot
     if 'N_ex' in pobjects[0].df_data and 'N_ex' in pobjects[0].df_data and 'N_in' in pobjects[0].df_data:
