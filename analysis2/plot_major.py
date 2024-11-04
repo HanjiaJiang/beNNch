@@ -7,7 +7,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.transforms as mtransforms
 import matplotlib.ticker as ticker
 
-do_diff = False
+do_diff = True
 
 def plot_major(
          timer_files,
@@ -35,22 +35,26 @@ def plot_major(
         pobjects.append(B)
 
     # Plotting
-    widths = [1]
-    heights = [1, 1, 1]
-    fig = plt.figure(figsize=(3, 8))
-    spec = gridspec.GridSpec(ncols=1, nrows=3, figure=fig, width_ratios=widths, height_ratios=heights)
+    widths = [1, 1]
+    heights = [1, 1]
+    fig = plt.figure(figsize=(6, 8))
+    spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
 
     ax_cons = fig.add_subplot(spec[0, 0])
-    ax_conn = fig.add_subplot(spec[1, 0])
-    ax_prop = fig.add_subplot(spec[2, 0])
+    ax_conn = fig.add_subplot(spec[0, 1])
+    ax_prop = fig.add_subplot(spec[1, 0])
 
-    ax_cons.set_position([0.45, 0.67, 0.45, 0.22])
-    ax_conn.set_position([0.45, 0.40, 0.45, 0.22])
-    ax_prop.set_position([0.45, 0.13, 0.45, 0.22])
+    ax_cons.set_position([0.23, 0.57, 0.23, 0.3])
+    ax_conn.set_position([0.72, 0.57, 0.23, 0.3])
+    ax_prop.set_position([0.23, 0.15, 0.23, 0.3])
 
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
         ax_cons_twin.set_position(ax_cons.get_position())
+        ax_conn_twin = ax_conn.twiny() # top axis for network_size
+        ax_conn_twin.set_position(ax_conn.get_position())
+        ax_prop_twin = ax_prop.twiny() # top axis for network_size
+        ax_prop_twin.set_position(ax_prop.get_position())
 
     if x_axis == 'num_nvp':
         xlabel = 'Number of VPs'
@@ -83,7 +87,7 @@ def plot_major(
                 linestyle=styles[i])
 
     ax_cons.set_ylabel('Network creation\ntime (s)')
-    ax_conn.set_ylabel('Network\nconnection\ntime (s)')
+    ax_conn.set_ylabel('Network connection\ntime (s)')
     ax_prop.set_ylabel('State propagation\ntime (s)\nfor '
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(pobjects[0].df_data.model_time_sim.values)[0]:.0f} s')
@@ -106,12 +110,18 @@ def plot_major(
         # calculate from network_size (all nodes in NEST) minus one poisson generator
         N_size_labels = pobjects[0].df_data['network_size'].values.astype(int) - 1
     if scaling_strength == 'weak':
-        xticks = sorted(set(pobjects[0].df_data['num_nodes'].values.tolist()))
-        ax_cons_twin.set_xticks(xticks)
-        xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
-        ax_cons_twin.set_xticklabels(xticklabels, fontsize='small')
-        ax_cons_twin.set_xlabel('Network size\n(number of cells)')
-        ax_cons_twin.set_xlim(ax_cons.get_xlim())
+        for ax_twin_tmp, ax_tmp in zip([ax_cons_twin, ax_conn_twin, ax_prop_twin], [ax_cons, ax_conn, ax_prop]):
+            xticks = sorted(set(pobjects[0].df_data['num_nodes'].values.tolist()))
+            xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
+            ax_twin_tmp.set_xticks(xticks)
+            ax_twin_tmp.set_xticklabels(xticklabels, fontsize='small')
+            ax_twin_tmp.set_xlim(ax_tmp.get_xlim())
+            if ax_tmp != ax_prop:
+                ax_twin_tmp.set_xlabel('Network size\n(number of cells)')
+
+    ax_prop.legend(
+        frameon=False, fontsize='medium', bbox_to_anchor=[3.4, 0.5], loc='right',
+        ncol=1, labelspacing=1)
 
     #plt.tight_layout()
     plt.savefig(f'{save_path}/plot_major.png', dpi=400)
@@ -120,6 +130,8 @@ def plot_major(
 
     # Output difference data
     if do_diff:
+        os.system(f"mkdir -p {save_path}/diff_abs")
+        os.system(f"mkdir -p {save_path}/diff_rel")
         for i, B_i in enumerate(pobjects):
             label_i = labels[i].replace("\n", "")
             B_i.df_data.to_csv(f"{save_path}/df_{label_i}.csv", index=False, float_format="%.3f")
@@ -133,32 +145,10 @@ def plot_major(
                     for key in df_j.columns:
                         if key not in df_i:
                             df_j = df_j.drop(columns=[key])
-                    df_diff = (df_j - df_i)/df_i
-                    df_diff.to_csv(f"{save_path}/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
-
-    # Make legend figure
-    fig, ax_legend = plt.subplots(figsize=(3, 8))
-    for i, label in enumerate(labels):
-        if not os.path.isfile(timer_files[i]):
-            break
-        ax_legend.plot(
-            [],
-            [],
-            label=label,
-            marker=None,
-            color=colors[i],
-            linewidth=3,
-            linestyle=styles[i],
-        )
-    ax_legend.legend(
-        frameon=False, fontsize='medium', bbox_to_anchor=[0.4, 0.5], loc='center',
-        ncol=1, labelspacing=1)
-    for side in ['left', 'right', 'top', 'bottom']:
-        ax_legend.spines[side].set_visible(False)
-    ax_legend.set_axis_off()
-    plt.savefig(f'{save_path}/legend_major.png', dpi=400)
-    plt.savefig(f'{save_path}/legend_major.eps', dpi=400)
-    plt.close()
+                    df_diff_abs = df_j - df_i
+                    df_diff_rel = (df_j - df_i)/df_i
+                    df_diff_abs.to_csv(f"{save_path}/diff_abs/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
+                    df_diff_rel.to_csv(f"{save_path}/diff_rel/df_{label_j}_to_{label_i}.csv", index=False, float_format="%.3f")
 
 def plot_conn_fr(
          timer_files,
