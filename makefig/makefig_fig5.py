@@ -7,25 +7,26 @@ import os
 composite_figure_name_root = 'benchmark_4rules'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
+space = 0.5
 panels_dict = {
-    "plot_major_4rules_strong":    {"width": 6,  "height": 8, "position": (0, 0)},
-    "plot_major_4rules_weak":      {"width": 6,  "height": 8, "position": (6+0.5, 0)},
-#    "legend_major_4rules":         {"width": 3,  "height": 8, "position": (7, 0)},
+    "plot_major_4rules_strong":    {"width": 8,  "height": 4, "position": (0, 4+space)},
+    "plot_major_4rules_weak":      {"width": 8,  "height": 4, "position": (0, 0)},
+    "legend_major_4rules":         {"width": 2,  "height": 4, "position": (8, 4+space)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (12.5, 8+0.5)
+figure_size_inch = (8+2, 2*(4+space))
 
 ########## SET PANEL LABELS ##########
 label_names = [
     [
-        {"A": (0+0.1, 8+0.25)},
-        {"B": (6+0.5+0.1, 8+0.25)},
+        {"A": (0, 2*4+1.5*space)},
+        {"B": (0, 4+0.5*space)},
     ],
 ]
 label_text = [
     [
-        {"Strong scaling": (0+1, 8+0.25)},
-        {"Weak scaling":   (6+0.5+1, 8+0.25)},
+        {"Strong scaling": (0.75, 2*4+1.5*space)},
+        {"Weak scaling":   (0.75, 4+0.5*space)},
     ],
 ]
 

@@ -11,8 +11,8 @@ space = 1.5
 h = 1.75
 bottom = 0.8
 panels_dict = {
-    "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
-    "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
+    "plot_major_weak":        {"width": 6, "height": 8, "position": (0, 0)},
+#    "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
 
     "conn_source_distr_a2n_10":   {"width": 2.5, "height": h, "position": (3+3+space, bottom+h*3)},
     "conn_target_distr_a2n_10":   {"width": 2.5, "height": h, "position": (3+3+space+2.5, bottom+h*3)},
@@ -44,8 +44,8 @@ label_names = [
 ]
 label_text_1 = [
     [
-        {"Weak scaling benchmarks": (0.8, 8+label_shift_y)},
-        {"Benchmark model (scale = 2) connectivity": (3+3+0.8, 8+label_shift_y)},
+        {"Weak scaling": (0.8, 8+label_shift_y)},
+        {"Astrocyte-to-neuron connectivity (at scale = 4)": (3+3+0.8, 8+label_shift_y)},
     ],
 ]
 text_shift_x = 1.6

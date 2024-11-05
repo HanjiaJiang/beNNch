@@ -4,28 +4,50 @@ import matplotlib.gridspec as gridspec
 import os
 
 ########## GIVE THE NAME OF THE COMPOSITE FIGURE TO BE GENERATED ##########
-composite_figure_name_root = 'benchmark_4rules'
+composite_figure_name_root = 'benchmark'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
+w_m = 8   # plot major width
+w_p = 6.5 # plot phase width
+w_l = 2 # legend width
+h = 4 # height
+space = 0.5
+
 panels_dict = {
-    "plot_major_4rules_strong":    {"width": 6,  "height": 8, "position": (0, 0)},
-    "plot_major_4rules_weak":      {"width": 6,  "height": 8, "position": (6+0.5, 0)},
-#    "legend_major_4rules":         {"width": 3,  "height": 8, "position": (7, 0)},
+    "plot_major_strong":      {"width": w_m, "height": h, "position": (0, h+space)},
+    "plot_phases_strong":     {"width": w_p, "height": h, "position": (0.5, 0)},
+
+    "plot_major_weak":        {"width": w_m, "height": h, "position": (w_m+w_l, h+space)},
+    "plot_phases_weak":       {"width": w_p, "height": h, "position": (w_m+w_l+0.5, 0)},
+
+    "legend_major_strong":    {"width": w_l, "height": h, "position": (w_m, h+space)},
+    "legend_phases_strong":   {"width": w_l, "height": h, "position": (w_p+1.4, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (12.5, 8+0.5)
+figure_size_inch = (2*w_m+w_l, 2*h+2*space)
 
 ########## SET PANEL LABELS ##########
 label_names = [
     [
-        {"A": (0+0.1, 8+0.25)},
-        {"B": (6+0.5+0.1, 8+0.25)},
+        {"A": (0.1, 2*h+space+0.2)},
+        {"B": (w_m+w_l+0.1, 2*h+space+0.2)},
     ],
 ]
 label_text = [
     [
-        {"Strong scaling": (0+1, 8+0.25)},
-        {"Weak scaling":   (6+0.5+1, 8+0.25)},
+        {"Strong scaling": (1, 2*h+space+0.2)},
+        {"Weak scaling": (w_m+w_l+1, 2*h+space+0.2)},
+    ],
+]
+
+########## SET PANEL SUBTITILES ##########
+subtitle_shift_x_left = 0.2
+subtitle_shift_x_right = 2.2
+subtitle_shift_y = 0.25
+subtitles = [
+    [
+        {"Phases of state propagation":  (2,h+0.2)},
+        {"Phases of state propagation": (w_m+w_l+2,h+0.2)},
     ],
 ]
 
@@ -49,8 +71,6 @@ def panel_label(s, pos, size=15, bold=True, transform="figure", ha="left", va="c
 def some_matplotlib_figure(
         fig_size=(8, 4),             ## figure size (width, height) in inches
         dpi=400,                     ## print resolution
-        subtitles=[],
-        subtitle_size=8,
         name_root="",
     ):
 
@@ -70,9 +90,9 @@ def some_matplotlib_figure(
                 except:
                     pass
 
-    function_a(label_names, size=35, bold=True, ha="left", va="center")
-    function_a(label_text, size=25, bold=False, ha="left", va="center")
-    function_a(subtitles, size=subtitle_size, bold=False, ha="center", va="center")
+    function_a(label_names, size=40, bold=True, ha="left", va="center")
+    function_a(label_text, size=30, bold=False, ha="left", va="center")
+    function_a(subtitles, size=25, bold=False, ha="left", va="center")
 
     fname = 'master_figure'
     plt.savefig("%s.pdf" % fname)

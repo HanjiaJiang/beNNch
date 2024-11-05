@@ -9,13 +9,13 @@ composite_figure_name_root = 'benchmark'
 ########## DEFINE PANELS AND THE FIGURE ##########
 space = 1.0
 panels_dict = {
-    "plot_major_strong":      {"width": 3, "height": 8, "position": (0, 8+space+0.5)},
-    "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+space+0.5)},
+    "plot_major_strong":      {"width": 6, "height": 8, "position": (0, 8+space+0.5)},
+#    "legend_major_strong":    {"width": 3, "height": 8, "position": (3, 8+space+0.5)},
     "plot_phases_strong":     {"width": 8, "height": 8, "position": (3+3, 8+space)},
     "legend_phases_strong":   {"width": 2, "height": 8, "position": (3+3+8, 8+space)},
 
-    "plot_major_weak":        {"width": 3, "height": 8, "position": (0, 0)},
-    "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
+    "plot_major_weak":        {"width": 6, "height": 8, "position": (0, 0)},
+#    "legend_major_weak":      {"width": 3, "height": 8, "position": (3, 0)},
     "plot_phases_weak":       {"width": 8, "height": 8, "position": (3+3, 0)},
     "legend_phases_weak":     {"width": 2, "height": 8, "position": (3+3+8, 0)},
 }
