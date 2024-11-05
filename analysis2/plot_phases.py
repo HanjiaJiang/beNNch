@@ -18,6 +18,7 @@ def plot_phases(
          ignore_others=True,
          legend_fontsize='small',
          title_weight='normal',
+         plot_relative=False,
          ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -38,10 +39,11 @@ def plot_phases(
 
     # Plotting
     widths = [1]*fcount
-    heights = [4, 1]
-    figsize = (2+2*fcount, 8)
+    heights = [4, 1] if plot_relative else [1]
+    figsize = (2+1.5*fcount, 4)
     fig = plt.figure(figsize=figsize)
-    spec = gridspec.GridSpec(ncols=fcount, nrows=2, figure=fig,
+    nrows = 2 if plot_relative else 1
+    spec = gridspec.GridSpec(ncols=fcount, nrows=nrows, figure=fig,
                              width_ratios=widths,
                              height_ratios=heights)
 
@@ -104,9 +106,15 @@ def plot_phases(
 
         # create axe object
         ax_rtf = fig.add_subplot(spec[0, i])
-        ax_frac = fig.add_subplot(spec[1, i])
         axs_rtf.append(ax_rtf)
-        axs_frac.append(ax_frac)
+        if plot_relative:
+            ax_frac = fig.add_subplot(spec[1, i])
+            axs_frac.append(ax_frac)
+            ax_frac.set_xlabel(xlabel)
+            ax_frac.set_ylim(-10.0, 110.0)
+            Bs[i].plot_fractions(axis=ax_frac, fill_variables=fractions)
+        else:
+            ax_rtf.set_xlabel(xlabel)
 
         # panel title
         label_i = labels[i].replace("-", "-\n", 1).replace("=", "=\n", 1)
@@ -114,20 +122,9 @@ def plot_phases(
 
         # RTF for state propagation
         Bs[i].plot_fractions(axis=ax_rtf, fill_variables=phases)
-        Bs[i].plot_fractions(axis=ax_frac, fill_variables=fractions)
 
-        ax_frac.set_xlabel(xlabel)
 
         ax_rtf.set_ylim(rtf_ylims)
-        ax_frac.set_ylim(-10.0, 110.0)
-
-        if x_axis == 'num_nvp':
-            xticks = ax_rtf.get_xticks().flatten()
-            xticklabels = (xticks).astype(int)
-            ax_rtf.set_xticks(xticks)
-            ax_rtf.set_xticklabels(xticklabels)
-            ax_frac.set_xticks(xticks)
-            ax_frac.set_xticklabels(xticklabels)
 
         # get network size(s) and add to plot
         if 'N_ex' in Bs[i].df_data and 'N_ex' in Bs[i].df_data and 'N_in' in Bs[i].df_data:
@@ -141,11 +138,12 @@ def plot_phases(
             xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
             ax_rtf_twin.set_xticks(ax_rtf.get_xticks().flatten())
             ax_rtf_twin.set_xticklabels(xticklabels, fontsize='small')
-            ax_rtf_twin.set_xlabel('Network size\n(number of cells)', fontsize='small')
+            ax_rtf_twin.set_xlabel('Network size', fontsize='small')
             ax_rtf_twin.set_xlim(ax_rtf.get_xlim())
 
     axs_rtf[0].set_ylabel('Real-time factor')
-    axs_frac[0].set_ylabel('Relative\nreal-time\nfactor (%)')
+    if plot_relative:
+        axs_frac[0].set_ylabel('Relative\nreal-time\nfactor (%)')
 
     plt.tight_layout()
     pname = "plot_phases_detail" if detail else "plot_phases"
@@ -154,7 +152,7 @@ def plot_phases(
     plt.close()
 
     # Make legend figure
-    fig, ax_legend = plt.subplots(figsize=(2, 8))
+    fig, ax_legend = plt.subplots(figsize=(2, 4))
     phases_ = phases if reverse_phases else phases[::-1]
     for i, phase in enumerate(phases_):
         ax_legend.fill_between(

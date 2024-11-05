@@ -13,7 +13,7 @@ from plot_major import plot_major, plot_conn_fr
 from plot_separate import plot_separate
 
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({'font.size': 15})
 
 # Load analysis configurations
 config_file_name = '../config/analysis_config.yaml'
@@ -72,7 +72,7 @@ elif strength == "strong":
     else:
         conn_ylims = (-0.02, 0.52)
     prop_ylims = (-1, 41)
-    rtf_ylims = (-0.1, 3.1)
+    rtf_ylims = (-0.1, 2.6)
 else:
     cons_ylims = (-0.01, 0.11)
     if "Fixed-outdegree" in labels:
@@ -82,7 +82,7 @@ else:
         conn_ylims = (-0.02, 0.52)
     if "Sparse" in labels or "Bernoulli" in labels:
         prop_ylims = (-1, 41)
-        rtf_ylims = (-0.1, 4.1)
+        rtf_ylims = (-0.1, 3.6)
     else:
         prop_ylims = (-1, 61)
         rtf_ylims = (-0.1, 6.1)
@@ -166,7 +166,7 @@ def pivot_df(df, columns, index, values):
 
 
 # concatenate and save results
-def concat_df(file_list, output_file, labels_list):
+def concat_df(file_list, output_file, labels_list, compare_memory=False):
     df_all = None
     for i, file_name in enumerate(file_list):
         if not os.path.isfile(file_name):
@@ -178,7 +178,7 @@ def concat_df(file_list, output_file, labels_list):
         else:
             df_all = pd.concat((df_all, df))
     df_all.to_csv(output_csv, index=False)
-    if 'network_memory' in df_all:
+    if compare_memory and 'network_memory' in df_all:
         df_all['memory_network_minus_base'] = df_all['network_memory'] - df_all['base_memory']
         df_all['memory_init_minus_network'] = df_all['init_memory'] - df_all['network_memory']
         df_all['memory_total_minus_init'] = df_all['total_memory'] - df_all['init_memory']

@@ -21,6 +21,7 @@ def plot_major(
          colors=['k', 'k', 'gray', 'gray'],
          styles=['-', ':', '-', ':'],
          lw=3,
+         tk_size='small',
     ):
 
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -38,21 +39,24 @@ def plot_major(
             model_time_in_s = B.df_data["model_time_sim"][0]
 
     # Plotting
-    widths = [1, 1]
-    heights = [1, 1]
-    fig = plt.figure(figsize=(6, 8))
-    spec = gridspec.GridSpec(ncols=2, nrows=2, figure=fig, width_ratios=widths, height_ratios=heights)
+    widths = [1, 1, 1]
+    heights = [1]
+    fig = plt.figure(figsize=(8, 4))
+    spec = gridspec.GridSpec(ncols=3, nrows=1, figure=fig, width_ratios=widths, height_ratios=heights)
 
     ax_cons = fig.add_subplot(spec[0, 0])
     ax_conn = fig.add_subplot(spec[0, 1])
-    ax_prop = fig.add_subplot(spec[1, 0])
+    ax_prop = fig.add_subplot(spec[0, 2])
 
-    ax_cons.set_position([0.23, 0.57, 0.23, 0.3])
-    ax_conn.set_position([0.72, 0.57, 0.23, 0.3])
-    ax_prop.set_position([0.23, 0.15, 0.23, 0.3])
+#    ax_cons.set_position([0.23, 0.57, 0.23, 0.3])
+#    ax_conn.set_position([0.72, 0.57, 0.23, 0.3])
+#    ax_prop.set_position([0.23, 0.15, 0.23, 0.3])
 
     ax_prop_rtf = ax_prop.twinx()
     ax_prop_rtf.set_position(ax_prop.get_position())
+
+    for ax_tmp in [ax_cons, ax_conn, ax_prop, ax_prop_rtf]:
+        ax_tmp.tick_params(axis='both', which='major', labelsize=tk_size)
 
     if scaling_strength == 'weak':
         ax_cons_twin = ax_cons.twiny() # top axis for network_size
@@ -92,19 +96,21 @@ def plot_major(
                 linewidth=lw,
                 linestyle=styles[i])
 
-    ax_cons.set_ylabel('Network creation\ntime (s)')
-    ax_conn.set_ylabel('Network connection\ntime (s)')
-    ax_prop.set_ylabel('State propagation\ntime (s)\nfor '
+    ax_cons.set_ylabel('Network creation time (s)')
+    ax_conn.set_ylabel('Network connection time (s)')
+    ax_prop.set_ylabel('State propagation\ntime (s) for '
                    r'$T_{\mathrm{model}} =$'
                    + f'{np.unique(pobjects[0].df_data.model_time_sim.values)[0]:.0f} s')
 
+    ax_cons.set_xlabel(xlabel)
+    ax_conn.set_xlabel(xlabel)
     ax_prop.set_xlabel(xlabel)
 
     ax_cons.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
     ax_conn.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
     ax_prop.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
 
-    ax_cons.set_ylim(cons_ylims)
+    ax_cons.set_ylim(cons_ylims) 
     ax_conn.set_ylim(conn_ylims)
     ax_prop.set_ylim(prop_ylims)
 
@@ -123,18 +129,41 @@ def plot_major(
             xticks = sorted(set(pobjects[0].df_data['num_nodes'].values.tolist()))
             xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
             ax_twin_tmp.set_xticks(xticks)
-            ax_twin_tmp.set_xticklabels(xticklabels, fontsize='small')
+            ax_twin_tmp.set_xticklabels(xticklabels, fontsize=tk_size)
             ax_twin_tmp.set_xlim(ax_tmp.get_xlim())
-            if ax_tmp != ax_prop:
-                ax_twin_tmp.set_xlabel('Network size\n(number of cells)')
+            ax_twin_tmp.set_xlabel('Network size')
 
-    ax_prop.legend(
-        frameon=False, fontsize='medium', bbox_to_anchor=[3.4, 0.5], loc='right',
-        ncol=1, labelspacing=1)
+    #ax_prop.legend(
+    #    frameon=False, fontsize='medium', bbox_to_anchor=[3.4, 0.5], loc='right',
+    #    ncol=1, labelspacing=1)
 
-    #plt.tight_layout()
+    plt.tight_layout()
     plt.savefig(f'{save_path}/plot_major.png', dpi=400)
     plt.savefig(f'{save_path}/plot_major.eps', format='eps', dpi=400)
+    plt.close()
+
+    # Make legend figure
+    fig, ax_legend = plt.subplots(figsize=(2, 4))
+    for i, label in enumerate(labels):
+        if not os.path.isfile(timer_files[i]):
+            break
+        ax_legend.plot(
+            [],
+            [],
+            label=label.replace("-", "-\n", 1).replace("=", "=\n", 1),
+            marker=None,
+            color=colors[i],
+            linewidth=3,
+            linestyle=styles[i],
+        )
+    ax_legend.legend(
+        frameon=False, fontsize='medium', bbox_to_anchor=[0.4, 0.5], loc='center',
+        ncol=1, labelspacing=1)
+    for side in ['left', 'right', 'top', 'bottom']:
+        ax_legend.spines[side].set_visible(False)
+    ax_legend.set_axis_off()
+    plt.savefig(f'{save_path}/legend_major.png', dpi=400)
+    plt.savefig(f'{save_path}/legend_major.eps', dpi=400)
     plt.close()
 
     # Output difference data
