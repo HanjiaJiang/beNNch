@@ -4,73 +4,50 @@ import matplotlib.gridspec as gridspec
 import os
 
 ########## GIVE THE NAME OF THE COMPOSITE FIGURE TO BE GENERATED ##########
-composite_figure_name_root = 'benchmark_poolsize'
+composite_figure_name_root = 'benchmark'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
-h_major, h = 4, 1.75
-left, top_a, top_b, top_c, bottom = 1.5, 0.5, 0.5, 1, 0.8
-shift_y_major = 0.0
+w_m = 8   # plot major width
+w_p = 6.5 # plot phase width
+w_l = 2 # legend width
+h = 4 # height
+space = 0.5
+
 panels_dict = {
-    "plot_major_weak":        {"width": 8, "height": h_major, "position":    (1, bottom+h*4+h_major+top_b+top_c+shift_y_major)},
-    "legend_major_weak":      {"width": 2, "height": h_major, "position":    (9, bottom+h*4+h_major+top_b+top_c+shift_y_major)},
+    "plot_major_strong":      {"width": w_m, "height": h, "position": (0, h+space)},
+    "plot_phases_strong":     {"width": w_p, "height": h, "position": (0.5, 0)},
 
-    "plot_phases_weak":        {"width": 8, "height": h_major, "position":   (1, bottom+h*4+top_c+shift_y_major)},
-    "legend_phases_weak":      {"width": 2, "height": h_major, "position":   (9, bottom+h*4+top_c+shift_y_major)},
+    "plot_major_weak":        {"width": w_m, "height": h, "position": (w_m+w_l, h+space)},
+    "plot_phases_weak":       {"width": w_p, "height": h, "position": (w_m+w_l+0.5, 0)},
 
-    "conn_source_distr_a2n_10":   {"width": 2.5, "height": h, "position": (left, bottom+h*3)},
-    "conn_target_distr_a2n_10":   {"width": 2.5, "height": h, "position": (left+2.5, bottom+h*3)},
-    "conn_num_distr_a2n_10":      {"width": 2.5, "height": h, "position": (left+5, bottom+h*3)},
-    "conn_per_target_a2n_10":      {"width": 2.5, "height": h, "position": (left+7.5, bottom+h*3)},
-
-    "conn_source_distr_a2n_100":   {"width": 2.5, "height": h, "position": (left, bottom+h*2)},
-    "conn_target_distr_a2n_100":   {"width": 2.5, "height": h, "position": (left+2.5, bottom+h*2)},
-    "conn_num_distr_a2n_100":      {"width": 2.5, "height": h, "position": (left+5, bottom+h*2)},
-    "conn_per_target_a2n_100":      {"width": 2.5, "height": h, "position": (left+7.5, bottom+h*2)},
-
-    "conn_source_distr_a2n_1000":   {"width": 2.5, "height": h, "position": (left, bottom+h)},
-    "conn_target_distr_a2n_1000":   {"width": 2.5, "height": h, "position": (left+2.5, bottom+h)},
-    "conn_num_distr_a2n_1000":      {"width": 2.5, "height": h, "position": (left+5, bottom+h)},
-    "conn_per_target_a2n_1000":      {"width": 2.5, "height": h, "position": (left+7.5, bottom+h)},
-
-    "conn_source_distr_a2n_10000":   {"width": 2.5, "height": h, "position": (left, bottom)},
-    "conn_target_distr_a2n_10000":   {"width": 2.5, "height": h, "position": (left+2.5, bottom)},
-    "conn_num_distr_a2n_10000":      {"width": 2.5, "height": h, "position": (left+5, bottom)},
-    "conn_per_target_a2n_10000":      {"width": 2.5, "height": h, "position": (left+7.5, bottom)},
+    "legend_major_strong":    {"width": w_l, "height": h, "position": (w_m, h+space)},
+    "legend_phases_strong":   {"width": w_l, "height": h, "position": (w_p+1.4, 0)},
 }
 final_panel_shrink = 1.0
-figure_size_inch = (12, bottom+4*h+2*h_major+top_a+top_b+top_c)
+figure_size_inch = (2*w_m+w_l, 2*h+2*space)
 
 ########## SET PANEL LABELS ##########
-label_shift_x = 0.1
 label_names = [
     [
-        {"A": (label_shift_x, bottom+4*h+2*h_major+top_b+top_c+0.2)},
-        {"B": (label_shift_x, bottom+4*h+0.4)},
+        {"A": (0.1, 2*h+space+0.2)},
+        {"B": (w_m+w_l+0.1, 2*h+space+0.2)},
     ],
 ]
-label_text_1 = [
+label_text = [
     [
-        {"Weak scaling": (0.8, bottom+h*4+2*h_major+top_b+top_c+0.2)},
-        {"Astrocyte-to-neuron connectivity (at scale = 4)": (0.8, bottom+h*4+0.4)},
+        {"Strong scaling": (1, 2*h+space+0.2)},
+        {"Weak scaling": (w_m+w_l+1, 2*h+space+0.2)},
     ],
 ]
-text_shift_x = 1.6
-text_shift_y = 0.9
-label_text_2 = [
+
+########## SET PANEL SUBTITILES ##########
+subtitle_shift_x_left = 0.2
+subtitle_shift_x_right = 2.2
+subtitle_shift_y = 0.25
+subtitles = [
     [
-        {"pool_size\n= 10": (0.5*left, bottom+h*3+text_shift_y)},
-        {"pool_size\n= 100": (0.5*left, bottom+h*2+text_shift_y)},
-        {"pool_size\n= 1000": (0.5*left, bottom+h+text_shift_y)},
-        {"pool_size\n= 10000": (0.5*left, bottom+text_shift_y)},
-        {"Number of connected\nastrocytes\nper target neuron": (left+text_shift_x, 0.5*bottom)},
-        {"Number of connected\ntarget neurons\nper astrocyte": (left+2.5+text_shift_x, 0.5*bottom)},
-        {"Number of connections\nper astrocyte-neuron\npair": (left+5+text_shift_x, 0.5*bottom)},
-        {"Number of connections\nper target neuron\n": (left+7.5+text_shift_x, 0.5*bottom)},
-    ],
-]
-label_text_3 = [
-    [
-        {"Phases of state propagation": (5, bottom+h*4+h_major+top_c+0.2)},
+        {"Phases of state propagation":  (4,h+0.15)},
+        {"Phases of state propagation": (w_m+w_l+4,h+0.15)},
     ],
 ]
 
@@ -113,10 +90,9 @@ def some_matplotlib_figure(
                 except:
                     pass
 
-    function_a(label_names, size=40, bold=True, ha="left", va="center")
-    function_a(label_text_1, size=30, bold=False, ha="left", va="center")
-    function_a(label_text_2, size=18, bold=False, ha="center", va="center")
-    function_a(label_text_3, size=25, bold=False, ha="center", va="center")
+    function_a(label_names, size=30, bold=True, ha="left", va="center")
+    function_a(label_text, size=25, bold=False, ha="left", va="center")
+    function_a(subtitles, size=22, bold=False, ha="center", va="center")
 
     fname = 'master_figure'
     plt.savefig("%s.pdf" % fname)
