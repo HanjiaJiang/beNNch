@@ -15,9 +15,9 @@ def plot_major(
          save_path,
          scaling_strength,
          x_axis='num_nodes',
-         cons_ylims=(None, None),
-         conn_ylims=(None, None),
-         prop_ylims=(None, None),
+         cons_ylims=None,
+         conn_ylims=None,
+         prop_ylims=None,
          colors=['k', 'k', 'gray', 'gray'],
          styles=['-', ':', '-', ':'],
          lw=3,
@@ -110,9 +110,21 @@ def plot_major(
     ax_conn.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
     ax_prop.xaxis.set_major_locator(ticker.MultipleLocator(base=1))
 
-    ax_cons.set_ylim(cons_ylims) 
-    ax_conn.set_ylim(conn_ylims)
-    ax_prop.set_ylim(prop_ylims)
+    # set ylims
+    for ax_tmp, ylims, key in zip([ax_cons, ax_conn, ax_prop], [cons_ylims, conn_ylims, prop_ylims], ['py_time_create', 'py_time_connect', 'time_simulate']):
+        if isinstance(ylims, tuple):
+            ylims_ = ylims
+        else:
+            data_all = []
+            for i in range(len(pobjects)):
+                data_i = pobjects[i].df_data[key].values.tolist()
+                data_all = data_all + data_i
+            ylims_ = (0, max(max(data_all)*1.1, 2*np.mean(data_all)))
+        ax_tmp.set_ylim(ylims_)
+
+#    ax_cons.set_ylim(cons_ylims) 
+#    ax_conn.set_ylim(conn_ylims)
+#    ax_prop.set_ylim(prop_ylims)
 
     ax_prop_rtf.set_ylim((ax_prop.get_ylim()[0]/model_time_in_s, ax_prop.get_ylim()[1]/model_time_in_s))
     ax_prop_rtf.set_ylabel('Real-time factor', rotation=270, labelpad=20)
@@ -150,7 +162,7 @@ def plot_major(
         ax_legend.plot(
             [],
             [],
-            label=label.replace("-", "-\n", 1).replace("=", "=\n", 1),
+            label=label.replace(" ", "\n", 1).replace("=", "=\n", 1),
             marker=None,
             color=colors[i],
             linewidth=3,

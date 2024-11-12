@@ -117,7 +117,7 @@ def plot_phases(
             ax_rtf.set_xlabel(xlabel)
 
         # panel title
-        label_i = labels[i].replace("-", "-\n", 1).replace("=", "=\n", 1)
+        label_i = labels[i].replace(" ", "\n", 1).replace("=", "=\n", 1)
         ax_rtf.set_title(label_i, pad=20, fontsize='medium', fontweight=title_weight)
 
         # RTF for state propagation
