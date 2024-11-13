@@ -21,12 +21,12 @@ nvp = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else os.cp
 params = {
     'model': model,            # model name and data path
     'nvp': nvp,                # total number of virtual processes
-    'scale': 4,                # scaling factor of the network size
+    'scale': 1,                # scaling factor of the network size
     'simtime': 10000,          # total simulation time in ms
     'presimtime': 1000,        # simulation time until reaching equilibrium
     'dt': 0.1,                 # simulation step
     'rng_seed': 1,             # random number generator seed
-    'pool_size': 10000,
+    'pool_size': 10,
     'pool_type': 'random',
 }
 

@@ -18,7 +18,7 @@ parameterset:
     - name: file_paths
       parameter:
        - {name: base_path, type: string, _: "/p/project1/cjinb33/jiang4/benchmark/beNNch"}  # path where main repository is stored
-       - {name: model_path, type: string, _: "/p/project1/cjinb33/jiang4/benchmark/beNNch/models/astrocyte2"} # absolute path to the HPC benchmark
+       - {name: model_path, type: string, _: "/p/project1/cjinb33/jiang4/benchmark/beNNch/models/astrocyte"} # absolute path to the HPC benchmark
 
     - name: model_parameters
       parameter:
