@@ -34,7 +34,7 @@ def analyze(jube_ids, config_file_name):
             else:
                 df_all = pd.concat((df_all, df))
     # save raw data of all benchmarks
-    df_all.to_csv(os.path.join(data_paths[0], 'df_all.csv'), index=False)
+    df_all.to_csv(os.path.join(data_paths[0], 'timer_file_all.csv'), index=False)
 
 if __name__ == "__main__":
     # JUBE benchmark IDs
