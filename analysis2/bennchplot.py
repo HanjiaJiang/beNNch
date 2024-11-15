@@ -124,8 +124,6 @@ class Plot():
                  'network_size': 'first',
                  'num_connections': ['mean', 'std'],
                  'local_spike_counter': ['mean', 'std'],
-                 'tsodyks_synapse': ['mean', 'std'],
-                 'sic_connection': ['mean', 'std'],
                  }
 
         col = ['num_nodes', 'threads_per_task', 'tasks_per_node',
@@ -138,8 +136,6 @@ class Plot():
                'network_size',
                'num_connections', 'num_connections_std',
                'local_spike_counter', 'local_spike_counter_std',
-               'tsodyks_synapse', 'tsodyks_synapse_std',
-               'sic_connection', 'sic_connection_std',
                ]
 
         N_recorders = ['N_ex', 'N_in', 'N_astro']
@@ -171,6 +167,8 @@ class Plot():
             'network_memory',
             'init_memory',
             'total_memory',
+            'tsodyks_synapse',
+            'sic_connection',
         ]
         for timer in detailed_timers:
             if timer in df.columns:
