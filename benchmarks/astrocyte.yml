@@ -24,13 +24,13 @@ outpath: ../outpath/test
 parameterset:
       name: model_commands
       parameter:
-          - {name: run_file, type: string, _: "$jube_wp_abspath/bench_template.py"}
+          - {name: run_file, type: string, _: "$jube_wp_abspath/astrocyte.py"}
           - {name: log_path, type: string, _: "${jube_wp_abspath}"}
 fileset:
 # load and copy model-specific files
     name: model_files
     copy:
-      - $model_path/bench_template.py
+      - $model_path/astrocyte.py
       - $model_path/network.py
 
 # This subsituteset maps the parameters that were defined in this yaml
@@ -39,7 +39,7 @@ fileset:
 # source pattern will be replaced by the values.
 substituteset:
       name: model_substitutions
-      iofile: {in: bench_template.py, out: bench_template.py}
+      iofile: {in: astrocyte.py, out: astrocyte.py}
       sub:
       - {source: "{model_name}", dest: $model_name}
       - {source: "{num_vps}", dest: $num_vps}
