@@ -43,12 +43,8 @@ class Plot():
 
     data_file : str, optional
         path to data
-    matplotlib_params : dict, optional
-        parameters passed to matplotlib
     color_params : dict, optional
         unique colors for variables
-    additional_params : dict, optional
-        additional parameters used for plotting
     label_params : dict, optional
         labels used when plotting
     time_scaling : int, optional
@@ -58,9 +54,7 @@ class Plot():
     def __init__(self, x_axis,
                  x_ticks='data',
                  data_file='/path/to/data',
-                 matplotlib_params=pp.matplotlib_params,
                  color_params=pp.color_params,
-                 additional_params=pp.additional_params,
                  label_params=pp.label_params,
                  time_scaling=1,
                  ctrl_file=None,
@@ -68,8 +62,6 @@ class Plot():
 
         self.x_axis = x_axis
         self.x_ticks = x_ticks
-        self.matplotlib_params = matplotlib_params
-        self.additional_params = additional_params
         self.color_params = color_params
         self.label_params = label_params
         self.time_scaling = time_scaling
@@ -428,36 +420,3 @@ class Plot():
         if log[1]:
             axis.tick_params(bottom=False, which='minor')
             axis.set_yscale('log')
-
-    def merge_legends(self, ax1, ax2):
-        """
-        Merge legends from two axes, display them in the first
-
-        Attributes
-        ----------
-        ax1 : axes object
-            first axis
-        ax2 : axes object
-            second axis
-        """
-        handles, labels = [(a + b) for a, b in zip(
-            ax2.get_legend_handles_labels(),
-            ax1.get_legend_handles_labels())]
-        ax1.legend(handles, labels, loc='upper right')
-
-    def simple_axis(self, ax):
-        """
-        Remove top and right spines.
-
-        Attributes
-        ----------
-        ax : axes object
-            axes object for which to adjust spines
-        """
-        # Hide the right and top spines
-        ax.spines['right'].set_visible(False)
-        ax.spines['top'].set_visible(False)
-
-        # Only show ticks on the left and bottom spines
-        ax.yaxis.set_ticks_position('left')
-        ax.xaxis.set_ticks_position('bottom')

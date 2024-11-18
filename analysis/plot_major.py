@@ -24,8 +24,13 @@ def plot_major(
          tk_size='small',
     ):
 
+    print('plotting major timer data ...')
+
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
-    print(f'x axis: {x_axis}')
+    if x_axis == 'num_nvp':
+        xlabel = 'Number of VPs'
+    else:
+        xlabel = 'Number of\ncompute nodes'
 
     pobjects = []
     model_time_in_s = None
@@ -48,10 +53,6 @@ def plot_major(
     ax_conn = fig.add_subplot(spec[0, 1])
     ax_prop = fig.add_subplot(spec[0, 2])
 
-#    ax_cons.set_position([0.23, 0.57, 0.23, 0.3])
-#    ax_conn.set_position([0.72, 0.57, 0.23, 0.3])
-#    ax_prop.set_position([0.23, 0.15, 0.23, 0.3])
-
     ax_prop_rtf = ax_prop.twinx()
     ax_prop_rtf.set_position(ax_prop.get_position())
 
@@ -66,14 +67,7 @@ def plot_major(
         ax_prop_twin = ax_prop.twiny() # top axis for network_size
         ax_prop_twin.set_position(ax_prop.get_position())
 
-    if x_axis == 'num_nvp':
-        xlabel = 'Number of VPs'
-    else:
-        xlabel = 'Number of\ncompute nodes'
-
     trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
-
-    print('plotting timer data ...')
 
     # Network construction
     for i in range(len(pobjects)):
@@ -122,10 +116,6 @@ def plot_major(
             ylims_ = (0, max(max(data_all)*1.1, 2*np.mean(data_all)))
         ax_tmp.set_ylim(ylims_)
 
-#    ax_cons.set_ylim(cons_ylims) 
-#    ax_conn.set_ylim(conn_ylims)
-#    ax_prop.set_ylim(prop_ylims)
-
     ax_prop_rtf.set_ylim((ax_prop.get_ylim()[0]/model_time_in_s, ax_prop.get_ylim()[1]/model_time_in_s))
     ax_prop_rtf.set_ylabel('Real-time factor', rotation=270, labelpad=20)
 
@@ -144,10 +134,6 @@ def plot_major(
             ax_twin_tmp.set_xticklabels(xticklabels, fontsize=tk_size)
             ax_twin_tmp.set_xlim(ax_tmp.get_xlim())
             ax_twin_tmp.set_xlabel('Network size')
-
-    #ax_prop.legend(
-    #    frameon=False, fontsize='medium', bbox_to_anchor=[3.4, 0.5], loc='right',
-    #    ncol=1, labelspacing=1)
 
     plt.tight_layout()
     plt.savefig(f'{save_path}/plot_major.png', dpi=400)
