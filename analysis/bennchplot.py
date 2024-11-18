@@ -355,7 +355,7 @@ class Plot():
                 matplotlib.ticker.ScalarFormatter())
 
     def plot_main(self, quantities, axis, log=(False, False),
-                  error_only=False, fmt='none', control=False, subject=None, line_color=None, ylims=None, linewidth=1.5, linestyle=None,
+                  error_only=False, fmt='none', control=False, subject=None, line_color=None, line_style='-', ylims=None, linewidth=1.5,
                   alpha=1.0, elinewidth=1.5
                   ):
         """
@@ -382,8 +382,6 @@ class Plot():
         for y in quantities:
             if y not in df:
                 continue
-            line_style = ':' if control else '-'
-            line_style = linestyle if isinstance(linestyle, str) else line_style
             line_color = self.color_params[y] if line_color is None else line_color
             label = subject if isinstance(subject, str) else self.label_params[y]
             if not error_only:

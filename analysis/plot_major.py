@@ -76,19 +76,19 @@ def plot_major(
                 subject=labels[i],
                 line_color=colors[i],
                 linewidth=lw,
-                linestyle=styles[i])
+                line_style=styles[i])
         pobjects[i].plot_main(quantities=['py_time_connect'],
                 axis=ax_conn,
                 subject=labels[i],
                 line_color=colors[i],
                 linewidth=lw,
-                linestyle=styles[i])
+                line_style=styles[i])
         pobjects[i].plot_main(quantities=['time_simulate'],
                 axis=ax_prop,
                 subject=labels[i],
                 line_color=colors[i],
                 linewidth=lw,
-                linestyle=styles[i])
+                line_style=styles[i])
 
     ax_cons.set_ylabel('Network creation time (s)')
     ax_conn.set_ylabel('Network connection time (s)')
@@ -234,13 +234,13 @@ def plot_conn_fr(
                 subject='tsodyks_synapse',
                 line_color=colors[i],
                 linewidth=lw,
-                linestyle=styles[i])
+                line_style=styles[i])
         pobjects[i].plot_main(quantities=['average_firing_rate'],
                 axis=ax_fr,
                 subject='average_firing_rate',
                 line_color=colors[i],
                 linewidth=lw,
-                linestyle=styles[i])
+                line_style=styles[i])
 
     ax_conn.set_ylabel('Number of\ntsodyks_synapse')
     ax_fr.set_ylabel('Mean neuronal\nfiring rate')

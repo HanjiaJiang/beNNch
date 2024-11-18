@@ -49,7 +49,10 @@ def plot():
         else:
             rtf_ylims = (-0.1, 6.1)
 
-    # Plot major data: network creation time, network connection time, state propagation time
+    # Plot major timer data:
+    # network creation time
+    # network connection time
+    # state propagation time
     plot_major(
         timer_files,
         labels,
@@ -60,7 +63,11 @@ def plot():
         lw=3,
     )
 
-    # plot phases
+    # Plot timer data of four phases in state propagation:
+    # update
+    # spike CCD (spike collocation, communication, delivery)
+    # SIC GD (SIC gathering, delivery)
+    # other
     for (detail, fontsize) in [(False, 'small'), (True, 'x-small')]:
         plot_phases(
             timer_files,
