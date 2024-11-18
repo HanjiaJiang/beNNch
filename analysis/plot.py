@@ -58,9 +58,6 @@ def plot():
         labels,
         save_path,
         strength,
-        colors=['#004488','#994455','#997700','#6699cc'],
-        styles=['-', '--', ':', ':'],
-        lw=3,
     )
 
     # Plot timer data of four phases in state propagation:
@@ -76,7 +73,6 @@ def plot():
             strength,
             rtf_ylims=rtf_ylims,
             detail=detail,
-            ignore_others=False,
             legend_fontsize=fontsize,
         )
 

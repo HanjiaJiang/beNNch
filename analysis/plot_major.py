@@ -18,8 +18,8 @@ def plot_major(
          cons_ylims=None,
          conn_ylims=None,
          prop_ylims=None,
-         colors=['k', 'k', 'gray', 'gray'],
-         styles=['-', ':', '-', ':'],
+         colors=['#004488','#994455','#997700','#6699cc'],
+         styles=['-', '--', ':', ':'],
          lw=3,
          tk_size='small',
     ):
@@ -69,26 +69,29 @@ def plot_major(
 
     trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
 
-    # Network construction
+    # Main timer data
     for i in range(len(pobjects)):
         pobjects[i].plot_main(quantities=['py_time_create'],
                 axis=ax_cons,
                 subject=labels[i],
                 line_color=colors[i],
+                line_style=styles[i],
                 linewidth=lw,
-                line_style=styles[i])
+                )
         pobjects[i].plot_main(quantities=['py_time_connect'],
                 axis=ax_conn,
                 subject=labels[i],
                 line_color=colors[i],
+                line_style=styles[i],
                 linewidth=lw,
-                line_style=styles[i])
+                )
         pobjects[i].plot_main(quantities=['time_simulate'],
                 axis=ax_prop,
                 subject=labels[i],
                 line_color=colors[i],
+                line_style=styles[i],
                 linewidth=lw,
-                line_style=styles[i])
+                )
 
     ax_cons.set_ylabel('Network creation time (s)')
     ax_conn.set_ylabel('Network connection time (s)')
