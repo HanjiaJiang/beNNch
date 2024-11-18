@@ -3,7 +3,6 @@ import os
 import sys
 import glob
 import yaml
-import csv
 
 from analysis_helper import load
 from plot_major import plot_major
@@ -53,6 +52,7 @@ def plot():
     # network creation time
     # network connection time
     # state propagation time
+    print('Plotting major timer data ...')
     plot_major(
         timer_files,
         labels,
@@ -65,6 +65,7 @@ def plot():
     # spike CCD (spike collocation, communication, delivery)
     # SIC GD (SIC gathering, delivery)
     # other
+    print('Plotting timer phase data ...')
     for (detail, fontsize) in [(False, 'small'), (True, 'x-small')]:
         plot_phases(
             timer_files,

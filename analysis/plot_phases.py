@@ -21,8 +21,6 @@ def plot_phases(
          plot_relative=False,
          ):
 
-    print('plotting phase timer data ...')
-
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
 
     if x_axis == 'num_nvp':

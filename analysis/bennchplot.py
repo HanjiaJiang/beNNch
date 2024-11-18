@@ -138,29 +138,21 @@ class Plot():
 
         # Timers for connection building in TripartiteConnect()
         detailed_timers = [
+            'time_update',
             'time_collocate_spike_data',
             'time_communicate_spike_data',
             'time_deliver_spike_data',
-            'time_update',
-            'time_deliver_secondary_data',
             'time_gather_secondary_data',
+            'time_deliver_secondary_data',
             'time_communicate_target_data',
             'time_gather_spike_data',
             'time_gather_target_data',
             'time_communicate_prepare',
-            'time_construction_connect_third_inner_count',
-            'time_construction_connect_third_inner_max',
-            'time_construction_connect_third_inner_fill',
-            'time_construction_connect_third_inner_communicate',
-            'time_construction_connect_third_inner_connect',
-            'time_synchronize',
             'base_memory',
             'node_memory',
             'network_memory',
             'init_memory',
             'total_memory',
-            'tsodyks_synapse',
-            'sic_connection',
         ]
         for timer in detailed_timers:
             if timer in df.columns:
