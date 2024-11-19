@@ -27,17 +27,18 @@ def plot():
         timer_file_i = os.path.join(path_i, "timer_file.csv")
         timer_files.append(timer_file_i)
 
-    # Set save path to the first data path
-    save_path = data_paths[0]
-
     # Get labels
     labels = sys.argv[5:9]
 
     # The strength is 'strong' or 'weak'; get this information from job.json
-    bench_path = glob.glob(os.path.join(save_path, '*_bench/work'))
+    bench_path = glob.glob(os.path.join(data_paths[0], '*_bench/work'))
     bench_path.sort()
     job_info = load(os.path.join(bench_path[0], 'job.json'))
     strength = job_info['scaling_type']
+
+    # Set save path
+    save_path = 'results_' + '_'.join([x.replace(' ','').replace('-','').replace('_','') for x in labels]) + '_' + strength
+    os.system(f'mkdir -p {save_path}')
 
     # Set ylims for the real-time factor of state propagation plot
     if strength == "strong":
@@ -78,6 +79,7 @@ def plot():
         )
 
     # plot RTF of phases separately
+    """
     plot_separate(
          timer_files,
          labels,
@@ -88,6 +90,7 @@ def plot():
          file_postfix='rtf',
          ylabel_prefix='RTF of ',
         )
+    """
 
 if __name__ == '__main__':
     plot()

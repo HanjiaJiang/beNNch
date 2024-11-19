@@ -7,7 +7,7 @@ import pandas as pd
 
 from analysis_helper import shell, load
 
-def analyze(jube_ids, config_file_name):
+def analyse(jube_ids, config_file_name):
     # load analysis configurations
     with open(config_file_name) as analysis_config_file:
         config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
@@ -18,25 +18,15 @@ def analyze(jube_ids, config_file_name):
         path_i = os.path.join(config['jube_outpath'], jube_id_i.zfill(6))
         data_paths.append(path_i)
         timer_file_i = os.path.join(path_i, "timer_file.csv")
-        # analyse and save plot raw data to .csv
+        # analyse and collect data to .csv
         if not os.path.isfile(timer_file_i):
             print(f"reload {timer_file_i} ...")
             shell(
                 f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_i};"
                 + f" jube result {config['jube_outpath']} --id {jube_id_i} > "
                 + timer_file_i)
-        # collect raw data of this benchmark
-        if os.path.isfile(timer_file_i):
-            df = pd.read_csv(timer_file_i)
-            df["model"] = jube_id_i
-            if df_all is None:
-                df_all = df.copy()
-            else:
-                df_all = pd.concat((df_all, df))
-    # save raw data of all benchmarks
-    df_all.to_csv(os.path.join(data_paths[0], 'timer_file_all.csv'), index=False)
 
 if __name__ == "__main__":
     # JUBE benchmark IDs
     jube_ids = sys.argv[1:]
-    analyze(jube_ids, '../config/analysis_config.yaml')
+    analyse(jube_ids, '../config/analysis_config.yaml')
