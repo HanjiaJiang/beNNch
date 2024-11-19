@@ -178,13 +178,14 @@ def plot_major(
     if do_diff:
         os.system(f'mkdir -p {save_path}/diff_abs')
         os.system(f'mkdir -p {save_path}/diff_rel')
+        output_str = f'Results of {scaling_strength} scaling, one to four compute nodes:\n'
         for i, B_i in enumerate(pobjects):
             label_i = labels[i].replace(' ', '').replace('-', '').replace('_', '')
             B_i.df_data.to_csv(f'{save_path}/df_{label_i}.csv', index=False, float_format='%.3f')
-            print(f'Mean neuronal firing rate, \'{labels[i]}\' model:')
+            output_str += f'\nMean neuronal firing rate, \'{labels[i]}\' model:\n'
             diff_fr = B_i.df_data['average_firing_rate'].values
-            for diff in diff_fr:
-                print(f'{diff:.2f} spikes/s')
+            for a, diff in enumerate(diff_fr):
+                output_str += f'{diff:.2f} spikes/s (number of nodes = {a+1})\n'
         for i, B_i in enumerate(pobjects):
             label_i = labels[i].replace(' ', '').replace('-', '').replace('_', '')
             for j, B_j in enumerate(pobjects):
@@ -195,9 +196,11 @@ def plot_major(
                     df_diff_rel = (df_j - df_i)/df_i
                     df_diff_abs.to_csv(f'{save_path}/diff_abs/df_{label_j}_vs_{label_i}.csv', index=False, float_format='%.3f')
                     df_diff_rel.to_csv(f'{save_path}/diff_rel/df_{label_j}_vs_{label_i}.csv', index=False, float_format='%.3f')
-                    print(f'Difference in (1) state propagation time and (2) \'update\' time, \'{labels[j]}\' vs. \'{labels[i]}\':')
+                    output_str += f'\nDifference in (1) state propagation time and (2) \'update\' time, \'{labels[j]}\' vs. \'{labels[i]}\':\n'
                     diff_simulate = df_diff_rel['time_simulate'].values*100
                     diff_update = df_diff_rel['time_update'].values*100
-                    for diff1, diff2 in zip(diff_simulate, diff_update):
-                        print(f'(1) {diff1:.1f} % (2) {diff2:.1f} %')
-
+                    for a, (diff1, diff2) in enumerate(zip(diff_simulate, diff_update)):
+                        output_str += f'(1) {diff1:.1f} % (2) {diff2:.1f} %  (number of nodes = {a+1})\n'
+        print(output_str)
+        with open(f'{save_path}/results.txt', 'w') as f:
+            f.write(output_str)
