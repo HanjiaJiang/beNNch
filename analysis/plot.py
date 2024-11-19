@@ -7,7 +7,7 @@ import yaml
 from analysis_helper import load
 from plot_major import plot_major
 from plot_phases import plot_phases
-from plot_separate import plot_separate
+#from plot_separate import plot_separate
 
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 15})

@@ -4,7 +4,6 @@ import numpy as np
 import bennchplot as bp
 from matplotlib import pyplot as plt
 import matplotlib.gridspec as gridspec
-import matplotlib.transforms as mtransforms
 
 def plot_phases(
          timer_files,
@@ -13,31 +12,22 @@ def plot_phases(
          scaling_strength,
          x_axis='num_nodes',
          rtf_ylims=(-0.1, 5.1),
-         detail=True,
+         detail=False,
          reverse_phases=False,
          ignore_others=False,
          legend_fontsize='small',
-         title_weight='normal',
          plot_relative=False,
          ):
 
+    # Set x axis type and label
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
-
     if x_axis == 'num_nvp':
-        xlabel = 'Number of threads'
+        xlabel = 'Number of VPs'
     else:
         xlabel = 'Number of\ncompute nodes'
 
-    # File count
-    fcount = 0
-    for timer_file in timer_files:
-        if os.path.isfile(timer_file):
-            fcount += 1
-        else:
-            continue
-
-
-    # Plotting
+    # Create figure according to valid file count
+    fcount = sum(1 for timer_file in timer_files if os.path.isfile(timer_file))
     widths = [1]*fcount
     heights = [4, 1] if plot_relative else [1]
     figsize = (2+1.5*fcount, 4)
@@ -47,7 +37,8 @@ def plot_phases(
                              width_ratios=widths,
                              height_ratios=heights)
 
-    # phase labels
+    # Set phase labels
+    # if detail = True, include detailed phases
     if detail:
         phases = [
             'time_update_factor',
@@ -80,17 +71,18 @@ def plot_phases(
             'secondary_gd_frac',
             'others_frac',
         ]
+
+    # Reverse phase order if specified
     if reverse_phases:
         phases.reverse()
         fractions.reverse()
+
+    # Skip the 'other' phase if specified
     if ignore_others:
         phases.remove('others_factor')
         fractions.remove('others_frac')
 
-    Bs = []
-    axs_rtf = []
-    axs_frac = []
-    trans = mtransforms.ScaledTranslation(-20 / 72, 7 / 72, fig.dpi_scale_trans)
+    # Iterate through files to create corresponding plots
     for i, timer_file in enumerate(timer_files):
         if not os.path.isfile(timer_file):
             break
@@ -100,50 +92,44 @@ def plot_phases(
             'time_scaling': 1e3,
         }
 
-        # Instantiate class
+        # Create plot object
         B = bp.Plot(**args)
-        Bs.append(B)
 
-        # create axe object
+        # Create axis object
         ax_rtf = fig.add_subplot(spec[0, i])
-        axs_rtf.append(ax_rtf)
+        if i == 0:
+            ax_rtf.set_ylabel('Real-time factor')
+
+        # Create relative real-time factor plot if specified
         if plot_relative:
             ax_frac = fig.add_subplot(spec[1, i])
-            axs_frac.append(ax_frac)
             ax_frac.set_xlabel(xlabel)
             ax_frac.set_ylim(-10.0, 110.0)
-            Bs[i].plot_fractions(axis=ax_frac, fill_variables=fractions)
+            B.plot_fractions(axis=ax_frac, fill_variables=fractions)
+            if i == 0:
+                ax_frac.set_ylabel('Relative\nreal-time\nfactor (%)')
         else:
             ax_rtf.set_xlabel(xlabel)
 
         # panel title
         label_i = labels[i].replace(" ", "\n", 1).replace("=", "=\n", 1)
-        ax_rtf.set_title(label_i, pad=20, fontsize='medium', fontweight=title_weight)
+        ax_rtf.set_title(label_i, pad=20, fontsize='medium')
 
-        # RTF for state propagation
-        Bs[i].plot_fractions(axis=ax_rtf, fill_variables=phases)
-
-
+        # Plot phases of state propagation in terms of real-time factor
+        B.plot_fractions(axis=ax_rtf, fill_variables=phases)
         ax_rtf.set_ylim(rtf_ylims)
 
-        # get network size(s) and add to plot
-        if 'N_ex' in Bs[i].df_data and 'N_ex' in Bs[i].df_data and 'N_in' in Bs[i].df_data:
-            # calculate from recording
-            N_size_labels = (Bs[i].df_data['N_ex'].values + Bs[i].df_data['N_in'].values + Bs[i].df_data['N_astro'].values).astype(int)
-        else:
-            # calculate from network_size (all nodes in NEST) minus one poisson generator
-            N_size_labels = Bs[i].df_data['network_size'].values.astype(int) - 1
+        # if weak scaling, create twin axes for network size
         if scaling_strength == 'weak':
-            ax_rtf_twin = ax_rtf.twiny() # top axis for network_size
-            xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_size_labels]
+            df_tmp = B.df_data
+            assert 'N_ex' in df_tmp and 'N_in' in df_tmp, 'plot_phases(): N_ex or N_in not in data!'
+            N_sizes = (df_tmp['N_ex'].values + df_tmp['N_in'].values + df_tmp['N_astro'].values).astype(int)
+            xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_sizes]
+            ax_rtf_twin = ax_rtf.twiny()
             ax_rtf_twin.set_xticks(ax_rtf.get_xticks().flatten())
             ax_rtf_twin.set_xticklabels(xticklabels, fontsize='small')
             ax_rtf_twin.set_xlabel('Network size', fontsize='small')
             ax_rtf_twin.set_xlim(ax_rtf.get_xlim())
-
-    axs_rtf[0].set_ylabel('Real-time factor')
-    if plot_relative:
-        axs_frac[0].set_ylabel('Relative\nreal-time\nfactor (%)')
 
     plt.tight_layout()
     pname = "plot_phases_detail" if detail else "plot_phases"
@@ -151,16 +137,16 @@ def plot_phases(
     plt.savefig(f'{save_path}/{pname}.eps', format='eps', dpi=400)
     plt.close()
 
-    # Make legend figure
+    # Make legend (separate image file)
     fig, ax_legend = plt.subplots(figsize=(2, 4))
-    phases_ = phases if reverse_phases else phases[::-1]
-    for i, phase in enumerate(phases_):
+    phases_legend = phases if reverse_phases else phases[::-1]
+    for i, phase in enumerate(phases_legend):
         ax_legend.fill_between(
             [],
             [],
             [],
-            label=Bs[0].label_params[phase],
-            facecolor=Bs[0].color_params[phase],
+            label=B.label_params[phase],
+            facecolor=B.color_params[phase],
             linewidth=0.5,
             edgecolor='#444444')
     ax_legend.legend(
