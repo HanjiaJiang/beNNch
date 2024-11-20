@@ -1,4 +1,3 @@
-# This script do plotting only and does not need JUBE
 import os
 import sys
 import glob
@@ -7,30 +6,25 @@ import yaml
 from analysis_helper import load
 from plot_major import plot_major
 from plot_phases import plot_phases
-#from plot_separate import plot_separate
 
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 15})
 
-def plot():
+def plot(jube_ids, labels):
     # Load analysis configurations
     config_file_name = '../config/analysis_config.yaml'
+    assert os.path.isfile(config_file_name), 'Configuration file not found!'
     with open(config_file_name) as analysis_config_file:
         config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
-    # Load data
+    # Get benchmark data paths
     data_paths, timer_files = [], []
-    for i in [1, 2, 3, 4]:
-        jube_id_i = str(sys.argv[i])
-        path_i = os.path.join(config['jube_outpath'], jube_id_i.zfill(6))
+    for jube_id in jube_ids:
+        path_i = os.path.join(config['jube_outpath'], jube_id.zfill(6))
         data_paths.append(path_i)
-        timer_file_i = os.path.join(path_i, "timer_file.csv")
-        timer_files.append(timer_file_i)
+        timer_files.append(os.path.join(path_i, "timer_file.csv"))
 
-    # Get labels
-    labels = sys.argv[5:9]
-
-    # The strength is 'strong' or 'weak'; get this information from job.json
+    # Benchmark strength is 'strong' or 'weak'; get this information from job.json
     bench_path = glob.glob(os.path.join(data_paths[0], '*_bench/work'))
     bench_path.sort()
     job_info = load(os.path.join(bench_path[0], 'job.json'))
@@ -42,17 +36,14 @@ def plot():
 
     # Set ylims for the real-time factor of state propagation plot
     if strength == "strong":
-        rtf_ylims = (-0.1, 2.6)
+        ylims_rtf = (-0.1, 2.6)
     else:
         if "Sparse" in labels or "Bernoulli" in labels:
-            rtf_ylims = (-0.1, 3.6)
+            ylims_rtf = (-0.1, 3.6)
         else:
-            rtf_ylims = (-0.1, 6.1)
+            ylims_rtf = (-0.1, 6.1)
 
-    # Plot major timer data:
-    # network creation time
-    # network connection time
-    # state propagation time
+    # Plot major timer data
     print('Plotting major timer data ...')
     plot_major(
         timer_files,
@@ -61,36 +52,20 @@ def plot():
         strength,
     )
 
-    # Plot timer data of four phases in state propagation:
-    # update
-    # spike CCD (spike collocation, communication, delivery)
-    # SIC GD (SIC gathering, delivery)
-    # other
-    print('Plotting timer phase data ...')
+    # Plot four phases in state propagation
+    print('Plotting phase data ...')
     for (detail, fontsize) in [(False, 'small'), (True, 'x-small')]:
         plot_phases(
             timer_files,
             labels,
             save_path,
             strength,
-            rtf_ylims=rtf_ylims,
+            ylims_rtf=ylims_rtf,
             detail=detail,
             legend_fontsize=fontsize,
         )
 
-    # plot RTF of phases separately
-    """
-    plot_separate(
-         timer_files,
-         labels,
-         save_path,
-         strength,
-         ['time_update_factor', 'spike_ccd_factor', 'secondary_gd_factor', 'others_factor'],
-         colors=['#004488','#994455','#997700','#6699cc'],
-         file_postfix='rtf',
-         ylabel_prefix='RTF of ',
-        )
-    """
-
 if __name__ == '__main__':
-    plot()
+    # Input 1 to 4: JUBE benchmark IDs
+    # Input 5 to 8: labels (model names)
+    plot(sys.argv[1:5], sys.argv[5:9])

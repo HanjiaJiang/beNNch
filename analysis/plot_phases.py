@@ -11,7 +11,7 @@ def plot_phases(
          save_path,
          scaling_strength,
          x_axis='num_nodes',
-         rtf_ylims=(-0.1, 5.1),
+         ylims_rtf=(-0.1, 5.1),
          detail=False,
          reverse_phases=False,
          ignore_others=False,
@@ -83,6 +83,11 @@ def plot_phases(
         fractions.remove('others_frac')
 
     # Iterate through files to create corresponding plots
+    # Four phases in state propagation:
+    # 1. Update
+    # 2. Spike CCD (spike collocation, communication, delivery)
+    # 3. SIC GD (SIC gathering, delivery)
+    # 4. Other
     for i, timer_file in enumerate(timer_files):
         if not os.path.isfile(timer_file):
             break
@@ -96,28 +101,28 @@ def plot_phases(
         B = bp.Plot(**args)
 
         # Create axis object
-        ax_rtf = fig.add_subplot(spec[0, i])
+        ax_abs = fig.add_subplot(spec[0, i])
         if i == 0:
-            ax_rtf.set_ylabel('Real-time factor')
+            ax_abs.set_ylabel('Real-time factor')
 
         # Create relative real-time factor plot if specified
         if plot_relative:
-            ax_frac = fig.add_subplot(spec[1, i])
-            ax_frac.set_xlabel(xlabel)
-            ax_frac.set_ylim(-10.0, 110.0)
-            B.plot_fractions(axis=ax_frac, fill_variables=fractions)
+            ax_rel = fig.add_subplot(spec[1, i])
+            ax_rel.set_xlabel(xlabel)
+            ax_rel.set_ylim(-10.0, 110.0)
+            B.plot_fractions(axis=ax_rel, fill_variables=fractions)
             if i == 0:
-                ax_frac.set_ylabel('Relative\nreal-time\nfactor (%)')
+                ax_rel.set_ylabel('Relative\nreal-time\nfactor (%)')
         else:
-            ax_rtf.set_xlabel(xlabel)
+            ax_abs.set_xlabel(xlabel)
 
         # panel title
         label_i = labels[i].replace(" ", "\n", 1).replace("=", "=\n", 1)
-        ax_rtf.set_title(label_i, pad=20, fontsize='medium')
+        ax_abs.set_title(label_i, pad=20, fontsize='medium')
 
         # Plot phases of state propagation in terms of real-time factor
-        B.plot_fractions(axis=ax_rtf, fill_variables=phases)
-        ax_rtf.set_ylim(rtf_ylims)
+        B.plot_fractions(axis=ax_abs, fill_variables=phases)
+        ax_abs.set_ylim(ylims_rtf)
 
         # if weak scaling, create twin axes for network size
         if scaling_strength == 'weak':
@@ -125,11 +130,11 @@ def plot_phases(
             assert 'N_ex' in df_tmp and 'N_in' in df_tmp, 'plot_phases(): N_ex or N_in not in data!'
             N_sizes = (df_tmp['N_ex'].values + df_tmp['N_in'].values + df_tmp['N_astro'].values).astype(int)
             xticklabels = [np.format_float_scientific(x, trim='-', exp_digits=1).replace("+", "") for x in N_sizes]
-            ax_rtf_twin = ax_rtf.twiny()
-            ax_rtf_twin.set_xticks(ax_rtf.get_xticks().flatten())
-            ax_rtf_twin.set_xticklabels(xticklabels, fontsize='small')
-            ax_rtf_twin.set_xlabel('Network size', fontsize='small')
-            ax_rtf_twin.set_xlim(ax_rtf.get_xlim())
+            ax_abs_twin = ax_abs.twiny()
+            ax_abs_twin.set_xticks(ax_abs.get_xticks().flatten())
+            ax_abs_twin.set_xticklabels(xticklabels, fontsize='small')
+            ax_abs_twin.set_xlabel('Network size', fontsize='small')
+            ax_abs_twin.set_xlim(ax_abs.get_xlim())
 
     plt.tight_layout()
     pname = "plot_phases_detail" if detail else "plot_phases"
