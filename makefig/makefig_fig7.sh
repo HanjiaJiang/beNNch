@@ -1,7 +1,7 @@
 #!/bin/bash
 
-paths="../outpath/production3/000051"
-pathw="../outpath/production3/000052"
+paths="../analysis/results_Bernoulli_Fixedindegree_Fixedoutdegree_Fixedtotalnumber_strong"
+pathw="../analysis/results_Bernoulli_Fixedindegree_Fixedoutdegree_Fixedtotalnumber_weak"
 
 cp $paths/plot_major.eps ./plot_major_4rules_strong.eps
 cp $pathw/plot_major.eps ./plot_major_4rules_weak.eps

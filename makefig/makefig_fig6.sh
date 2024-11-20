@@ -1,7 +1,7 @@
 #!/bin/bash
 
-paths="../outpath/production3/000001"
-pathw="../outpath/production3/000004"
+paths="../analysis/results_Sparse_Synchronous_Surrogate_x_strong"
+pathw="../analysis/results_Sparse_Synchronous_Surrogate_x_weak"
 
 cp $paths/plot_major.eps ./plot_major_strong.eps
 cp $pathw/plot_major.eps ./plot_major_weak.eps

@@ -15,7 +15,7 @@ def plot_major(
          colors=None,
          styles=None,
          tklb_size='small',
-         do_diff=True,
+         do_diff=False,
     ):
 
     # Set plot items
