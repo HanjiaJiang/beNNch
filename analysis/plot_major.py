@@ -14,7 +14,6 @@ def plot_major(
          x_axis='num_nodes',
          colors=None,
          styles=None,
-         lw=3,
          tklb_size='small',
          do_diff=True,
     ):
@@ -69,24 +68,18 @@ def plot_major(
     for i in range(len(pobjects)):
         pobjects[i].plot_main(quantities=['py_time_create'],
                 axis=ax_crea,
-                subject=labels[i],
                 line_color=colors[i],
                 line_style=styles[i],
-                linewidth=lw,
                 )
         pobjects[i].plot_main(quantities=['py_time_connect'],
                 axis=ax_conn,
-                subject=labels[i],
                 line_color=colors[i],
                 line_style=styles[i],
-                linewidth=lw,
                 )
         pobjects[i].plot_main(quantities=['time_simulate'],
                 axis=ax_prop,
-                subject=labels[i],
                 line_color=colors[i],
                 line_style=styles[i],
-                linewidth=lw,
                 )
 
     # set label tick parameters
