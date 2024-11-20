@@ -8,3 +8,5 @@ cp $pathw/plot_major.eps ./plot_major_4rules_weak.eps
 cp $pathw/legend_major.eps ./legend_major_4rules.eps
 
 python makefig_fig7.py
+
+rm master_figure.* plot*.eps legend*.eps

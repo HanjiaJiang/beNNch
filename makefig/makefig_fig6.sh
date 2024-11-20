@@ -14,3 +14,5 @@ cp $pathw/legend_major.eps ./legend_major_weak.eps
 cp $pathw/legend_phases.eps ./legend_phases_weak.eps
 
 python makefig_fig6.py
+
+rm master_figure.* plot*.eps legend*.eps
