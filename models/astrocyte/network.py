@@ -7,41 +7,39 @@ astrocyte_lr_1994 model. This script is used for HPC benchmarks.
 
 """
 
-import os
 import time
 
 import nest
 
 M_INFO = 10
-M_ERROR = 30
 
 ###############################################################################
 # Set model parameters.
 
 model_default = {
     "network_params": {
-        "N_ex": 8000,  # number of excitatory neurons
-        "N_in": 2000,  # number of inhibitory neurons
-        "N_astro": 10000,  # number of astrocytes
-        "p_primary": 0.1,
-        "p_third_if_primary": 0.5,  # probability of each created neuron-neuron connection to be paired with one astrocyte
-        "pool_size": 10,  # astrocyte pool size for each target neuron
-        "pool_type": "random",  # astrocyte pool will be chosen randomly for each target neuron
-        "poisson_rate": 2000,  # Poisson input rate for neurons
+        "N_ex": 8000,               # number of excitatory neurons
+        "N_in": 2000,               # number of inhibitory neurons
+        "N_astro": 10000,           # number of astrocytes
+        "p_primary": 0.1,           # primary connection probability
+        "p_third_if_primary": 0.5,  # third-factor connection probability
+        "pool_size": 10,            # astrocyte pool size
+        "pool_type": "random",      # astrocyte pool type
+        "poisson_rate": 2000,       # Poisson input rate for neurons
         "neuron_model": "aeif_cond_alpha_astro",
         "astrocyte_model": "astrocyte_lr_1994",
-        "no_tripartite": False,
+        "no_tripartite": False,     # For the 'No Tripartite' model
     },
     "conn_params_e": {},
     "conn_params_i": {},
-    "conn_params_e_astro": {}, # for neuron=>astrocyte connections in no_tripartite model
+    "conn_params_e_astro": {}, # for the 'No Tripartite' model
     "syn_params": {
-        "w_a2n": 0.05,  # weight of astrocyte-to-neuron connection
-        "w_e": 1.0,  # weight of excitatory connection in nS
-        "w_i": -4.0,  # weight of inhibitory connection in nS
-        "d_e": 2.0,  # delay of excitatory connection in ms
-        "d_i": 1.0,  # delay of inhibitory connection in ms
-        "d_a2n": 1.0,
+        "w_a2n": 0.05, # weight of astrocyte-to-neuron connections
+        "w_e": 1.0,    # weight of excitatory connections in nS
+        "w_i": -4.0,   # weight of inhibitory connections in nS
+        "d_e": 2.0,    # delay of excitatory connections in ms
+        "d_i": 1.0,    # delay of inhibitory connections in ms
+        "d_a2n": 1.0,  # delay of astrocyte-to-neuron connections in ms
     },
     "neuron_params_ex": {
         "tau_syn_ex": 2.0,  # excitatory synaptic time constant in ms
@@ -57,10 +55,10 @@ model_default = {
 }
 
 ###############################################################################
-# This function creates the nodes and build the network. The astrocytes only
+# These functions create and connect the network model. The astrocytes only
 # respond to excitatory synaptic inputs; therefore, only the excitatory
 # neuron-neuron connections are paired with the astrocytes. The
-# TripartiteConnect() function and the "tripartite_bernoulli_with_pool" rule
+# TripartiteConnect() function and the "third_factor_bernoulli_with_pool" rule
 # are used to create the connectivity of the network.
 
 
@@ -210,9 +208,12 @@ def run_simulation(params, model_update_dict):
 
     base_memory = str(memory_thisjob())
 
+    # Replace or update parameter sets
     for key, value in model_update_dict.items():
+        # Replace in case of astrocyte model
         if key == "astrocyte_params":
             model_default[key] = value
+        # Update otherwise
         else:
             model_default[key].update(value)
 
