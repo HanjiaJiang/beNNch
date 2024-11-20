@@ -30,14 +30,9 @@ params = {
 }
 
 ###############################################################################
-# Set number of cells sampled for analysis
-
-N_analysis = 100
-
-###############################################################################
 # This function creates recording devices and connects them to the network.
 
-def create_devices(exc, inh, astro):
+def create_devices(exc, inh, astro, n):
     # create devices (multimeter default resolution = 1 ms)
     sr = nest.Create("spike_recorder")
     mm_neuron = nest.Create("multimeter", params={"record_from": ["I_SIC"]})
@@ -45,13 +40,13 @@ def create_devices(exc, inh, astro):
     # connect devices
     sampled_neurons = (exc + inh).tolist()
     astro_list = astro.tolist()
-    assert len(sampled_neurons) >= N_analysis, f"Number of neurons < {N_analysis}!"
-    assert len(astro_list) >= N_analysis, f"Number of astrocytes < {N_analysis}!"
+    assert len(sampled_neurons) >= n, f"Number of neurons < {n}!"
+    assert len(astro_list) >= n, f"Number of astrocytes < {n}!"
     # connect all neurons to the spike recorder
     nest.Connect(sampled_neurons, sr)
-    # connect N_analysis neurons and astrocytes to the multimeters
-    sampled_neurons = sorted(random.sample(sampled_neurons, N_analysis))
-    sampled_astrocytes = sorted(random.sample(astro_list, N_analysis))
+    # connect n neurons and astrocytes to the multimeters
+    sampled_neurons = sorted(random.sample(sampled_neurons, n))
+    sampled_astrocytes = sorted(random.sample(astro_list, n))
     nest.Connect(mm_neuron, sampled_neurons)
     if nest.GetStatus(astro)[0]["model"] == "astrocyte_lr_1994":
         nest.Connect(mm_astro, sampled_astrocytes)
@@ -70,7 +65,7 @@ def calc_fr(events, n_neurons, start, end):
 # of neurons, the correlation coefficient (Pearson's r) of their spike count
 # histograms is calculated. The result of all pairs are returned.
 
-def get_corr(hlist):
+def calc_corr(hlist):
     coef_list = []
     n_pair_pass = 0
     n_pair_fail = 0
@@ -112,7 +107,7 @@ def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
     # make spiking histogram of all sampled neurons
     hist_global = (np.histogram(times, bins)[0] / len(set(senders))).tolist()
     # calculate local and global synchrony
-    coefs, n_pair_pass, n_pair_fail = get_corr(hists)  # local
+    coefs, n_pair_pass, n_pair_fail = calc_corr(hists)  # local
     gsync = np.var(hist_global) / np.mean(np.var(hists, axis=1))  # global
     return rate, coefs, gsync, n_for_sync
 
@@ -120,7 +115,10 @@ def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
 # This function plots the connections between neurons and astrocytes.
 
 def collect_conns(nodes_ex, nodes_in, nodes_astro, save_path, n_hist=None):
-    for conn_name, source_nodes, target_nodes in zip(["n2n", "n2a", "a2n"], [nodes_ex+nodes_in, nodes_ex+nodes_in, nodes_astro], [nodes_ex+nodes_in, nodes_astro, nodes_ex+nodes_in]):
+    conn_names = ["n2n", "n2a", "a2n"]
+    conn_sources = [nodes_ex+nodes_in, nodes_ex+nodes_in, nodes_astro]
+    conn_targets = [nodes_ex+nodes_in, nodes_astro, nodes_ex+nodes_in]
+    for conn_name, source_nodes, target_nodes in zip(conn_names, conn_sources, conn_targets):
         n_hist_tmp = n_hist if isinstance(n_hist, int) else len(target_nodes)
         conns = nest.GetConnections(source_nodes, target_nodes[:n_hist_tmp])
         sources = conns.get("source")
@@ -218,70 +216,75 @@ def update_model_parameters():
 ###############################################################################
 # This is the main function to run the simulation with.
 
-def run():
-    # update model parameters
+def run(n_analysis=100):
+    # Update model parameters
     update_model_parameters()
 
-    # make data folder if not exist, and copy python scripts
+    # Make data folder if not exist, and copy python scripts
     path_name = params["model"]
     os.system(f"mkdir -p {path_name}")
     os.system(f"rsync -au *.py {path_name}")
 
-    # use random seed for reproducible sampling
+    # Use random seed for reproducible sampling
     random.seed(params["rng_seed"])
 
-    # create and connect network and devices
+    # Set kernel
     nest.ResetKernel()
     nest.SyncProcesses()
     nest.set_verbosity(10)
 
-    # build network
+    # Build network
     build_dict, nodes_ex, nodes_in, nodes_astro = build_network(params, model_default, record_conn=False)
 
-    # create devices
-    sr, mm_neuron, mm_astro = create_devices(nodes_ex, nodes_in, nodes_astro)
+    # Create devices
+    sr, mm_neuron, mm_astro = create_devices(nodes_ex, nodes_in, nodes_astro, n_analysis)
 
-    # run simulation
+    # Run simulation
     pre_sim_time, sim_time = params['presimtime'], params['simtime']
     nest.Simulate(pre_sim_time)
     nest.Simulate(sim_time)
 
-    # calculate average SIC in neurons
+    # Calculate average SIC in neurons
     I_SIC = np.mean(mm_neuron.events["I_SIC"][mm_neuron.events["times"]>=pre_sim_time])
 
-    # get spiking data of all neurons and calculate average firing rate
+    # Get spiking data of all neurons and calculate average firing rate
     events = sr.events
     neurons = (nodes_ex + nodes_in).tolist()
     rate_network = calc_fr(events, len(neurons), pre_sim_time, pre_sim_time+sim_time)
     print(f"Network average neuronal firing rate = {rate_network:.2f}")
 
-    # save data and create plots
+    # Save data and create plots
     n_neurons_hist = len(neurons)
     with open(f'{path_name}/data.pkl', 'wb') as f:
         pickle.dump([n_neurons_hist, events, mm_astro.events, mm_neuron.events], f)
 
-    # synchrony analysis
+    # Synchrony analysis
     events_analysis = {}
     # filter by time
     mask_time = (events["times"]>=pre_sim_time)&(events["times"]<pre_sim_time+sim_time)
     for key in ["times", "senders"]:
         events_analysis[key] = events[key][mask_time]
-    # sample (N_analysis) spiking neurons
-    neurons_analysis = random.sample(list(set(events_analysis["senders"])), N_analysis)
+    # sample n_analysis spiking neurons
+    neurons_analysis = random.sample(list(set(events_analysis["senders"])), n_analysis)
     mask_neuron = np.isin(events_analysis["senders"], neurons_analysis)
     for key in ["times", "senders"]:
         events_analysis[key] = events_analysis[key][mask_neuron]
-    # calculate and report synchrony
+    # calculate synchrony
     rate, coefs, gsync, n_for_sync = calc_synchrony(
-        events_analysis, N_analysis, pre_sim_time, pre_sim_time + sim_time
+        events_analysis, n_analysis, pre_sim_time, pre_sim_time + sim_time
     )
     lsync, lsync_std = np.mean(coefs), np.std(coefs)
-    print(f"Local synchrony = {lsync:.3f}+-{lsync_std:.3f}")
-    print(f"Global synchrony = {gsync:.3f}")
-    print(f"Firing rate of sampled neurons = {rate:.2f} spikes/s")
-    print(f"(n = {n_for_sync} for synchrony analysis)")
 
-    # save results
+    # Output results
+    result_str = ""
+    result_str += f"Local synchrony = {lsync:.3f}+-{lsync_std:.3f}\n"
+    result_str += f"Global synchrony = {gsync:.3f}\n"
+    result_str += f"Firing rate of sampled neurons = {rate:.2f} spikes/s\n"
+    result_str += f"(n = {n_for_sync} for synchrony analysis)\n"
+    with open(f"{path_name}/results.txt", 'w') as f:
+        f.write(result_str)
+
+    # Save detailed results to .csv file
     data = {}
     data.update(params)
     for key, value in model_default.items():
@@ -294,7 +297,7 @@ def run():
     data["n_for_sync"] = [n_for_sync]
     data["I_SIC"] = [I_SIC]
     df = pd.DataFrame(data)
-    df.to_csv(f"{path_name}/{path_name}.csv", index=False)
+    df.to_csv(f"{path_name}/results.csv", index=False)
 
     # collect connections
     # when on PC, USE ONLY WHEN THE MODEL IS SMALL!
@@ -304,18 +307,5 @@ def run():
 # Run the script.
 
 if __name__ == "__main__":
-    # record output; only for debugging
-    orig_stdout = sys.stdout
-    path_name = params["model"]
-    os.system(f"mkdir -p {path_name}")
-    f = open(f'{path_name}/out.txt', 'w')
-    sys.stdout = f
-
     run()
 
-    # record output; only for debugging
-    sys.stdout = orig_stdout
-    f.close()
-
-    # copy slurm output files
-    os.system(f"cp *{sys.argv[3]}* {path_name}")
