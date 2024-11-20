@@ -208,7 +208,7 @@ class Plot():
             df[phase + '_factor'] = df[phase] / df['model_time_sim']
             df[phase + '_frac'] = 100 * df[phase] / df['time_simulate']
 
-        # spike CCD = collocate + communicate + deliver
+        # Spike CCD = collocate + communicate + deliver
         df['spike_ccd_factor'] = (
             df['time_collocate_spike_data_factor'] +
             df['time_communicate_spike_data_factor'] +
@@ -220,7 +220,7 @@ class Plot():
             df['time_deliver_spike_data_frac']
         )
 
-        # secondary GD = gather + deliver
+        # Secondary GD = gather + deliver
         df['secondary_gd_factor'] = (
             df['time_gather_secondary_data_factor'] +
             df['time_deliver_secondary_data_factor']
@@ -230,15 +230,15 @@ class Plot():
             df['time_deliver_secondary_data_frac']
         )
 
-        # others = the rest
+        # Others = the rest
         df['others_factor'] = (df['time_simulate'] - df['time_addup']) / df['model_time_sim']
         df['others_frac'] = 100 * (df['time_simulate'] - df['time_addup']) / df['time_simulate']
 
-        # total spike count per second
+        # Total spike count per second
         df['total_spike_count_per_s'] = (df['local_spike_counter'] / df['model_time_sim'])
         df['total_spike_count_per_s_std'] = (df['local_spike_counter_std'] / df['model_time_sim'])
 
-        # average firing rate
+        # Average firing rate
         if 'N_ex' in df.columns and 'N_in' in df.columns:
             df['average_firing_rate'] = df['total_spike_count_per_s'] / (df['N_ex'] + df['N_in'])
             df['average_firing_rate_std'] = df['total_spike_count_per_s_std'] / (df['N_ex'] + df['N_in'])
@@ -269,9 +269,11 @@ class Plot():
         """
         df = self.df_data
 
+        # Iterate through fill variables
         fill_height = 0
         for i, fill in enumerate(fill_variables):
             line_color = 'k'
+            # Plot filled areas
             axis.fill_between(np.squeeze(df[self.x_axis]),
                               fill_height,
                               np.squeeze(df[fill]) + fill_height,
@@ -281,7 +283,7 @@ class Plot():
                               alpha=alpha,
                               linewidth=0.5,
                               edgecolor='#444444')
-            # for error bars
+            # Plot error bars
             if error and fill + '_std' in df:
                 axis.errorbar(np.squeeze(df[self.x_axis]),
                               np.squeeze(df[fill]) + fill_height,
@@ -323,6 +325,7 @@ class Plot():
         for i, y in enumerate(quantities):
             if y not in df:
                 continue
+            # Plot main data
             axis.plot(df[self.x_axis].values,
                       df[y].values,
                       marker='.',
@@ -331,7 +334,7 @@ class Plot():
                       linewidth=linewidth,
                       linestyle=line_style,
                       alpha=alpha)
-            # for error bars
+            # Plot error bars
             str_std = y + '_std'
             if str_std in df:
                 axis.errorbar(

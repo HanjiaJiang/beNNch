@@ -38,7 +38,7 @@ def plot_phases(
                              height_ratios=heights)
 
     # Set phase labels
-    # if detail = True, include detailed phases
+    # If detail = True, include detailed phases
     if detail:
         phases = [
             'time_update_factor',
@@ -82,8 +82,7 @@ def plot_phases(
         phases.remove('others_factor')
         fractions.remove('others_frac')
 
-    # Iterate through files to create corresponding plots
-    # Four phases in state propagation:
+    # Iterate through files to plot four phases in state propagation:
     # 1. Update
     # 2. Spike CCD (spike collocation, communication, delivery)
     # 3. SIC GD (SIC gathering, delivery)
@@ -116,7 +115,7 @@ def plot_phases(
         else:
             ax_abs.set_xlabel(xlabel)
 
-        # panel title
+        # Set panel title
         label_i = labels[i].replace(" ", "\n", 1).replace("=", "=\n", 1)
         ax_abs.set_title(label_i, pad=20, fontsize='medium')
 
@@ -124,7 +123,7 @@ def plot_phases(
         B.plot_fractions(axis=ax_abs, fill_variables=phases)
         ax_abs.set_ylim(ylims_rtf)
 
-        # if weak scaling, create twin axes for network size
+        # If weak scaling, create twin axes for network size
         if scaling_strength == 'weak':
             df_tmp = B.df_data
             assert 'N_ex' in df_tmp and 'N_in' in df_tmp, 'plot_phases(): N_ex or N_in not in data!'

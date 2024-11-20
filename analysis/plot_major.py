@@ -44,27 +44,26 @@ def plot_major(
         if model_time_in_s is None:
             model_time_in_s = B.df_data['model_time_sim'][0]
 
+    assert len(pobjects) > 0, 'No timer file found!'
+
     # Create figure and axes
-    # figure
     widths = [1, 1, 1]
     heights = [1]
     fig = plt.figure(figsize=(8, 4))
     spec = gridspec.GridSpec(ncols=3, nrows=1, figure=fig, width_ratios=widths, height_ratios=heights)
-
-    # axes
     ax_crea = fig.add_subplot(spec[0, 0])
     ax_conn = fig.add_subplot(spec[0, 1])
     ax_prop = fig.add_subplot(spec[0, 2])
     axes = [ax_crea, ax_conn, ax_prop]
 
-    # twin axis for real-time factor of state propagation
+    # Twin axis for real-time factor of state propagation
     ax_prop_rtf = ax_prop.twinx()
     ax_prop_rtf.set_position(ax_prop.get_position())
 
-    # Plot major timer data:
-    # network creation time
-    # network connection time
-    # state propagation time
+    # Iterate through objects to plot major timer data:
+    # 1. Network creation time
+    # 2. Network connection time
+    # 3. State propagation time
     for i in range(len(pobjects)):
         pobjects[i].plot_main(quantities=['py_time_create'],
                 axis=ax_crea,
@@ -82,28 +81,22 @@ def plot_major(
                 line_style=styles[i],
                 )
 
-    # set label tick parameters
+    # Set ticks and labels
     for ax_tmp in axes + [ax_prop_rtf]:
         ax_tmp.tick_params(axis='both', which='major', labelsize=tklb_size)
-
-    # set xtick interval
     ax_crea.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax_conn.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax_prop.xaxis.set_major_locator(ticker.MultipleLocator(1))
-
-    # set xlabels
     ax_crea.set_xlabel(xlabel)
     ax_conn.set_xlabel(xlabel)
     ax_prop.set_xlabel(xlabel)
-
-    # set ylabels
     ax_crea.set_ylabel('Network creation time (s)')
     ax_conn.set_ylabel('Network connection time (s)')
     ax_prop.set_ylabel('State propagation\ntime (s) for '
                    r'$T_{\mathrm{model}} =$'
                    + f'{model_time_in_s:.0f} s')
 
-    # set ylims
+    # Set ylims
     for ax_tmp, key in zip(axes, plot_keys):
         data_all = []
         for i in range(len(pobjects)):
@@ -112,12 +105,12 @@ def plot_major(
         ylims = (0, max(max(data_all)*1.1, 2*np.mean(data_all)))
         ax_tmp.set_ylim(ylims)
 
-    # set label and ylims for twin of ax_prop
+    # Set label and ylims for twin of ax_prop
     ax_prop_rtf.set_ylabel('Real-time factor', rotation=270, labelpad=20)
     ylims_get = ax_prop.get_ylim()
     ax_prop_rtf.set_ylim((ylims_get[0]/model_time_in_s, ylims_get[1]/model_time_in_s))
 
-    # if weak scaling, create twin axes for network size
+    # If weak scaling, create twin axes for network size data
     if scaling_strength == 'weak':
         ax_crea_twin = ax_crea.twiny()
         ax_crea_twin.set_position(ax_crea.get_position())
@@ -125,7 +118,7 @@ def plot_major(
         ax_conn_twin.set_position(ax_conn.get_position())
         ax_prop_twin = ax_prop.twiny()
         ax_prop_twin.set_position(ax_prop.get_position())
-        # get network size and add to top axis
+        # Get network size and add to top axis
         df_tmp = pobjects[0].df_data
         assert 'N_ex' in df_tmp and 'N_in' in df_tmp, 'plot_major(): N_ex or N_in not in data!'
         N_sizes = (df_tmp['N_ex'].values + df_tmp['N_in'].values + df_tmp['N_astro'].values).astype(int)
@@ -167,7 +160,7 @@ def plot_major(
     plt.savefig(f'{save_path}/legend_major.eps', dpi=400)
     plt.close()
 
-    # Output difference data
+    # Output results: mean firing rates and difference between benchmarks
     if do_diff:
         os.system(f'mkdir -p {save_path}/diff_abs')
         os.system(f'mkdir -p {save_path}/diff_rel')
