@@ -13,7 +13,6 @@ def plot_benchmark_model(n_neurons_hist, events_sr, events_astro, events_neuro, 
     heights = [2, 1, 2, 1]
     fig = plt.figure(figsize=(6, 8))
     spec = gridspec.GridSpec(ncols=1, nrows=4, figure=fig, width_ratios=widths, height_ratios=heights)
-    # pos = [0.3, 0.2, 0.5, 0.7]
 
     # set axes
     axe_raster = fig.add_subplot(spec[0, 0])
@@ -38,10 +37,6 @@ def plot_benchmark_model(n_neurons_hist, events_sr, events_astro, events_neuro, 
     plt.savefig(f'{save_path}/benchmark_model.eps', format='eps', dpi=400)
     plt.savefig(f'{save_path}/benchmark_model.png', format='png', dpi=400)
     plt.close()
-
-    # save data to pickle
-    with open(f'{save_path}/data.pkl', 'wb') as f:
-        pickle.dump([n_neurons_hist, events_sr, events_astro, events_neuro], f)
 
 def plot_conn_hist(targets, subject="", bins=list(range(0, 1001, 10)), save_path=".", figsize=(4, 3), xlabel="X", ylabel="Y", title=""):
     hist, bin_edges = np.histogram(targets, bins=np.arange(min(targets), max(targets)+2))
@@ -205,7 +200,6 @@ def make_panels_benchmark_model(
     ylims_ip3, ylims_calcium = (-0.01, 0.91), (-0.02, 2.02)
     # position of axes for all panels
     pos = [0.2, 0.2, 0.6, 0.7]
-    """
     # A = raster plot, sparse
     fig, axe = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe.set_position(pos)
@@ -239,7 +233,6 @@ def make_panels_benchmark_model(
     plt.savefig(f"{save_path}/benchmark_model_D.eps", format='eps', dpi=400)
     plt.savefig(f"{save_path}/benchmark_model_D.png", dpi=400)
     plt.close()
-    """
     # E = astrocytic dynamics, sparse
     fig, axe = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe.set_position(pos)

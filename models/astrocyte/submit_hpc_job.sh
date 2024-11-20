@@ -11,6 +11,11 @@
 # Note: The current working directory at this point is
 # the directory where sbatch was executed.
 
+# How to use:
+# sbatch submit_hpc.sh {script_name} {model_name}
+# script_name is run_benchmark_model.py
+# model_name is Sparse or Synchronous
+
 source $PROJECT/jiang4/benchmark/envnojemalloc.sh
 
 # Path to python script

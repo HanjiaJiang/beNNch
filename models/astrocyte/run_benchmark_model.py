@@ -10,7 +10,6 @@ import nest
 import numpy as np
 import pandas as pd
 
-import plots
 from network import model_default, build_network
 
 ###############################################################################
@@ -130,10 +129,6 @@ def collect_conns(nodes_ex, nodes_in, nodes_astro, save_path, n_hist=None):
             pickle.dump(sources, f)
         with open(f"{save_path}/conn_{conn_name}_target.pkl", "wb") as f:
             pickle.dump(targets, f)
-        #plots.plot_conn_hist(
-        #    targets, subject=conn_name, save_path=save_path,
-        #    xlabel=f"Number of {conn_name} connections per target",
-        #    ylabel="Number of cases", title="Bernoulli")
 
 ###############################################################################
 # This function updates the model parameters.
@@ -237,7 +232,6 @@ def run():
 
     # create and connect network and devices
     nest.ResetKernel()
-    nest.Install("astrocyte_surrogate_module")
     nest.SyncProcesses()
     nest.set_verbosity(10)
 
@@ -261,8 +255,10 @@ def run():
     rate_network = calc_fr(events, len(neurons), pre_sim_time, pre_sim_time+sim_time)
     print(f"Network average neuronal firing rate = {rate_network:.2f}")
 
-    # create plots
-    plots.plot_benchmark_model(len(neurons), events, mm_astro.events, mm_neuron.events, path_name)
+    # save data and create plots
+    n_neurons_hist = len(neurons)
+    with open(f'{path_name}/data.pkl', 'wb') as f:
+        pickle.dump([n_neurons_hist, events, mm_astro.events, mm_neuron.events], f)
 
     # synchrony analysis
     events_analysis = {}
@@ -302,7 +298,7 @@ def run():
 
     # collect connections
     # when on PC, USE ONLY WHEN THE MODEL IS SMALL!
-    collect_conns(nodes_ex, nodes_in, nodes_astro, path_name)
+    # collect_conns(nodes_ex, nodes_in, nodes_astro, path_name)
 
 ###############################################################################
 # Run the script.

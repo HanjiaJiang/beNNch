@@ -5,7 +5,7 @@ declare -a arr=("Sparse" "Synchronous")
 for x in "${arr[@]}"
 do
   echo "Running $x model ..."
-  python run_template.py "$x"
+  python run_benchmark_model.py "$x"
 done
 
 python plots.py
