@@ -9,4 +9,3 @@ do
 done
 
 python plots.py
-python makefig_benchmark_model.py
