@@ -87,7 +87,7 @@ def plot_raster(axe, events, xlims=(None, None), ylims=(None, None), n_neurons=1
     axe.set_xlim(xlims)
     axe.set_ylim(ylims)
 
-def plot_hist(axe, events, n_neurons, binwidth=0.5, xlims=(None, None), ylims=(None, None)):
+def plot_hist(axe, events, n_neurons, binwidth=20, xlims=(None, None), ylims=(None, None)):
     # prepare data and figure
     ts = events["times"]
     neurons = events["senders"]
@@ -100,6 +100,7 @@ def plot_hist(axe, events, n_neurons, binwidth=0.5, xlims=(None, None), ylims=(N
     axe.set_ylabel("Firing rate\n(spikes/s)")
     axe.set_xlim(xlims)
     axe.set_ylim(ylims)
+    axe.set_ylim(top=round(axe.get_ylim()[1]))
 
 def set_broken_axes(axe, axe_top, ylims, bottom_frac=0.8, broken_frac=0.05):
     """This functions sets broken axes for extremely large values."""
@@ -142,7 +143,7 @@ def make_panels_benchmark_model(
     # xlims for all panels
     xlims = (0, 11000.0)
     # different ylims for different panels
-    ylims_hist_low, ylims_hist_high = (0.0, 50.0), (0.0, 300.0)
+    ylims_hist_low, ylims_hist_high = (0.0, 25.0), (0.0, 150.0)
     ylims_ip3, ylims_calcium = (-0.01, 0.91), (-0.02, 2.02)
     ylims_sic = (-5.0, 155.0)
     # position of axes for all panels
