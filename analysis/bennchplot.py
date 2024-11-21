@@ -178,21 +178,6 @@ class Plot():
             df['time_gather_secondary_data'] +
             df['time_deliver_secondary_data']
         )
-        df['time_addup_std'] = \
-            np.sqrt(
-            df['time_update_std']**2 +
-            df['time_collocate_spike_data_std']**2 +
-            df['time_communicate_spike_data_std']**2 +
-            df['time_deliver_spike_data_std']**2 +
-            df['time_gather_secondary_data_std']**2 +
-            df['time_deliver_secondary_data_std']**2
-        )
-        df['time_addup_factor'] = (
-            df['time_addup'] /
-            df['model_time_sim'])
-        df['time_addup_std_factor'] = (
-            df['time_addup_std'] /
-            df['model_time_sim'])
 
         # Calculate phases and their fractions
         # model_time_sim (model time) and time_simulate (wall time) are needed
