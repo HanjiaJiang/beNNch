@@ -13,12 +13,11 @@ def analyse(jube_ids, config_file_name):
         path_i = os.path.join(config['jube_outpath'], jube_id_i.zfill(6))
         timer_file_i = os.path.join(path_i, "timer_file.csv")
         # Analyse and collect data to .csv
-        if not os.path.isfile(timer_file_i):
-            print(f"Loading {timer_file_i} ...")
-            shell(
-                f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_i};"
-                + f" jube result {config['jube_outpath']} --id {jube_id_i} > "
-                + timer_file_i)
+        print(f"Loading {timer_file_i} ...")
+        shell(
+            f"module load JUBE; jube analyse {config['jube_outpath']} --id {jube_id_i};"
+            + f" jube result {config['jube_outpath']} --id {jube_id_i} > "
+            + timer_file_i)
 
 if __name__ == "__main__":
     # Input is JUBE benchmark IDs
