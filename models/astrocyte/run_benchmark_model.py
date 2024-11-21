@@ -38,14 +38,14 @@ def create_devices(exc, inh, astro, n):
     mm_neuron = nest.Create("multimeter", params={"record_from": ["I_SIC"]})
     mm_astro = nest.Create("multimeter", params={"record_from": ["IP3", "Ca_astro"]})
     # connect devices
-    sampled_neurons = (exc + inh).tolist()
+    neuro_list = (exc + inh).tolist()
     astro_list = astro.tolist()
-    assert len(sampled_neurons) >= n, f"Number of neurons < {n}!"
+    assert len(neuro_list) >= n, f"Number of neurons < {n}!"
     assert len(astro_list) >= n, f"Number of astrocytes < {n}!"
     # connect all neurons to the spike recorder
-    nest.Connect(sampled_neurons, sr)
+    nest.Connect(neuro_list, sr)
     # connect n neurons and astrocytes to the multimeters
-    sampled_neurons = sorted(random.sample(sampled_neurons, n))
+    sampled_neurons = sorted(random.sample(neuro_list, n))
     sampled_astrocytes = sorted(random.sample(astro_list, n))
     nest.Connect(mm_neuron, sampled_neurons)
     if nest.GetStatus(astro)[0]["model"] == "astrocyte_lr_1994":
@@ -53,7 +53,7 @@ def create_devices(exc, inh, astro, n):
     return sr, mm_neuron, mm_astro
 
 ###############################################################################
-# This function calculates the average neuronal firing rate
+# This function calculates the average neuronal firing rate in spikes/s
 
 def calc_fr(events, n_neurons, start, end):
     mask = (events["times"]>=start)&(events["times"]<end)
@@ -98,35 +98,17 @@ def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
     senders = neuron_spikes["senders"][mask]
     times = neuron_spikes["times"][mask]
     rate = 1000 * len(senders) / ((end - start) * n_neurons)
-    # sample neurons
-    list_senders = list(set(senders))
-    n_for_sync = len(list_senders)
+    # get the number of spiking neurons
+    n_for_sync = len(set(senders))
     # make spike count histograms of individual neurons
     bins = np.arange(start, end + 0.1, binwidth)  # time bins
     hists = [np.histogram(times[senders == x], bins)[0].tolist() for x in set(senders)]
-    # make spiking histogram of all sampled neurons
-    hist_global = (np.histogram(times, bins)[0] / len(set(senders))).tolist()
+    # make spike count histogram of all spiking neurons
+    hist_all = (np.histogram(times, bins)[0] / n_for_sync).tolist()
     # calculate local and global synchrony
     coefs, n_pair_pass, n_pair_fail = calc_corr(hists)  # local
-    gsync = np.var(hist_global) / np.mean(np.var(hists, axis=1))  # global
+    gsync = np.var(hist_all) / np.mean(np.var(hists, axis=1))  # global
     return rate, coefs, gsync, n_for_sync
-
-###############################################################################
-# This function plots the connections between neurons and astrocytes.
-
-def collect_conns(nodes_ex, nodes_in, nodes_astro, save_path, n_hist=None):
-    conn_names = ["n2n", "n2a", "a2n"]
-    conn_sources = [nodes_ex+nodes_in, nodes_ex+nodes_in, nodes_astro]
-    conn_targets = [nodes_ex+nodes_in, nodes_astro, nodes_ex+nodes_in]
-    for conn_name, source_nodes, target_nodes in zip(conn_names, conn_sources, conn_targets):
-        n_hist_tmp = n_hist if isinstance(n_hist, int) else len(target_nodes)
-        conns = nest.GetConnections(source_nodes, target_nodes[:n_hist_tmp])
-        sources = conns.get("source")
-        targets = conns.get("target")
-        with open(f"{save_path}/conn_{conn_name}_source.pkl", "wb") as f:
-            pickle.dump(sources, f)
-        with open(f"{save_path}/conn_{conn_name}_target.pkl", "wb") as f:
-            pickle.dump(targets, f)
 
 ###############################################################################
 # This function updates the model parameters.
@@ -212,7 +194,6 @@ def update_model_parameters():
         else:
             model_default[key].update(value)
 
-
 ###############################################################################
 # This is the main function to run the simulation with.
 
@@ -248,22 +229,19 @@ def run(n_analysis=100):
     I_SIC = np.mean(mm_neuron.events["I_SIC"][mm_neuron.events["times"]>=pre_sim_time])
 
     # Get spiking data of all neurons and calculate average firing rate
-    events = sr.events
     neurons = (nodes_ex + nodes_in).tolist()
-    rate_network = calc_fr(events, len(neurons), pre_sim_time, pre_sim_time+sim_time)
-    print(f"Network average neuronal firing rate = {rate_network:.2f}")
+    rate_network = calc_fr(sr.events, len(neurons), pre_sim_time, pre_sim_time+sim_time)
 
-    # Save data and create plots
-    n_neurons_hist = len(neurons)
+    # Save data
     with open(f'{path_name}/data.pkl', 'wb') as f:
-        pickle.dump([n_neurons_hist, events, mm_astro.events, mm_neuron.events], f)
+        pickle.dump([len(neurons), sr.events, mm_astro.events, mm_neuron.events], f)
 
     # Synchrony analysis
     events_analysis = {}
     # filter by time
-    mask_time = (events["times"]>=pre_sim_time)&(events["times"]<pre_sim_time+sim_time)
+    mask_time = (sr.events["times"]>=pre_sim_time)&(sr.events["times"]<pre_sim_time+sim_time)
     for key in ["times", "senders"]:
-        events_analysis[key] = events[key][mask_time]
+        events_analysis[key] = sr.events[key][mask_time]
     # sample n_analysis spiking neurons
     neurons_analysis = random.sample(list(set(events_analysis["senders"])), n_analysis)
     mask_neuron = np.isin(events_analysis["senders"], neurons_analysis)
@@ -276,7 +254,7 @@ def run(n_analysis=100):
     lsync, lsync_std = np.mean(coefs), np.std(coefs)
 
     # Output results
-    result_str = ""
+    result_str = f"Network average neuronal firing rate = {rate_network:.2f}\n"
     result_str += f"Local synchrony = {lsync:.3f}+-{lsync_std:.3f}\n"
     result_str += f"Global synchrony = {gsync:.3f}\n"
     result_str += f"Firing rate of sampled neurons = {rate:.2f} spikes/s\n"
@@ -298,10 +276,6 @@ def run(n_analysis=100):
     data["I_SIC"] = [I_SIC]
     df = pd.DataFrame(data)
     df.to_csv(f"{path_name}/results.csv", index=False)
-
-    # collect connections
-    # when on PC, USE ONLY WHEN THE MODEL IS SMALL!
-    # collect_conns(nodes_ex, nodes_in, nodes_astro, path_name)
 
 ###############################################################################
 # Run the script.

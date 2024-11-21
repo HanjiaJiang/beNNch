@@ -8,9 +8,24 @@ random.seed(1)
 import matplotlib
 matplotlib.rcParams["font.size"] = 13
 import matplotlib.pyplot as plt
+import nest
 import numpy as np
 import pandas as pd
 
+# from run_benchmark_model.py
+def collect_conns(nodes_ex, nodes_in, nodes_astro, save_path, n_hist=None):
+    conn_names = ["n2n", "n2a", "a2n"]
+    conn_sources = [nodes_ex+nodes_in, nodes_ex+nodes_in, nodes_astro]
+    conn_targets = [nodes_ex+nodes_in, nodes_astro, nodes_ex+nodes_in]
+    for conn_name, source_nodes, target_nodes in zip(conn_names, conn_sources, conn_targets):
+        n_hist_tmp = n_hist if isinstance(n_hist, int) else len(target_nodes)
+        conns = nest.GetConnections(source_nodes, target_nodes[:n_hist_tmp])
+        sources = conns.get("source")
+        targets = conns.get("target")
+        with open(f"{save_path}/conn_{conn_name}_source.pkl", "wb") as f:
+            pickle.dump(sources, f)
+        with open(f"{save_path}/conn_{conn_name}_target.pkl", "wb") as f:
+            pickle.dump(targets, f)
 
 def count_arr(df, n_mpi):
     cnt_arr = np.zeros((n_mpi, n_mpi))
