@@ -8,12 +8,7 @@ read n_core
 for x in "${arr[@]}"
 do
   echo "Running the \"$x\" model ..."
-  if [ -z "$n_core" ]; then
-    python run_benchmark_model.py "$x" $n_core
-  else
-    echo "Number of CPU cores is not given and will be determined automatically."
-    python run_benchmark_model.py "$x"
-  fi
+  python run_benchmark_model.py "$x"
 done
 
 python plots.py
