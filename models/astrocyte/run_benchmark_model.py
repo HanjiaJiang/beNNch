@@ -16,7 +16,10 @@ from network import model_default, build_network
 # Set simulation parameters.
 
 model = sys.argv[1] if len(sys.argv) > 1 else 'Bernoulli'
-nvp = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else os.cpu_count()
+if "SLURM_JOB_ID" in os.environ:
+    nvp = int(os.getenv("SLURM_CPUS_PER_TASK"))
+else:
+    nvp = os.cpu_count()
 params = {
     'model': model,            # model name and data path
     'nvp': nvp,                # total number of virtual processes

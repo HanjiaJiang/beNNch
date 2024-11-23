@@ -20,15 +20,15 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 ## How to run
 
 ### benchmarks
-- edit [config/astrocyte_benchmark_config.yaml](./config/astrocyte_benchmark_config.yaml) to specify benchmark parameters
-- go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yml`
+- Edit [config/astrocyte_benchmark_config.yaml](./config/astrocyte_benchmark_config.yaml) to specify benchmark parameters
+- Go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yml`
 
-### data analysis
-- go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures
+### data analysis (Fig 6, 7, 8)
+- Go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures
 
-### single simulation of benchmark models
+### single simulations of benchmark models (Fig 3)
 
-- go to the [models/astrocyte](./models/astrocyte/) folder and execute `run_benchmark_models.sh n_core`. `n_core` is the number of CPU cores available and will be determined automatically if not given.
+- Go to the [models/astrocyte](./models/astrocyte/) folder and execute `run_benchmark_models.sh`
 
 ## Software dependencies
 
@@ -38,7 +38,7 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 - [JUBE](https://github.com/FZJ-JSC/JUBE) (≥ 2.6.1)
 - [Astrocyte Surrogate Module](https://github.com/heplesser/astrocyte-surrogate-module) (a NEST extension module)
 
-### data analysis and single simulation of benchmark models
+### data analysis and single simulations of benchmark models
 - Python
 - NEST (≥ 3.8)
 - numpy
