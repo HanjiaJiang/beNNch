@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pathm="../models/astrocyte/makefig_benchmark_model"
+pathm="../models/astrocyte/results_fig3"
 
 cp $pathm/*.eps .
 

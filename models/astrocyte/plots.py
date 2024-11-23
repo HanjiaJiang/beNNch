@@ -136,7 +136,7 @@ def set_broken_axes(axe, axe_top, ylims, bottom_frac=0.8, broken_frac=0.05):
 def make_panels_benchmark_model(
     n_neurons_hist_1, events_sr_1, events_astro_1, events_neuro_1,
     n_neurons_hist_2, events_sr_2, events_astro_2, events_neuro_2,
-    save_path="makefig_benchmark_model", fig_width=6):
+    save_path="results_fig3", fig_width=6):
     """This function makes separate panels for the simulation data."""
     # create save folder
     os.system(f"mkdir -p {save_path}")
@@ -148,65 +148,65 @@ def make_panels_benchmark_model(
     ylims_sic = (-5.0, 155.0)
     # position of axes for all panels
     pos = [0.2, 0.2, 0.6, 0.7]
-    # A = raster plot, sparse
+    # A1: raster plot, sparse
     fig_a, axe_a = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe_a.set_position(pos)
     plot_raster(axe_a, events_sr_1, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_A.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_A.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_a1.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_a1.png", dpi=400)
     plt.close()
-    # B = raster plot, synchronous
+    # A2: raster plot, synchronous
     fig_b, axe_b = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe_b.set_position(pos)
     plot_raster(axe_b, events_sr_2, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_B.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_B.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_a2.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_a2.png", dpi=400)
     plt.close()
-    # C = firing rate histogram, sparse
+    # B1: firing rate histogram, sparse
     fig_c, axe_c = plt.subplots(1, 1, figsize=(fig_width, 1.5))
     axe_c.set_position(pos)
     plot_hist(axe_c, events_sr_1, n_neurons_hist_1, ylims=ylims_hist_low, xlims=xlims)
     axe_c.set_ylabel("Firing rate\n(spikes/s)")
-    plt.savefig(f"{save_path}/benchmark_model_C.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_C.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_b1.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_b1.png", dpi=400)
     plt.close()
-    # D = firing rate histogram, synchronous
+    # B2: firing rate histogram, synchronous
     fig_d, axe_d = plt.subplots(1, 1, figsize=(fig_width, 1.5))
     axe_d.set_position(pos)
     plot_hist(axe_d, events_sr_2, n_neurons_hist_2, ylims=ylims_hist_high, xlims=xlims)
     axe_top_d = fig_d.add_axes(axe_d.get_position())
     plot_hist(axe_top_d, events_sr_2, n_neurons_hist_2, xlims=xlims)
     set_broken_axes(axe_d, axe_top_d, ylims_hist_high)
-    plt.savefig(f"{save_path}/benchmark_model_D.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_D.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_b2.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_b2.png", dpi=400)
     plt.close()
-    # E = astrocytic dynamics, sparse
+    # C1: astrocytic dynamics, sparse
     fig_e, axe_e = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe_e.set_position(pos)
     plot_astro_dynamics(axe_e, events_astro_1, ylims_ip3=ylims_ip3, ylims_calcium=ylims_calcium, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_E.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_E.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_c1.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_c1.png", dpi=400)
     plt.close()
-    # F = astrocytic dynamics, synchronous
+    # C2: astrocytic dynamics, synchronous
     fig_f, axe_f = plt.subplots(1, 1, figsize=(fig_width, 3))
     axe_f.set_position(pos)
     plot_astro_dynamics(axe_f, events_astro_2, ylims_ip3=ylims_ip3, ylims_calcium=ylims_calcium, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_F.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_F.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_c2.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_c2.png", dpi=400)
     plt.close()
-    # G = SIC, sparse
+    # D1: SIC, sparse
     fig_g, axe_g = plt.subplots(1, 1, figsize=(fig_width, 1.5))
     axe_g.set_position(pos)
     plot_neuro_sic(axe_g, events_neuro_1, ylims=ylims_sic, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_G.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_G.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_d1.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_d1.png", dpi=400)
     plt.close()
-    # H = SIC, synchronous
+    # D2: SIC, synchronous
     fig_h, axe_h = plt.subplots(1, 1, figsize=(fig_width, 1.5))
     axe_h.set_position(pos)
     plot_neuro_sic(axe_h, events_neuro_2, ylims=ylims_sic, xlims=xlims)
-    plt.savefig(f"{save_path}/benchmark_model_H.eps", dpi=400)
-    plt.savefig(f"{save_path}/benchmark_model_H.png", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_d2.eps", dpi=400)
+    plt.savefig(f"{save_path}/benchmark_model_d2.png", dpi=400)
     plt.close()
 
 if __name__ == "__main__":

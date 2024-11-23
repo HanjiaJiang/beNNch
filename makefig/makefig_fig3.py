@@ -9,15 +9,15 @@ composite_figure_name_root = 'fig3'
 ########## DEFINE PANELS AND THE FIGURE ##########
 space = 0.5
 panels_dict = {
-    "benchmark_model_A": {"width": 6, "height": 3, "position": (0, 0.5+1.5+3+1.5+space*3)},
-    "benchmark_model_B": {"width": 6, "height": 3, "position": (6, 0.5+1.5+3+1.5+space*3)},
-    "benchmark_model_C": {"width": 6, "height": 1.5, "position": (0, 0.5+1.5+3+space*2)},
-    "benchmark_model_D": {"width": 6, "height": 1.5, "position": (6, 0.5+1.5+3+space*2)},
+    "benchmark_model_a1": {"width": 6, "height": 3, "position": (0, 0.5+1.5+3+1.5+space*3)},
+    "benchmark_model_a2": {"width": 6, "height": 3, "position": (6, 0.5+1.5+3+1.5+space*3)},
+    "benchmark_model_b1": {"width": 6, "height": 1.5, "position": (0, 0.5+1.5+3+space*2)},
+    "benchmark_model_b2": {"width": 6, "height": 1.5, "position": (6, 0.5+1.5+3+space*2)},
 
-    "benchmark_model_E": {"width": 6, "height": 3, "position": (0, 0.5+1.5+space*1)},
-    "benchmark_model_F": {"width": 6, "height": 3, "position": (6, 0.5+1.5+space*1)},
-    "benchmark_model_G": {"width": 6, "height": 1.5, "position": (0, 0.5)},
-    "benchmark_model_H": {"width": 6, "height": 1.5, "position": (6, 0.5)},
+    "benchmark_model_c1": {"width": 6, "height": 3, "position": (0, 0.5+1.5+space*1)},
+    "benchmark_model_c2": {"width": 6, "height": 3, "position": (6, 0.5+1.5+space*1)},
+    "benchmark_model_d1": {"width": 6, "height": 1.5, "position": (0, 0.5)},
+    "benchmark_model_d2": {"width": 6, "height": 1.5, "position": (6, 0.5)},
 }
 final_panel_shrink = 1.0
 figure_size_inch = (6+6, 0.5+1.5+3+1.5+3+space*4+0.2)
