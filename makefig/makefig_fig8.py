@@ -4,7 +4,7 @@ import matplotlib.gridspec as gridspec
 import os
 
 ########## GIVE THE NAME OF THE COMPOSITE FIGURE TO BE GENERATED ##########
-composite_figure_name_root = 'benchmark_poolsize'
+composite_figure_name_root = 'fig8'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
 h_major, h = 4, 1.75

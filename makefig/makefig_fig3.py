@@ -4,7 +4,7 @@ import matplotlib.gridspec as gridspec
 import os
 
 ########## GIVE THE NAME OF THE COMPOSITE FIGURE TO BE GENERATED ##########
-composite_figure_name_root = 'benchmark_model'
+composite_figure_name_root = 'fig3'
 
 ########## DEFINE PANELS AND THE FIGURE ##########
 space = 0.5
