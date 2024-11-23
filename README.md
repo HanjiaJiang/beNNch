@@ -34,6 +34,7 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 
 ### benchmarks
 - Python
+- [Builder](https://github.com/INM-6/Builder) (for installing NEST)
 - [NEST](https://nest-simulator.readthedocs.io/en/latest/index.html) (≥ 3.8)
 - [JUBE](https://github.com/FZJ-JSC/JUBE) (≥ 2.6.1)
 - [Astrocyte Surrogate Module](https://github.com/heplesser/astrocyte-surrogate-module) (a NEST extension module)
