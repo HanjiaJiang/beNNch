@@ -10,7 +10,7 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 
 | directory | description |
 |-------------------|-------------------|
-| [analysis](./analysis/)    | code for running data analysis and plotting |
+| [analysis](./analysis/)    | code for running benchmark data analysis and plotting |
 | [benchmarks](./benchmarks/)    | code for running benchmarks |
 | [config](./config/)    | benchmark configurations |
 | [helpers](./helpers/)    | helper functions for running benchmarks and data collection |
@@ -24,7 +24,7 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 - Go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yml`
 
 ### data analysis (Fig 6, 7, 8)
-- Go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures
+- Go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures (the required benchmark data are already available in [outpath](./outpath/))
 
 ### single simulations of benchmark models (Fig 3)
 
