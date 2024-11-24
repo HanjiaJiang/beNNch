@@ -1,9 +1,9 @@
 import os
 import sys
+import json
 import glob
 import yaml
 
-from analysis_helper import load
 from plot_major import plot_major
 from plot_phases import plot_phases
 
@@ -27,7 +27,8 @@ def plot(jube_ids, labels):
     # Benchmark strength is 'strong' or 'weak'; get this information from job.json
     bench_path = glob.glob(os.path.join(data_paths[0], '*_bench/work'))
     bench_path.sort()
-    job_info = load(os.path.join(bench_path[0], 'job.json'))
+    with open(os.path.join(bench_path[0], 'job.json'), 'r') as f:
+        job_info = json.load(f)
     strength = job_info['scaling_type']
 
     # Set save path
