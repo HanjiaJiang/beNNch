@@ -3,7 +3,7 @@
 This folder contains the code that implements benchmark models. The benchmark models used in the article are implemented in the subfolder [astrocyte](./astrocyte). For the approach to run benchmarks, see [benchmarks](../benchmarks). For single simulations that illustrate the dynamics of the benchmark models (Fig 3 in the article), go to the subfolder [astrocyte](./astrocyte) and run `bash run_benchmark_models.sh`. The results and plots will be saved in a folder named results_fig3.
 
 
-The scripts in the subfolder [astrocyte](./astrocyte) are listed below.
+The files in the subfolder [astrocyte](./astrocyte) are described below.
 
 | file | description |
 |-------------------|-------------------|

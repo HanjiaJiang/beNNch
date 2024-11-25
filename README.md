@@ -1,8 +1,8 @@
-# The benchmark code for the NEST astrocyte support
+# Benchmark code for the NEST astrocyte support
 
-This code implements the benchmark workflow for the NEST astrocyte support developed in [NEST](https://nest-simulator.readthedocs.io/en/latest/index.html). This development of NEST astrocyte support is described in the article [Modeling neuron-astrocyte interactions in neural networks using distributed simulation](https://doi.org/10.1101/2024.11.11.622953). This code also reproduces the figures of benchmark data in the article. Please cite the article if you use this code.
+The code in this repository implements the benchmark workflow for the astrocyte support developed in the [NEST Simulator](https://nest-simulator.readthedocs.io/en/latest/index.html). This development of NEST astrocyte support is described in the article [Modeling neuron-astrocyte interactions in neural networks using distributed simulation](https://doi.org/10.1101/2024.11.11.622953). The code also reproduces the figures of benchmark data in the article. Please cite the article if you use the code in this repository.
 
-This code is adapted from [beNNch](https://github.com/INM-6/beNNch) ([Albers et al., 2022](https://doi.org/10.3389/fninf.2022.837549)), a software framework for reproducible benchmarks of neuronal network simulations. beNNch is built around the [JUBE benchmarking environment](https://github.com/FZJ-JSC/JUBE) ([Breuer et al., 2024](https://zenodo.org/records/11394333), [Lührs et al., 2016](https://doi.org/10.3233/978-1-61499-621-7-431)).
+The code is adapted from [beNNch](https://github.com/INM-6/beNNch) ([Albers et al., 2022](https://doi.org/10.3389/fninf.2022.837549)), a software framework for reproducible benchmarks of neuronal network simulations. beNNch is built around the [JUBE benchmarking environment](https://github.com/FZJ-JSC/JUBE) ([Breuer et al., 2024](https://zenodo.org/records/11394333), [Lührs et al., 2016](https://doi.org/10.3233/978-1-61499-621-7-431)).
 
 Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 
@@ -23,10 +23,10 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 - Edit [config/astrocyte_benchmark_config.yaml](./config/astrocyte_benchmark_config.yaml) to specify benchmark parameters
 - Go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yaml`
 
-### data analysis (Fig 6, 7, 8)
+### data analysis (for Fig 6, 7, 8 in the article)
 - Go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures (the required benchmark data are already available in [outpath](./outpath/))
 
-### single simulations of benchmark models (Fig 3)
+### single simulations of benchmark models (for Fig 3 in the article)
 
 - Go to the [models/astrocyte](./models/astrocyte/) folder and execute `run_benchmark_models.sh`
 
@@ -35,11 +35,11 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 ### benchmarks
 - Python
 - [Builder](https://github.com/INM-6/Builder) (for installing NEST)
-- [NEST](https://nest-simulator.readthedocs.io/en/latest/index.html) (≥ 3.8)
+- [NEST](https://github.com/nest/nest-simulator) (≥ 3.8)
 - [JUBE](https://github.com/FZJ-JSC/JUBE) (≥ 2.6.1)
 - [Astrocyte Surrogate Module](https://github.com/heplesser/astrocyte-surrogate-module) (a NEST extension module)
 
-### data analysis and single simulations of benchmark models
+### data analysis, single simulations of benchmark models
 - Python
 - NEST (≥ 3.8)
 - numpy
