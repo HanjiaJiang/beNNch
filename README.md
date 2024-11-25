@@ -21,7 +21,7 @@ Author: Han-Jia Jiang hjiang2@smail.uni-koeln.de
 
 ### benchmarks
 - Edit [config/astrocyte_benchmark_config.yaml](./config/astrocyte_benchmark_config.yaml) to specify benchmark parameters
-- Go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yml`
+- Go to the [benchmarks](./benchmarks/) folder and execute `jube run astrocyte_benchmark.yaml`
 
 ### data analysis (Fig 6, 7, 8)
 - Go to the [analysis](./analysis/) folder and execute `bash run_analysis.sh` to run analysis and create figures (the required benchmark data are already available in [outpath](./outpath/))
