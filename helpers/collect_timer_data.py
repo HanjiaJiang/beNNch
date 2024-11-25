@@ -1,21 +1,3 @@
-"""
-beNNch - Unified execution, collection, analysis and
-comparison of neural network simulation benchmarks.
-Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <https://www.gnu.org/licenses/>.
-
-SPDX-License-Identifier: GPL-3.0-or-later
-"""
-
 import glob
 import os
 import sys
@@ -25,20 +7,11 @@ import numpy as np
 log_path = sys.argv[1]
 
 """
-This function writes out measures taken with internal instrumentation of
+This script writes out measures taken with internal instrumentation of
 the code. MPI processes write to private logfiles. These files are
 scanned for the timer metrics. Their mean
 is taken and writen into a single text file. This single text file can
-later be read by eg JUBE.
-
-Parameters
-----------
-STDOUT_PATH : string
-    Place to store extracted timer data to
-data_dir : string
-    Directory of where simulation data is stored
-label : string
-    Unique identifier of a given simulation
+later be read by JUBE.
 """
 
 all_logfiles = glob.glob(
