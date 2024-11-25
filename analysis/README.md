@@ -1,6 +1,6 @@
 # Benchmark data analysis and plotting
 
-This folder contains the code for benchmark data analysis and plotting. To run the code, execute `bash run_analysis.sh`, which runs the main Python script [plot.py](./plot.py) for each set of benchmark to analyze and plot the data. The generated folders will be named results_fig# and contain the results (in results.txt) and figures (Fig 6 to 8 in the article). The required benchmark data are already available in [outpath](../outpath/).
+This folder contains the code for benchmark data analysis and plotting. To run the code, execute `bash run_analysis.sh`. It runs the main Python script [plot.py](./plot.py) for each set of benchmark to analyze and plot the data. The generated folders will be named results_fig# and contain the results (in results.txt) and figures (Fig 6 to 8 in the article). The required benchmark data are already available in [outpath](../outpath/).
 
 | file | description |
 |-------------------|-------------------|
