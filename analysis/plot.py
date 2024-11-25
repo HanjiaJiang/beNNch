@@ -11,13 +11,23 @@ import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 15})
 
 def plot(jube_ids, labels):
+    """
+    Create benchmark data plots according to given JUBE benchmark IDs and model labels.
+
+    Attributes
+    ----------
+    jube_ids : list
+        list of JUBE benchmark IDs
+    labels : list
+        list of model labels
+    """
     # Load analysis configurations
     config_file_name = '../config/analysis_config.yaml'
     assert os.path.isfile(config_file_name), 'Configuration file not found!'
     with open(config_file_name) as analysis_config_file:
         config = yaml.load(analysis_config_file, Loader=yaml.FullLoader)
 
-    # Get benchmark data paths
+    # Get benchmark data paths by given IDs
     data_paths, timer_files = [], []
     for jube_id in jube_ids:
         path_i = os.path.join(config['jube_outpath'], jube_id.zfill(6))

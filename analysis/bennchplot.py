@@ -1,23 +1,3 @@
-"""
-beNNch-plot - standardized plotting routines for performance benchmarks.
-Copyright (C) 2021 Forschungszentrum Juelich GmbH, INM-6
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <https://www.gnu.org/licenses/>.
-
-SPDX-License-Identifier: GPL-3.0-or-later
-"""
-
-"""
-Class for benchmarking plots
-"""
 import os
 
 import pandas as pd
@@ -29,21 +9,21 @@ import plot_params as pp
 
 class Plot():
     """
-    Class organizing benchmarking plots.
+    Class for the creation of benchmark data plots.
 
     Attributes
     ----------
     x_axis : str or list
         variable to be plotted on x-axis
-    x_ticks : str, optional
-
-    data_file : str, optional
+    x_ticks : str or list
+        argument indicating automatic or user-defined x ticks
+    data_file : str
         path to data
-    color_params : dict, optional
+    color_params : dict
         unique colors for variables
-    label_params : dict, optional
+    label_params : dict
         labels used when plotting
-    time_scaling : int, optional
+    time_scaling : int
         scaling parameter for simulation time
    """
 
@@ -90,6 +70,7 @@ class Plot():
                 raise ValueError('Warning! Python timers are not found. ' +
                                  'Construction time measurements will not ' +
                                  'be accurate.')
+
         dict_ = {'num_nodes': 'first',
                  'threads_per_task': 'first',
                  'tasks_per_node': 'first',
@@ -154,7 +135,7 @@ class Plot():
              'tasks_per_node',
              'model_time_sim'], as_index=False).agg(dict_)
 
-        # Keep data in object
+        # Keep data
         df.columns = col
         self.df_data = df
 
@@ -228,6 +209,7 @@ class Plot():
             df['average_firing_rate'] = df['total_spike_count_per_s'] / (df['N_ex'] + df['N_in'])
             df['average_firing_rate_std'] = df['total_spike_count_per_s_std'] / (df['N_ex'] + df['N_in'])
 
+        # Difference in memory usage at different stages
         if 'base_memory' in df and 'network_memory' in df and 'init_memory' in df and 'total_memory' in df:
             df['memory_network_minus_base'] = df['network_memory'] - df['base_memory']
             df['memory_init_minus_network'] = df['init_memory'] - df['network_memory']
@@ -243,11 +225,11 @@ class Plot():
         fill_variables : list
             variables (e.g. timers) to be plotted as fill  between graph and
             x axis
-        interpolate : bool, default
+        interpolate : bool
             whether to interpolate between the curves
-        step : {'pre', 'post', 'mid'}, optional
+        step : {'pre', 'post', 'mid'}
             should the filling be a step function
-        alpha, int, default
+        alpha, int
             alpha value of fill_between plot
         error : bool
             whether plot should have error bars
@@ -257,7 +239,6 @@ class Plot():
         # Iterate through fill variables
         fill_height = 0
         for i, fill in enumerate(fill_variables):
-            line_color = 'k'
             # Plot filled areas
             axis.fill_between(np.squeeze(df[self.x_axis]),
                               fill_height,
@@ -275,17 +256,14 @@ class Plot():
                               yerr=np.squeeze(df[fill + '_std']),
                               capsize=3,
                               capthick=1,
-                              color=line_color,
+                              color='k',
                               fmt='none',
                               )
             fill_height += df[fill].to_numpy()
 
         # Set xticks according to data or user input
         if self.x_ticks == 'data':
-            try:
-                axis.set_xticks(np.squeeze(df[self.x_axis]))
-            except:
-                print("set_xticks() failed!")
+            axis.set_xticks(np.squeeze(df[self.x_axis]))
         else:
             axis.set_xticks(self.x_ticks)
 
@@ -302,7 +280,7 @@ class Plot():
             list with plotting quantities
         axis : axis object
             axis object used when plotting
-        error : bool, default
+        error : bool
             whether or not to plot error bars
         """
         df = self.df_data
@@ -325,7 +303,7 @@ class Plot():
                 axis.errorbar(
                     df[self.x_axis].values,
                     df[y].values,
-                    yerr=df[y + '_std'].values,
+                    yerr=df[str_std].values,
                     marker=None,
                     color=line_color,
                     linewidth=0.5*linewidth,

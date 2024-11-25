@@ -15,9 +15,37 @@ def plot_phases(
          detail=False,
          reverse_phases=False,
          ignore_others=False,
-         legend_fontsize='small',
          plot_relative=False,
+         legend_fontsize='small',
          ):
+    """
+    Create plots for phases in state propagation.
+
+    Attributes
+    ----------
+    timer_files : list
+        list of timer files
+    labels : list
+        list of model labels
+    save_path : str
+        path where data should be saved
+    scaling_strength : str
+        string indicating strong or weak scaling
+    x_axis : str
+        string indicating x axis subject
+    ylims_rtf : tuple
+        tuple specifying y axis limits for the plot
+    detail : bool
+        whether or not to create detailed plot
+    reverse_phases : bool
+        whether or not to reverse the order of phases
+    ignore_others : bool
+        whether or not to ignore the 'other' phase
+    plot_relative : bool
+        whether or not to plot relative real-time factor
+    legend_fontsize : str
+        string indicating legend font size
+    """
 
     # Set x axis type and label
     x_axis = x_axis if x_axis == 'num_nvp' else 'num_nodes'
@@ -135,6 +163,7 @@ def plot_phases(
             ax_abs_twin.set_xlabel('Network size', fontsize='small')
             ax_abs_twin.set_xlim(ax_abs.get_xlim())
 
+    # Save figure
     plt.tight_layout()
     pname = "plot_phases_detail" if detail else "plot_phases"
     plt.savefig(f'{save_path}/{pname}.png', dpi=400)
