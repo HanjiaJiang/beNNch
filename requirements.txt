@@ -1,8 +1,0 @@
-numpy
-matplotlib
-pandas
-pyyaml
-IPython
-nbformat
-nbconvert==6.5.1
-jupyter
