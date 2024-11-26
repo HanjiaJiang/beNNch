@@ -1,38 +1,29 @@
-"""
-Random balanced network with astrocyte_lr_1994 for HPC benchmark
-------------------------------------------------------------------
-
-This script creates and simulates random balanced network with the
-astrocyte_lr_1994 model. This script is used for HPC benchmarks.
-
-"""
-
 from network import model_default, run_simulation
 
-
-###############################################################################
-# Parameter section
-# Define all relevant parameters: changes should be made here
-
+# Define benchmark parameters
+# Parameters in {} will use values from astrocyte_benchmark_config.yaml
 params = {
     'model': '{model_name}',           # model name
     'nvp': {num_vps},                  # total number of virtual processes
     'scale': {scale_N},                # scaling factor of the network size
     'simtime': {model_time_sim},       # total simulation time in ms
-    'presimtime': {model_time_presim}, # simulation time until reaching equilibrium
+    'presimtime': {model_time_presim}, # presimulation time in ms
     'dt': 0.1,                         # simulation step
     'rng_seed': {rng_seed},            # random number generator seed
-    'path_name': '.',                  # path where all files will have to be written
     'log_file': 'logfile',             # naming scheme for the log files
-    'pool_size': int({pool_size}),
-    'pool_type': '{pool_type}',
+    'pool_size': int({pool_size}),     # astrocyte pool size per neuron
+    'pool_type': '{pool_type}',        # astrocyte pool type per neuron
 }
 
 def run():
-    # define model
+    """
+    Run benchmark simulation with specified model.
+    """
+
+    # Define model
     model = params["model"]
 
-    # define model_update_dict according to specified model
+    # Define model_update_dict according to specified model
     N_ex = model_default["network_params"]["N_ex"]
     N_in = model_default["network_params"]["N_in"]
     p = model_default["network_params"]["p_primary"]
@@ -103,7 +94,7 @@ def run():
     else:
         model_update_dict['network_params'] = {'pool_size': params['pool_size'], 'pool_type': params['pool_type']}
 
-    # run simulation
+    # Run simulation
     run_simulation(params, model_update_dict)
 
 if __name__ == '__main__':

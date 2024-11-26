@@ -1,21 +1,10 @@
-"""
-Random balanced network with astrocyte_lr_1994 for HPC benchmark
-------------------------------------------------------------------
-
-This script creates and simulates random balanced network with the
-astrocyte_lr_1994 model. This script is used for HPC benchmarks.
-
-"""
-
 import time
 
 import nest
 
 M_INFO = 10
 
-###############################################################################
-# Set model parameters.
-
+# Define default model parameters
 model_default = {
     "network_params": {
         "N_ex": 8000,               # number of excitatory neurons
@@ -54,14 +43,6 @@ model_default = {
     },
 }
 
-###############################################################################
-# These functions create and connect the network model. The astrocytes only
-# respond to excitatory synaptic inputs; therefore, only the excitatory
-# neuron-neuron connections are paired with the astrocytes. The
-# TripartiteConnect() function and the "third_factor_bernoulli_with_pool" rule
-# are used to create the connectivity of the network.
-
-
 def create_astro_network(network_params, neuron_params_ex, neuron_params_in, astrocyte_params, neuron_model, astrocyte_model, scale=1.0):
     """Create nodes for a neuron-astrocyte network."""
     print("Creating nodes ...")
@@ -72,7 +53,6 @@ def create_astro_network(network_params, neuron_params_ex, neuron_params_in, ast
     nodes_noise = nest.Create("poisson_generator", params={"rate": network_params["poisson_rate"]})
     return nodes_ex, nodes_in, nodes_astro, nodes_noise
 
-
 def connect_astro_network(nodes_ex, nodes_in, nodes_astro, nodes_noise, model_params, conn_params_e, conn_params_i):
     """Connect the nodes in a neuron-astrocyte network.
     The astrocytes are paired with excitatory connections only.
@@ -80,7 +60,7 @@ def connect_astro_network(nodes_ex, nodes_in, nodes_astro, nodes_noise, model_pa
     print("Connecting Poisson generator ...")
     nest.Connect(nodes_noise, nodes_ex + nodes_in, syn_spec={"weight": model_params["syn_params"]["w_e"]})
     print("Connecting neurons and astrocytes ...")
-    # excitatory connections are paired with astrocytes
+    # Excitatory connections are paired with astrocytes
     conn_params_astro = {
         "rule": "third_factor_bernoulli_with_pool",
         "p": model_params["network_params"]["p_third_if_primary"],
@@ -124,7 +104,7 @@ def connect_astro_network(nodes_ex, nodes_in, nodes_astro, nodes_noise, model_pa
             third_factor_conn_spec=conn_params_astro,
             syn_specs=syn_params_e,
         )
-    # inhibitory connections are not paired with astrocytes
+    # Inhibitory connections are not paired with astrocytes
     syn_params_i = {
         "synapse_model": "tsodyks_synapse",
         "weight": model_params["syn_params"]["w_i"],
@@ -141,7 +121,7 @@ def build_network(params, model_params, record_conn=False):
 
     tic = time.time()  # start timer on construction
 
-    # set global kernel parameters
+    # Set global kernel parameters
     nest.SetKernelStatus({'total_num_virtual_procs': params['nvp'],
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
@@ -166,7 +146,7 @@ def build_network(params, model_params, record_conn=False):
     connect_astro_network(
         e, i, a, n, model_params, model_params['conn_params_e'], model_params['conn_params_i'])
 
-    # read out time used for building
+    # Read out time used for building
     BuildEdgeTime = time.time() - tic
     network_memory = str(memory_thisjob())
 
@@ -201,6 +181,7 @@ def memory_thisjob():
 def run_simulation(params, model_update_dict):
     """Performs a simulation, including network construction"""
 
+    # Prepare NEST
     nest.ResetKernel()
     nest.Install("astrocyte_surrogate_module")
     nest.SyncProcesses()
@@ -217,16 +198,20 @@ def run_simulation(params, model_update_dict):
         else:
             model_default[key].update(value)
 
+    # Build the network
     build_dict, nodes_ex, nodes_in, nodes_astro = build_network(params, model_default)
 
+    # Presimulation
     nest.Simulate(params['presimtime'])
 
     init_memory = str(memory_thisjob())
 
+    # Simulation
     nest.Simulate(params['simtime'])
 
     total_memory = str(memory_thisjob())
 
+    # Collect data
     d = {
          'base_memory': base_memory,
          'init_memory': init_memory,
@@ -235,6 +220,7 @@ def run_simulation(params, model_update_dict):
     d.update(build_dict)
     d.update(nest.GetKernelStatus())
 
+    # Save data to log files
     fn = '{fn}_{rank}.dat'.format(fn=params['log_file'], rank=nest.Rank())
     with open(fn, 'w') as f:
         for key, value in d.items():

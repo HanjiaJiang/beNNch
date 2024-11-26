@@ -1,6 +1,3 @@
-###############################################################################
-# Import all necessary modules for simulation and plotting.
-
 import os
 import sys
 import random
@@ -12,42 +9,42 @@ import pandas as pd
 
 from network import model_default, build_network
 
-###############################################################################
-# Set simulation parameters.
-
+# Define model according to user input
 model = sys.argv[1] if len(sys.argv) > 1 else 'Bernoulli'
+
+# Determine number of virtual processes according to available core number
 if "SLURM_JOB_ID" in os.environ:
     nvp = int(os.getenv("SLURM_CPUS_PER_TASK"))
 else:
     nvp = os.cpu_count()
+
+# Define simulation parameters
 params = {
-    'model': model,            # model name and data path
+    'model': model,            # model name
     'nvp': nvp,                # total number of virtual processes
     'scale': 1,                # scaling factor of the network size
     'simtime': 10000,          # total simulation time in ms
-    'presimtime': 1000,        # simulation time until reaching equilibrium
+    'presimtime': 1000,        # presimulation time in ms
     'dt': 0.1,                 # simulation step
     'rng_seed': 1,             # random number generator seed
-    'pool_size': 10,
-    'pool_type': 'random',
+    'pool_size': 10,           # astrocyte pool size per neuron
+    'pool_type': 'random',     # astrocyte pool type per neuron
 }
 
-###############################################################################
-# This function creates recording devices and connects them to the network.
-
 def create_devices(exc, inh, astro, n):
-    # create devices (multimeter default resolution = 1 ms)
+    """Create recording devices and connects them to the network."""
+    # Create devices (multimeter default resolution = 1 ms)
     sr = nest.Create("spike_recorder")
     mm_neuron = nest.Create("multimeter", params={"record_from": ["I_SIC"]})
     mm_astro = nest.Create("multimeter", params={"record_from": ["IP3", "Ca_astro"]})
-    # connect devices
+    # Connect devices
     neuro_list = (exc + inh).tolist()
     astro_list = astro.tolist()
     assert len(neuro_list) >= n, f"Number of neurons < {n}!"
     assert len(astro_list) >= n, f"Number of astrocytes < {n}!"
-    # connect all neurons to the spike recorder
+    # Connect all neurons to the spike recorder
     nest.Connect(neuro_list, sr)
-    # connect n neurons and astrocytes to the multimeters
+    # Connect n neurons and astrocytes to the multimeters
     sampled_neurons = sorted(random.sample(neuro_list, n))
     sampled_astrocytes = sorted(random.sample(astro_list, n))
     nest.Connect(mm_neuron, sampled_neurons)
@@ -55,20 +52,19 @@ def create_devices(exc, inh, astro, n):
         nest.Connect(mm_astro, sampled_astrocytes)
     return sr, mm_neuron, mm_astro
 
-###############################################################################
-# This function calculates the average neuronal firing rate in spikes/s
-
 def calc_fr(events, n_neurons, start, end):
+    """Calculates the average neuronal firing rate in spikes/s."""
     mask = (events["times"]>=start)&(events["times"]<end)
     fr = 1000*len(events["times"][mask])/((end-start)*n_neurons)
     return fr
 
-###############################################################################
-# This function calculates the pairwise spike count correlations. For each pair
-# of neurons, the correlation coefficient (Pearson's r) of their spike count
-# histograms is calculated. The result of all pairs are returned.
-
 def calc_corr(hlist):
+    """Calculate pairwise spike count correlations
+
+    For each pair of neurons, the correlation coefficient (Pearson's r) of
+    their spike count histograms is calculated. The result of all pairs are
+    returned.    
+    """
     coef_list = []
     n_pair_pass = 0
     n_pair_fail = 0
@@ -87,15 +83,15 @@ def calc_corr(hlist):
 
     return coef_list, n_pair_pass, n_pair_fail
 
-
-###############################################################################
-# This function calculates the synchrony of neuronal firings.
-# Histograms of spike counts of all neurons are obtained to evaluate local and
-# global synchrony. The local synchrony is evaluated with average pairwise spike
-# count correlation, and the global synchrony is evaluated with the variance of
-# average spike count/average of variance of individual spike count.
-
 def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
+    """Calculate the synchrony of neuronal firings
+
+    Histograms of spike counts of all neurons are obtained to evaluate local
+    and global synchrony. The local synchrony is evaluated with average
+    pairwise spike count correlation, and the global synchrony is evaluated
+    with the variance of average spike count/average of variance of individual
+    spike count.
+    """
     # get data
     mask = (neuron_spikes["times"] >= start)&(neuron_spikes["times"] < end)
     senders = neuron_spikes["senders"][mask]
@@ -113,14 +109,13 @@ def calc_synchrony(neuron_spikes, n_neurons, start, end, binwidth=10):
     gsync = np.var(hist_all) / np.mean(np.var(hists, axis=1))  # global
     return rate, coefs, gsync, n_for_sync
 
-###############################################################################
-# This function updates the model parameters.
-
 def update_model_parameters():
-    # define model
+    """Update model parameters according to specified model."""
+
+    # Define model
     model = params["model"]
 
-    # define model_update_dict according to specified model
+    # Define model_update_dict according to specified model
     N_ex = model_default["network_params"]["N_ex"]
     N_in = model_default["network_params"]["N_in"]
     p = model_default["network_params"]["p_primary"]
@@ -197,10 +192,8 @@ def update_model_parameters():
         else:
             model_default[key].update(value)
 
-###############################################################################
-# This is the main function to run the simulation with.
-
 def run(n_analysis=100):
+    """Run simulation."""
     # Update model parameters
     update_model_parameters()
 
@@ -241,16 +234,16 @@ def run(n_analysis=100):
 
     # Synchrony analysis
     events_analysis = {}
-    # filter by time
+    # Filter by time
     mask_time = (sr.events["times"]>=pre_sim_time)&(sr.events["times"]<pre_sim_time+sim_time)
     for key in ["times", "senders"]:
         events_analysis[key] = sr.events[key][mask_time]
-    # sample n_analysis spiking neurons
+    # Sample n_analysis spiking neurons
     neurons_analysis = random.sample(list(set(events_analysis["senders"])), n_analysis)
     mask_neuron = np.isin(events_analysis["senders"], neurons_analysis)
     for key in ["times", "senders"]:
         events_analysis[key] = events_analysis[key][mask_neuron]
-    # calculate synchrony
+    # Calculate synchrony
     rate, coefs, gsync, n_for_sync = calc_synchrony(
         events_analysis, n_analysis, pre_sim_time, pre_sim_time + sim_time
     )
@@ -279,9 +272,6 @@ def run(n_analysis=100):
     data["I_SIC"] = [I_SIC]
     df = pd.DataFrame(data)
     df.to_csv(f"{path_name}/results.csv", index=False)
-
-###############################################################################
-# Run the script.
 
 if __name__ == "__main__":
     run()
